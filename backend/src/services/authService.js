@@ -1,9 +1,9 @@
-const User = require('../entities/Users.js');
+const User = require('../models/User.js');
 const { generateToken } = require('../config/jwt.js');
 
 class AuthService {
 
-    static async register(email, password, userName) {
+    static async register(email, password, userName, role = 'utilisateur') {
         if (!email || !password || !userName) {
             throw new Error("All fields are required");
         }
@@ -17,6 +17,7 @@ class AuthService {
             email,
             password,
             username: userName,
+            role
         });
         return newUser.save();
     }

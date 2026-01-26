@@ -10,7 +10,8 @@ const generateToken = (user) => {
   const payload = {
     id: user._id || user.id,
     email: user.email,
-    username: user.username
+    username: user.username,
+    role: user.role || 'utilisateur'
   };
 
   return jwt.sign(payload, JWT_SECRET, {
@@ -65,6 +66,20 @@ const authenticate = (req, res, next) => {
   }
 };
 
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Access denied: insufficient permissions" });
+    }
+
+    next();
+  };
+};
+
 module.exports = {
   JWT_SECRET,
   JWT_EXPIRES_IN,
@@ -73,5 +88,6 @@ module.exports = {
   generateRefreshToken,
   verifyToken,
   decodeToken,
-  authenticate
+  authenticate,
+  authorize
 };

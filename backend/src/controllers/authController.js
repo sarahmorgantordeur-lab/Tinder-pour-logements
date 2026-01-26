@@ -15,12 +15,13 @@ const { email, password } = req.body;
         }
 }
 static async register(req, res) {
-const { email, password, userName } = req.body;
+const { email, password, userName, role } = req.body;
         try {
             const user = await authService.register(
                 email,
                 password,
-                userName
+                userName,
+                role
             );
 
             res.status(200).json({ message: "User register sucessfully", user });
