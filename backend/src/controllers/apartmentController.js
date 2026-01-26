@@ -1,7 +1,6 @@
 const apartmentService = require('../services/apartmentService.js');
 
 class ApartmentController {
-    // Créer un nouvel appartement
     static async create(req, res) {
         try {
             // req.user.id devrait être ajouté par le middleware d'authentification
@@ -16,7 +15,6 @@ class ApartmentController {
         }
     }
 
-    // Obtenir tous les appartements avec filtres optionnels
     static async getAll(req, res) {
         try {
             const filters = {
@@ -35,7 +33,6 @@ class ApartmentController {
         }
     }
 
-    // Obtenir un appartement par ID
     static async getById(req, res) {
         const { id } = req.params;
         try {
@@ -49,7 +46,6 @@ class ApartmentController {
         }
     }
 
-    // Obtenir les appartements d'un propriétaire
     static async getMyApartments(req, res) {
         try {
             const ownerId = req.user.id;
@@ -60,7 +56,6 @@ class ApartmentController {
         }
     }
 
-    // Mettre à jour un appartement
     static async update(req, res) {
         const { id } = req.params;
         try {
@@ -78,7 +73,6 @@ class ApartmentController {
         }
     }
 
-    // Supprimer un appartement
     static async delete(req, res) {
         const { id } = req.params;
         try {
@@ -96,7 +90,6 @@ class ApartmentController {
         }
     }
 
-    // Ajouter une photo
     static async addPhoto(req, res) {
         const { id } = req.params;
         const { photoUrl } = req.body;
@@ -115,7 +108,6 @@ class ApartmentController {
         }
     }
 
-    // Supprimer une photo
     static async removePhoto(req, res) {
         const { id } = req.params;
         const { photoUrl } = req.body;
