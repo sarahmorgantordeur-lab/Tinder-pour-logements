@@ -71,7 +71,6 @@ class ApartmentService {
     }
 
     static async update(id, updateData, ownerId) {
-        // Vérifier que l'appartement appartient bien au propriétaire
         const apartment = await Apartment.findById(id);
 
         if (!apartment) {
@@ -92,7 +91,6 @@ class ApartmentService {
     }
 
     static async delete(id, ownerId) {
-        // Vérifier que l'appartement appartient bien au propriétaire
         const apartment = await Apartment.findById(id);
 
         if (!apartment) {

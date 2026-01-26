@@ -94,7 +94,6 @@ const isAdmin = (req, res, next) => {
       message: 'Accès refusé. Droits administrateur requis.'
     });
   }
-
   next();
 };
 
