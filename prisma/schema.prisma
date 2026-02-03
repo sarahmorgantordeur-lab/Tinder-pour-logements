@@ -16,32 +16,33 @@ datasource db {
 //--------------------------------
 
 model User {
-  id               String   @id @default(uuid())
-  email            String   @unique
-  password         String
-  username         String
-  role             Role     @default(user)
-  phone            String?
-  avatar           String?
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  password           String
+  username           String
+  role               Role     @default(user)
+  phone              String?
+  avatar             String?
 
   // Propriétaire / agence
-  company_name     String?
-  siret            String?
+  company_name       String?
+  siret              String?
 
   // Relations
   profile            Profile?
   documents          Document[]
   favorites          Favorite[]
   viewed_apartments  ViewedApartment[]
-  swipes   Swipe[]
-  matches  Match[]
-  requests Request[]
-  messages Message[]
+  swipes             Swipe[]
+  matches            Match[]
+  requests           Request[]
+  messages           Message[]
+  owned_apartments   Apartment[] @relation("UserApartments")
 
-  preferences     Preferences?
+  preferences        Preferences?
 
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
 }
 
 enum Role {
@@ -51,25 +52,25 @@ enum Role {
 }
 
 model Profile {
-  id           String  @id @default(uuid())
-  bio          String?
-  job          String?
-  income       Float?
-  guarantors   Int?
+  id                 String  @id @default(uuid())
+  bio                String?
+  job                String?
+  income             Float?
+  guarantors         Int?
 
-  user         User    @relation(fields: [user_id], references: [id])
-  user_id      String  @unique
+  user               User    @relation(fields: [user_id], references: [id])
+  user_id            String  @unique
 }
 
 model Document {
-  id           String       @id @default(uuid())
-  name         String
-  url          String
-  type         DocumentType
-  uploaded_at  DateTime     @default(now())
+  id                 String       @id @default(uuid())
+  name               String
+  url                String
+  type               DocumentType
+  uploaded_at        DateTime     @default(now())
 
-  user         User         @relation(fields: [user_id], references: [id])
-  user_id      String
+  user               User         @relation(fields: [user_id], references: [id])
+  user_id            String
 }
 
 enum DocumentType {
@@ -80,67 +81,67 @@ enum DocumentType {
 }
 
 model Favorite {
-  id             String     @id @default(uuid())
-  user           User       @relation(fields: [user_id], references: [id])
-  user_id        String
-  apartment      Apartment  @relation(fields: [apartment_id], references: [id])
-  apartment_id   String
+  id                String     @id @default(uuid())
+  user              User       @relation(fields: [user_id], references: [id])
+  user_id           String
+  apartment         Apartment  @relation(fields: [apartment_id], references: [id])
+  apartment_id      String
 
   @@unique([user_id, apartment_id])
 }
 
 model ViewedApartment {
-  id             String     @id @default(uuid())
-  viewed_at      DateTime   @default(now())
+  id                String     @id @default(uuid())
+  viewed_at         DateTime   @default(now())
 
-  user           User       @relation(fields: [user_id], references: [id])
-  user_id        String
-  apartment      Apartment  @relation(fields: [apartment_id], references: [id])
-  apartment_id   String
+  user              User       @relation(fields: [user_id], references: [id])
+  user_id           String
+  apartment         Apartment  @relation(fields: [apartment_id], references: [id])
+  apartment_id      String
 }
 
 model Preferences {
-  id            String   @id @default(uuid())
-  property_type String[]
-  listing_type  String?
-  min_price     Float?
-  max_price     Float?
-  min_surface   Float?
-  regions       String[]
-  tags          String[]
+  id                String   @id @default(uuid())
+  property_type     String[]
+  listing_type      String?
+  min_price         Float?
+  max_price         Float?
+  min_surface       Float?
+  regions           String[]
+  tags              String[]
 
-  user          User     @relation(fields: [user_id], references: [id])
-  user_id       String   @unique
+  user              User     @relation(fields: [user_id], references: [id])
+  user_id           String   @unique
 }
 
 //-----------------------------
 
 model Apartment {
-  id             String        @id @default(uuid())
-  title          String
-  description    String?
-  address        String
-  region         String
-  property_type  PropertyType  @default(apartment)
-  listing_type   ListingType   @default(rent)
-  price          Float
-  surface        Float
-  rooms          Int
-  pictures       String[]
-  tags           String[]
-  availability Boolean @default(true)
+  id                String        @id @default(uuid())
+  title             String
+  description       String?
+  address           String
+  region            String
+  property_type     PropertyType  @default(apartment)
+  listing_type      ListingType   @default(rent)
+  price             Float
+  surface           Float
+  rooms             Int
+  pictures          String[]
+  tags              String[]
+  availability      Boolean @default(true)
 
-  owner          User          @relation(fields: [owner_id], references: [id])
-  owner_id       String
+  owner             User          @relation(fields: [owner_id], references: [id], name: "UserApartments")
+  owner_id          String
 
-  favorites      Favorite[]
-  viewedBy       ViewedApartment[]
-  swipes         Swipe[]
-  matches        Match[]
-  requests       Request[]
+  favorites         Favorite[]
+  viewedBy          ViewedApartment[]
+  swipes            Swipe[]
+  matches           Match[]
+  requests          Request[]
 
-  created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
 
   @@index([region])
   @@index([price])
@@ -168,23 +169,23 @@ enum ListingType {
 // Request pour candidature informelle après le swipe
 
 model Request {
-  id           String        @id @default(uuid())
+  id                String        @id @default(uuid())
 
-  apartment    Apartment     @relation(fields: [apartment_id], references: [id])
-  apartment_id String
+  apartment         Apartment     @relation(fields: [apartment_id], references: [id])
+  apartment_id      String
 
-  user         User          @relation(fields: [user_id], references: [id])
-  user_id      String
+  user              User          @relation(fields: [user_id], references: [id])
+  user_id           String
 
-  status       RequestStatus @default(waiting)
-  message      String?
+  status            RequestStatus @default(waiting)
+  message           String?
 
-  documents    RequestDocument[]
+  documents         RequestDocument[]
 
-  visit_date   DateTime?
+  visit_date        DateTime?
 
-  created_at   DateTime      @default(now())
-  updated_at   DateTime      @updatedAt
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
 
   @@unique([apartment_id, user_id])
   @@index([user_id])
@@ -202,13 +203,13 @@ enum RequestStatus {
 //----------------------------
 
 model Swipe {
-  id            String   @id @default(uuid())
-  user          User     @relation(fields: [user_id], references: [id])
-  user_id       String
-  apartment     Apartment @relation(fields: [apartment_id], references: [id])
-  apartment_id  String
-  direction     SwipeDirection
-  created_at    DateTime @default(now())
+  id               String   @id @default(uuid())
+  user             User     @relation(fields: [user_id], references: [id])
+  user_id          String
+  apartment        Apartment @relation(fields: [apartment_id], references: [id])
+  apartment_id     String
+  direction        SwipeDirection
+  created_at       DateTime @default(now())
 
   @@unique([user_id, apartment_id])
   @@index([user_id])
@@ -223,13 +224,13 @@ enum SwipeDirection {
 //-------------------------------
 
 model Match {
-  id           String     @id @default(uuid())
-  user         User       @relation(fields: [user_id], references: [id])
-  user_id      String
-  apartment    Apartment  @relation(fields: [apartment_id], references: [id])
-  apartment_id String
-  messages     Message[]
-  created_at   DateTime   @default(now())
+  id              String     @id @default(uuid())
+  user            User       @relation(fields: [user_id], references: [id])
+  user_id         String
+  apartment       Apartment  @relation(fields: [apartment_id], references: [id])
+  apartment_id    String
+  messages        Message[]
+  created_at      DateTime   @default(now())
 
   @@unique([user_id, apartment_id])
   @@index([user_id])
@@ -239,24 +240,24 @@ model Match {
 //------------------------------
 
 model Message {
-  id         String   @id @default(uuid())
-  content    String
-  match      Match    @relation(fields: [match_id], references: [id])
-  match_id   String
-  sender     User     @relation(fields: [sender_id], references: [id])
-  sender_id  String
-  created_at DateTime @default(now())
+  id               String   @id @default(uuid())
+  content          String
+  match            Match    @relation(fields: [match_id], references: [id])
+  match_id         String
+  sender           User     @relation(fields: [sender_id], references: [id])
+  sender_id        String
+  created_at       DateTime @default(now())
 }
 
 //------------------------------
 
 model RequestDocument {
-  id          String   @id @default(uuid())
-  name        String
-  url         String
-  uploaded_at DateTime @default(now())
+  id               String   @id @default(uuid())
+  name             String
+  url              String
+  uploaded_at      DateTime @default(now())
 
-  request     Request  @relation(fields: [request_id], references: [id])
-  request_id  String
+  request          Request  @relation(fields: [request_id], references: [id])
+  request_id       String
 }
 
