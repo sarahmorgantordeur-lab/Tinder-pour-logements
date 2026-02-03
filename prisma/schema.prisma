@@ -33,7 +33,7 @@ model User {
 
   // Relations
   profile            Profile?
-  documents          Document[]
+  pictures           Picture[]
   favorites          Favorite[]
   viewed_apartments  ViewedApartment[]
   swipes             Swipe[]
@@ -65,22 +65,24 @@ model Profile {
   user_id            String  @unique
 }
 
-model Document {
+model Picture {
   id                 String       @id @default(uuid())
-  name               String
   url                String
-  type               DocumentType
+  type               PictureType
   uploaded_at        DateTime     @default(now())
 
-  user               User         @relation(fields: [user_id], references: [id])
-  user_id            String
+  // Relation avec User (pour les photos de profil)
+  user               User?        @relation(fields: [user_id], references: [id])
+  user_id            String?
+
+  // Relation avec Apartment (pour les photos d'appartement)
+  apartment          Apartment?   @relation(fields: [apartment_id], references: [id])
+  apartment_id       String?
 }
 
-enum DocumentType {
-  identity
-  income
-  guarantee
-  other
+enum PictureType {
+  profile
+  apartment
 }
 
 model Favorite {
@@ -125,18 +127,26 @@ model Apartment {
   description       String?
   address           String
   region            String
+  city              String?
+  postal_code       String?
+  country           String        @default("France")
+
+  // Géolocalisation
+  latitude          Float?
+  longitude         Float?
+
   property_type     PropertyType  @default(apartment)
   listing_type      ListingType   @default(rent)
   price             Float
   surface           Float
   rooms             Int
-  pictures          String[]
   tags              String[]
   availability      Boolean @default(true)
 
   owner             User          @relation(fields: [owner_id], references: [id], name: "UserApartments")
   owner_id          String
 
+  pictures          Picture[]
   favorites         Favorite[]
   viewedBy          ViewedApartment[]
   swipes            Swipe[]
@@ -151,6 +161,7 @@ model Apartment {
   @@index([listing_type])
   @@index([property_type])
   @@index([surface])
+  @@index([latitude, longitude])
 }
 
 enum PropertyType {

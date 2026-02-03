@@ -21,14 +21,133 @@ class ApartmentController {
                 propertyType: req.query.propertyType,
                 listingType: req.query.listingType,
                 region: req.query.region,
+                city: req.query.city,
                 minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
                 maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
                 minSurface: req.query.minSurface ? Number(req.query.minSurface) : undefined,
+                minRooms: req.query.minRooms ? Number(req.query.minRooms) : undefined,
                 availability: req.query.availability
             };
             const apartments = await ApartmentService.getAll(filters);
             res.status(200).json({ apartments });
         } catch (error) {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    /**
+     * GET /api/apartments/search/location
+     * Recherche par coordonnées GPS
+     */
+    static async searchByLocation(req, res) {
+        try {
+            const { latitude, longitude, radius } = req.query;
+
+            if (!latitude || !longitude) {
+                return res.status(400).json({ message: "latitude and longitude are required" });
+            }
+
+            const lat = parseFloat(latitude);
+            const lon = parseFloat(longitude);
+            const radiusKm = radius ? parseFloat(radius) : 10;
+
+            if (isNaN(lat) || isNaN(lon)) {
+                return res.status(400).json({ message: "Invalid coordinates" });
+            }
+
+            const filters = {
+                propertyType: req.query.propertyType,
+                listingType: req.query.listingType,
+                minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
+                maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
+                minSurface: req.query.minSurface ? Number(req.query.minSurface) : undefined,
+                minRooms: req.query.minRooms ? Number(req.query.minRooms) : undefined,
+                availability: req.query.availability
+            };
+
+            const apartments = await ApartmentService.searchByLocation(lat, lon, radiusKm, filters);
+            res.status(200).json({
+                apartments,
+                searchCenter: { latitude: lat, longitude: lon },
+                radiusKm
+            });
+        } catch (error) {
+            if (error.message === "Invalid coordinates") {
+                return res.status(400).json({ message: error.message });
+            }
+            console.error('Search by location error:', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    /**
+     * GET /api/apartments/search/address
+     * Recherche par adresse textuelle
+     */
+    static async searchByAddress(req, res) {
+        try {
+            const { address, radius } = req.query;
+
+            if (!address) {
+                return res.status(400).json({ message: "address is required" });
+            }
+
+            const radiusKm = radius ? parseFloat(radius) : 10;
+
+            const filters = {
+                propertyType: req.query.propertyType,
+                listingType: req.query.listingType,
+                minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
+                maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
+                minSurface: req.query.minSurface ? Number(req.query.minSurface) : undefined,
+                minRooms: req.query.minRooms ? Number(req.query.minRooms) : undefined,
+                availability: req.query.availability
+            };
+
+            const apartments = await ApartmentService.searchByAddress(address, radiusKm, filters);
+            res.status(200).json({
+                apartments,
+                searchAddress: address,
+                radiusKm
+            });
+        } catch (error) {
+            if (error.message === "Could not geocode the provided address") {
+                return res.status(400).json({ message: error.message });
+            }
+            console.error('Search by address error:', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    /**
+     * POST /api/apartments/:id/geocode
+     * Met à jour les coordonnées d'un appartement
+     */
+    static async updateCoordinates(req, res) {
+        try {
+            const { id } = req.params;
+            const ownerId = req.user.id;
+
+            const apartment = await ApartmentService.updateCoordinates(id, ownerId);
+            res.status(200).json({
+                message: "Coordinates updated successfully",
+                apartment: {
+                    id: apartment.id,
+                    latitude: apartment.latitude,
+                    longitude: apartment.longitude
+                }
+            });
+        } catch (error) {
+            if (error.message === "Apartment not found") {
+                return res.status(404).json({ message: error.message });
+            }
+            if (error.message === "Unauthorized") {
+                return res.status(403).json({ message: error.message });
+            }
+            if (error.message === "Could not geocode the address") {
+                return res.status(400).json({ message: error.message });
+            }
+            console.error('Update coordinates error:', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }

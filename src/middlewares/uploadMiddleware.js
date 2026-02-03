@@ -13,8 +13,6 @@ const storage = multer.diskStorage({
             uploadPath = path.join(uploadPath, 'avatars');
         } else if (file.fieldname === 'pictures') {
             uploadPath = path.join(uploadPath, 'apartments');
-        } else if (file.fieldname === 'document') {
-            uploadPath = path.join(uploadPath, 'documents');
         }
 
         cb(null, uploadPath);
@@ -36,22 +34,7 @@ const imageFilter = (req, file, cb) => {
     }
 };
 
-const documentFilter = (req, file, cb) => {
-    const allowedTypes = [
-        'image/jpeg', 'image/jpg', 'image/png',
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ];
-
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error('Type de fichier non autorisé. Utilisez JPG, PNG, PDF ou DOC.'), false);
-    }
-};
-
-// Configurations multer
+// Configurations multer pour les images uniquement
 const uploadAvatar = multer({
     storage,
     fileFilter: imageFilter,
@@ -63,18 +46,6 @@ const uploadApartmentPictures = multer({
     fileFilter: imageFilter,
     limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 }).array('pictures', 10); // Max 10 images
-
-const uploadDocument = multer({
-    storage,
-    fileFilter: documentFilter,
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB
-}).single('document');
-
-const uploadDocuments = multer({
-    storage,
-    fileFilter: documentFilter,
-    limits: { fileSize: 10 * 1024 * 1024 }
-}).array('documents', 5); // Max 5 documents
 
 // Middleware wrapper pour gérer les erreurs multer
 const handleUpload = (uploadFn) => {
@@ -99,5 +70,3 @@ const handleUpload = (uploadFn) => {
 
 export const uploadAvatarMiddleware = handleUpload(uploadAvatar);
 export const uploadPicturesMiddleware = handleUpload(uploadApartmentPictures);
-export const uploadDocumentMiddleware = handleUpload(uploadDocument);
-export const uploadDocumentsMiddleware = handleUpload(uploadDocuments);

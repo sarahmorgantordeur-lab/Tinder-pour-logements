@@ -1,7 +1,7 @@
 import express from 'express';
 import UserController from '../controllers/userController.js';
 import { authenticate } from '../config/jwt.js';
-import { uploadAvatarMiddleware, uploadDocumentMiddleware } from '../middlewares/uploadMiddleware.js';
+import { uploadAvatarMiddleware } from '../middlewares/uploadMiddleware.js';
 import {
     updateProfileValidation,
     updatePreferencesValidation,
@@ -23,9 +23,9 @@ router.get('/history', authenticate, UserController.getHistory);
 
 router.put('/preferences', authenticate, updatePreferencesValidation, UserController.updatePreferences);
 
-router.post('/documents', authenticate, uploadDocumentMiddleware, UserController.addDocument);
-router.get('/documents', authenticate, UserController.getDocuments);
-router.delete('/documents/:documentId', authenticate, uuidParamValidation('documentId'), UserController.removeDocument);
+router.post('/pictures', authenticate, uploadAvatarMiddleware, UserController.addProfilePicture);
+router.get('/pictures', authenticate, UserController.getProfilePictures);
+router.delete('/pictures/:pictureId', authenticate, uuidParamValidation('pictureId'), UserController.removeProfilePicture);
 
 // Paramètres de notification
 router.put('/notifications', authenticate, UserController.updateNotificationSettings);

@@ -300,9 +300,6 @@ class MatchService {
         });
     }
 
-    /**
-     * Refuse un like (ne crée pas de match, optionnellement supprime le swipe)
-     */
     static async rejectLike(ownerId, userId, apartmentId) {
         // Vérifier que l'appartement appartient au propriétaire
         const apartment = await prisma.apartment.findUnique({

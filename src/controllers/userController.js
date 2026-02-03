@@ -17,6 +17,7 @@ class UserController {
                     siret: true,
                     email_notifications: true,
                     profile: true,
+                    pictures: true,
                     created_at: true,
                     updated_at: true
                 }
@@ -86,6 +87,7 @@ class UserController {
 
             const avatarUrl = `/uploads/avatars/${req.file.filename}`;
 
+            // Mise à jour du champ avatar de l'utilisateur
             const user = await prisma.user.update({
                 where: { id: userId },
                 data: { avatar: avatarUrl },
@@ -94,6 +96,15 @@ class UserController {
                     email: true,
                     username: true,
                     avatar: true
+                }
+            });
+
+            // Auto-création d'une entrée Picture avec type 'profile'
+            await prisma.picture.create({
+                data: {
+                    url: avatarUrl,
+                    type: 'profile',
+                    user_id: userId
                 }
             });
 
@@ -275,73 +286,74 @@ class UserController {
         }
     }
 
-    static async addDocument(req, res) {
+    static async addProfilePicture(req, res) {
         try {
             const userId = req.user.id;
-            const { type } = req.body;
 
             if (!req.file) {
                 return res.status(400).json({ message: "No file uploaded" });
             }
 
-            const documentUrl = `/uploads/documents/${req.file.filename}`;
+            const pictureUrl = `/uploads/avatars/${req.file.filename}`;
 
-            await prisma.document.create({
+            // Créer une entrée Picture avec type 'profile'
+            await prisma.picture.create({
                 data: {
-                    name: req.file.originalname,
-                    url: documentUrl,
-                    type: type || 'other',
+                    url: pictureUrl,
+                    type: 'profile',
                     user_id: userId
                 }
             });
 
-            const documents = await prisma.document.findMany({
-                where: { user_id: userId }
-            });
-
-            res.status(200).json({ message: "Document added successfully", documents });
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async getDocuments(req, res) {
-        try {
-            const userId = req.user.id;
-            const documents = await prisma.document.findMany({
-                where: { user_id: userId },
+            const pictures = await prisma.picture.findMany({
+                where: { user_id: userId, type: 'profile' },
                 orderBy: { uploaded_at: 'desc' }
             });
 
-            res.status(200).json({ documents });
+            res.status(200).json({ message: "Picture added successfully", pictures });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async removeDocument(req, res) {
+    static async getProfilePictures(req, res) {
         try {
             const userId = req.user.id;
-            const { documentId } = req.params;
-
-            // Vérifier que le document appartient à l'utilisateur
-            const document = await prisma.document.findUnique({
-                where: { id: documentId }
+            const pictures = await prisma.picture.findMany({
+                where: { user_id: userId, type: 'profile' },
+                orderBy: { uploaded_at: 'desc' }
             });
 
-            if (!document || document.user_id !== userId) {
-                return res.status(404).json({ message: "Document not found" });
+            res.status(200).json({ pictures });
+        } catch (error) {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async removeProfilePicture(req, res) {
+        try {
+            const userId = req.user.id;
+            const { pictureId } = req.params;
+
+            // Vérifier que la photo appartient à l'utilisateur
+            const picture = await prisma.picture.findUnique({
+                where: { id: pictureId }
+            });
+
+            if (!picture || picture.user_id !== userId) {
+                return res.status(404).json({ message: "Picture not found" });
             }
 
-            await prisma.document.delete({
-                where: { id: documentId }
+            await prisma.picture.delete({
+                where: { id: pictureId }
             });
 
-            const documents = await prisma.document.findMany({
-                where: { user_id: userId }
+            const pictures = await prisma.picture.findMany({
+                where: { user_id: userId, type: 'profile' },
+                orderBy: { uploaded_at: 'desc' }
             });
 
-            res.status(200).json({ message: "Document removed successfully", documents });
+            res.status(200).json({ message: "Picture removed successfully", pictures });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
