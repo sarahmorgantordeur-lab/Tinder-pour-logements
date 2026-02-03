@@ -1,0 +1,25 @@
+{
+  "name": "tinder-pour-logements",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sarahmorgantordeur-lab/Tinder-pour-logements.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sarahmorgantordeur-lab/Tinder-pour-logements/issues"
+  },
+  "homepage": "https://github.com/sarahmorgantordeur-lab/Tinder-pour-logements#readme",
+  "dependencies": {
+    "@prisma/client": "^7.3.0",
+    "prisma": "^7.3.0"
+  }
+}
