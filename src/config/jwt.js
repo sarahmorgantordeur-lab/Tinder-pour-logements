@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'nexus_secret_key_change_in_production';
 
@@ -6,12 +6,12 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
 
-const generateToken = (user) => {
+export const generateToken = (user) => {
   const payload = {
-    id: user._id || user.id,
+    id: user.id,
     email: user.email,
     username: user.username,
-    role: user.role || 'utilisateur'
+    role: user.role || 'user'
   };
 
   return jwt.sign(payload, JWT_SECRET, {
@@ -19,9 +19,9 @@ const generateToken = (user) => {
   });
 };
 
-const generateRefreshToken = (user) => {
+export const generateRefreshToken = (user) => {
   const payload = {
-    id: user._id || user.id,
+    id: user.id,
     type: 'refresh'
   };
 
@@ -30,7 +30,7 @@ const generateRefreshToken = (user) => {
   });
 };
 
-const verifyToken = (token) => {
+export const verifyToken = (token) => {
   try {
     return jwt.verify(token, JWT_SECRET);
   } catch (error) {
@@ -44,11 +44,11 @@ const verifyToken = (token) => {
   }
 };
 
-const decodeToken = (token) => {
+export const decodeToken = (token) => {
   return jwt.decode(token);
 };
 
-const authenticate = (req, res, next) => {
+export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -66,7 +66,7 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const authorize = (...roles) => {
+export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: "Authentication required" });
@@ -80,14 +80,8 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = {
+export {
   JWT_SECRET,
   JWT_EXPIRES_IN,
-  JWT_REFRESH_EXPIRES_IN,
-  generateToken,
-  generateRefreshToken,
-  verifyToken,
-  decodeToken,
-  authenticate,
-  authorize
+  JWT_REFRESH_EXPIRES_IN
 };

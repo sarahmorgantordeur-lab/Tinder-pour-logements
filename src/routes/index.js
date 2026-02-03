@@ -1,7 +1,7 @@
-const authRoutes = require('./authRoutes.js');
-const userRoutes = require('./userRoutes.js');
-const apartmentRoutes = require('./apartmentRoutes.js');
-const requestRoutes = require('./requestRoutes.js');
+import authRoutes from './authRoutes.js';
+import userRoutes from './userRoutes.js';
+import apartmentRoutes from './apartmentRoutes.js';
+import requestRoutes from './requestRoutes.js';
 
 const setupRoutes = (app) => {
     app.use('/api/auth', authRoutes);
@@ -10,4 +10,4 @@ const setupRoutes = (app) => {
     app.use('/api/requests', requestRoutes);
 };
 
-module.exports = setupRoutes;
+export default setupRoutes;

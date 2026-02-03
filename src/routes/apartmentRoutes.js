@@ -1,18 +1,19 @@
-const express = require('express');
+import express from 'express';
+import ApartmentController from '../controllers/apartmentController.js';
+import { authenticate, authorize } from '../config/jwt.js';
+
 const router = express.Router();
-const apartmentController = require('../controllers/apartmentController.js');
-const { authenticate, authorize } = require('../config/jwt.js');
 
 // Routes publiques
-router.get('/', apartmentController.getAll);
-router.get('/:id', apartmentController.getById);
+router.get('/', ApartmentController.getAll);
+router.get('/:id', ApartmentController.getById);
 
 // Routes protégées - Propriétaires et agences
-router.post('/', authenticate, authorize('propriétaire', 'agence'), apartmentController.create);
-router.get('/owner/my-apartments', authenticate, authorize('propriétaire', 'agence'), apartmentController.getMyApartments);
-router.put('/:id', authenticate, authorize('propriétaire', 'agence'), apartmentController.update);
-router.delete('/:id', authenticate, authorize('propriétaire', 'agence'), apartmentController.delete);
-router.post('/:id/photos', authenticate, authorize('propriétaire', 'agence'), apartmentController.addPhoto);
-router.delete('/:id/photos', authenticate, authorize('propriétaire', 'agence'), apartmentController.removePhoto);
+router.post('/', authenticate, authorize('owner', 'agency'), ApartmentController.create);
+router.get('/owner/my-apartments', authenticate, authorize('owner', 'agency'), ApartmentController.getMyApartments);
+router.put('/:id', authenticate, authorize('owner', 'agency'), ApartmentController.update);
+router.delete('/:id', authenticate, authorize('owner', 'agency'), ApartmentController.delete);
+router.post('/:id/photos', authenticate, authorize('owner', 'agency'), ApartmentController.addPhoto);
+router.delete('/:id/photos', authenticate, authorize('owner', 'agency'), ApartmentController.removePhoto);
 
-module.exports = router;
+export default router;

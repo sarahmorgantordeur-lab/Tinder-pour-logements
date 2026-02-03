@@ -1,32 +1,31 @@
-const authService = require('../services/authService.js')
+import AuthService from '../services/authService.js';
 
 class AuthController {
-static async login(req, res) {
-const { email, password } = req.body;
+    static async login(req, res) {
+        const { email, password } = req.body;
         try {
-            const { user, token } = await authService.login(email, password);
+            const { user, token } = await AuthService.login(email, password);
             res.status(200).json({ message: "Login successful", user, token });
-        }
-        catch(error) {
+        } catch (error) {
             if (error.message === "Invalid email or password") {
                 return res.status(401).json({ message: error.message });
             }
             res.status(500).json({ message: "Internal server error" });
         }
-}
-static async register(req, res) {
-const { email, password, userName, role } = req.body;
+    }
+
+    static async register(req, res) {
+        const { email, password, userName, role } = req.body;
         try {
-            const user = await authService.register(
+            const user = await AuthService.register(
                 email,
                 password,
                 userName,
                 role
             );
 
-            res.status(200).json({ message: "User register sucessfully", user });
-        }
-        catch (error) {
+            res.status(200).json({ message: "User register successfully", user });
+        } catch (error) {
             if (error.message === "This email is already taken") {
                 return res.status(409).json({ message: error.message });
             }
@@ -37,8 +36,7 @@ const { email, password, userName, role } = req.body;
 
             res.status(500).json({ message: "Internal server error" });
         }
+    }
 }
 
-}
-
-module.exports = AuthController
+export default AuthController;

@@ -1,7 +1,7 @@
-const { verifyToken } = require('../config/jwt');
-const User = require('../models/User');
+import { verifyToken } from '../config/jwt.js';
+import prisma from '../config/db.js';
 
-const authenticate = async (req, res, next) => {
+export const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -16,7 +16,19 @@ const authenticate = async (req, res, next) => {
 
     const decoded = verifyToken(token);
 
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        phone: true,
+        avatar: true,
+        company_name: true,
+        siret: true
+      }
+    });
 
     if (!user) {
       return res.status(401).json({
@@ -37,19 +49,25 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-const verifySocketToken = async (token) => {
+export const verifySocketToken = async (token) => {
   try {
-
     const decoded = verifyToken(token);
 
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        email: true,
+        username: true
+      }
+    });
 
     if (!user) {
       throw new Error('Utilisateur non trouvé');
     }
 
     return {
-      id: user._id.toString(),
+      id: user.id,
       email: user.email,
       username: user.username
     };
@@ -59,14 +77,26 @@ const verifySocketToken = async (token) => {
   }
 };
 
-const optionalAuthenticate = async (req, res, next) => {
+export const optionalAuthenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
       const decoded = verifyToken(token);
-      const user = await User.findById(decoded.id).select('-password');
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          role: true,
+          phone: true,
+          avatar: true,
+          company_name: true,
+          siret: true
+        }
+      });
 
       if (user) {
         req.user = user;
@@ -80,7 +110,7 @@ const optionalAuthenticate = async (req, res, next) => {
   }
 };
 
-const isAdmin = (req, res, next) => {
+export const isAdmin = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
       success: false,
@@ -95,11 +125,4 @@ const isAdmin = (req, res, next) => {
     });
   }
   next();
-};
-
-module.exports = {
-  authenticate,
-  verifySocketToken,
-  optionalAuthenticate,
-  isAdmin
 };

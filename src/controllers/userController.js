@@ -1,12 +1,25 @@
-const User = require('../models/User.js');
-const Apartment = require('../models/Apartment.js');
+import prisma from '../config/db.js';
 
 class UserController {
-    // Obtenir le profil de l'utilisateur connecté
     static async getProfile(req, res) {
         try {
             const userId = req.user.id;
-            const user = await User.findById(userId).select('-password');
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                select: {
+                    id: true,
+                    email: true,
+                    username: true,
+                    role: true,
+                    phone: true,
+                    avatar: true,
+                    company_name: true,
+                    siret: true,
+                    profile: true,
+                    created_at: true,
+                    updated_at: true
+                }
+            });
 
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
@@ -18,7 +31,6 @@ class UserController {
         }
     }
 
-    // Mettre à jour le profil
     static async updateProfile(req, res) {
         try {
             const userId = req.user.id;
@@ -28,102 +40,160 @@ class UserController {
             delete updateData.password;
             delete updateData.email;
 
-            const user = await User.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true, runValidators: true }
-            ).select('-password');
+            // Convertir les champs camelCase vers snake_case
+            const prismaData = {};
+            if (updateData.username !== undefined) prismaData.username = updateData.username;
+            if (updateData.phone !== undefined) prismaData.phone = updateData.phone;
+            if (updateData.avatar !== undefined) prismaData.avatar = updateData.avatar;
+            if (updateData.companyName !== undefined) prismaData.company_name = updateData.companyName;
+            if (updateData.siret !== undefined) prismaData.siret = updateData.siret;
 
-            if (!user) {
-                return res.status(404).json({ message: "User not found" });
-            }
+            const user = await prisma.user.update({
+                where: { id: userId },
+                data: prismaData,
+                select: {
+                    id: true,
+                    email: true,
+                    username: true,
+                    role: true,
+                    phone: true,
+                    avatar: true,
+                    company_name: true,
+                    siret: true,
+                    profile: true,
+                    created_at: true,
+                    updated_at: true
+                }
+            });
 
             res.status(200).json({ message: "Profile updated successfully", user });
         } catch (error) {
+            if (error.code === 'P2025') {
+                return res.status(404).json({ message: "User not found" });
+            }
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    // Ajouter un appartement aux favoris
     static async addFavorite(req, res) {
         try {
             const userId = req.user.id;
             const { apartmentId } = req.body;
 
-            const apartment = await Apartment.findById(apartmentId);
+            const apartment = await prisma.apartment.findUnique({
+                where: { id: apartmentId }
+            });
+
             if (!apartment) {
                 return res.status(404).json({ message: "Apartment not found" });
             }
 
-            const user = await User.findById(userId);
-            if (user.favorites.includes(apartmentId)) {
+            const existingFavorite = await prisma.favorite.findUnique({
+                where: {
+                    user_id_apartment_id: {
+                        user_id: userId,
+                        apartment_id: apartmentId
+                    }
+                }
+            });
+
+            if (existingFavorite) {
                 return res.status(400).json({ message: "Apartment already in favorites" });
             }
 
-            user.favorites.push(apartmentId);
-            await user.save();
+            await prisma.favorite.create({
+                data: {
+                    user_id: userId,
+                    apartment_id: apartmentId
+                }
+            });
 
-            res.status(200).json({ message: "Apartment added to favorites", favorites: user.favorites });
+            const favorites = await prisma.favorite.findMany({
+                where: { user_id: userId },
+                include: { apartment: true }
+            });
+
+            res.status(200).json({ message: "Apartment added to favorites", favorites });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    // Retirer un appartement des favoris
     static async removeFavorite(req, res) {
         try {
             const userId = req.user.id;
             const { apartmentId } = req.params;
 
-            const user = await User.findById(userId);
-            user.favorites = user.favorites.filter(id => id.toString() !== apartmentId);
-            await user.save();
+            await prisma.favorite.delete({
+                where: {
+                    user_id_apartment_id: {
+                        user_id: userId,
+                        apartment_id: apartmentId
+                    }
+                }
+            });
 
-            res.status(200).json({ message: "Apartment removed from favorites", favorites: user.favorites });
+            const favorites = await prisma.favorite.findMany({
+                where: { user_id: userId },
+                include: { apartment: true }
+            });
+
+            res.status(200).json({ message: "Apartment removed from favorites", favorites });
         } catch (error) {
+            if (error.code === 'P2025') {
+                return res.status(404).json({ message: "Favorite not found" });
+            }
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    // Obtenir les favoris
     static async getFavorites(req, res) {
         try {
             const userId = req.user.id;
-            const user = await User.findById(userId).populate('favorites');
+            const favorites = await prisma.favorite.findMany({
+                where: { user_id: userId },
+                include: { apartment: true }
+            });
 
-            res.status(200).json({ favorites: user.favorites });
+            res.status(200).json({ favorites: favorites.map(f => f.apartment) });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    // Ajouter un appartement à l'historique
     static async addToHistory(req, res) {
         try {
             const userId = req.user.id;
             const { apartmentId } = req.body;
 
-            const apartment = await Apartment.findById(apartmentId);
+            const apartment = await prisma.apartment.findUnique({
+                where: { id: apartmentId }
+            });
+
             if (!apartment) {
                 return res.status(404).json({ message: "Apartment not found" });
             }
 
-            const user = await User.findById(userId);
+            const existingView = await prisma.viewedApartment.findFirst({
+                where: {
+                    user_id: userId,
+                    apartment_id: apartmentId
+                }
+            });
 
-            // Vérifier si l'appartement est déjà dans l'historique
-            const existingIndex = user.viewedApartments.findIndex(
-                item => item.apartment.toString() === apartmentId
-            );
-
-            if (existingIndex !== -1) {
-                // Mettre à jour la date de visualisation
-                user.viewedApartments[existingIndex].viewedAt = new Date();
+            if (existingView) {
+                await prisma.viewedApartment.update({
+                    where: { id: existingView.id },
+                    data: { viewed_at: new Date() }
+                });
             } else {
-                // Ajouter à l'historique
-                user.viewedApartments.push({ apartment: apartmentId });
+                await prisma.viewedApartment.create({
+                    data: {
+                        user_id: userId,
+                        apartment_id: apartmentId
+                    }
+                });
             }
-
-            await user.save();
 
             res.status(200).json({ message: "Apartment added to history" });
         } catch (error) {
@@ -131,69 +201,103 @@ class UserController {
         }
     }
 
-    // Obtenir l'historique
     static async getHistory(req, res) {
         try {
             const userId = req.user.id;
-            const user = await User.findById(userId)
-                .populate('viewedApartments.apartment')
-                .sort({ 'viewedApartments.viewedAt': -1 });
+            const history = await prisma.viewedApartment.findMany({
+                where: { user_id: userId },
+                include: { apartment: true },
+                orderBy: { viewed_at: 'desc' }
+            });
 
-            res.status(200).json({ history: user.viewedApartments });
+            res.status(200).json({ history });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    // Mettre à jour les préférences
     static async updatePreferences(req, res) {
         try {
             const userId = req.user.id;
             const preferences = req.body;
 
-            const user = await User.findByIdAndUpdate(
-                userId,
-                { preferences },
-                { new: true, runValidators: true }
-            ).select('-password');
+            // Convertir les champs
+            const prismaData = {
+                property_type: preferences.propertyType || [],
+                listing_type: preferences.listingType,
+                min_price: preferences.minPrice ? parseFloat(preferences.minPrice) : null,
+                max_price: preferences.maxPrice ? parseFloat(preferences.maxPrice) : null,
+                min_surface: preferences.minSurface ? parseFloat(preferences.minSurface) : null,
+                regions: preferences.regions || [],
+                tags: preferences.tags || []
+            };
 
-            res.status(200).json({ message: "Preferences updated successfully", preferences: user.preferences });
+            const updatedPreferences = await prisma.preferences.upsert({
+                where: { user_id: userId },
+                update: prismaData,
+                create: {
+                    ...prismaData,
+                    user_id: userId
+                }
+            });
+
+            res.status(200).json({ message: "Preferences updated successfully", preferences: updatedPreferences });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    // Ajouter un document
     static async addDocument(req, res) {
         try {
             const userId = req.user.id;
-            const documentData = req.body;
+            const { name, url, type } = req.body;
 
-            const user = await User.findById(userId);
-            user.documents.push(documentData);
-            await user.save();
+            const document = await prisma.document.create({
+                data: {
+                    name,
+                    url,
+                    type: type || 'other',
+                    user_id: userId
+                }
+            });
 
-            res.status(200).json({ message: "Document added successfully", documents: user.documents });
+            const documents = await prisma.document.findMany({
+                where: { user_id: userId }
+            });
+
+            res.status(200).json({ message: "Document added successfully", documents });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    // Supprimer un document
     static async removeDocument(req, res) {
         try {
             const userId = req.user.id;
             const { documentId } = req.params;
 
-            const user = await User.findById(userId);
-            user.documents = user.documents.filter(doc => doc._id.toString() !== documentId);
-            await user.save();
+            // Vérifier que le document appartient à l'utilisateur
+            const document = await prisma.document.findUnique({
+                where: { id: documentId }
+            });
 
-            res.status(200).json({ message: "Document removed successfully", documents: user.documents });
+            if (!document || document.user_id !== userId) {
+                return res.status(404).json({ message: "Document not found" });
+            }
+
+            await prisma.document.delete({
+                where: { id: documentId }
+            });
+
+            const documents = await prisma.document.findMany({
+                where: { user_id: userId }
+            });
+
+            res.status(200).json({ message: "Document removed successfully", documents });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }
     }
 }
 
-module.exports = UserController;
+export default UserController;

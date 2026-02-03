@@ -1,72 +1,145 @@
-const Request = require('../models/Request.js');
-const Apartment = require('../models/Apartment.js');
+import prisma from '../config/db.js';
 
 class RequestService {
 
     static async create(userId, apartmentId, message) {
-        const apartment = await Apartment.findById(apartmentId);
+        const apartment = await prisma.apartment.findUnique({
+            where: { id: apartmentId }
+        });
+
         if (!apartment) {
             throw new Error("Apartment not found");
         }
 
-        const existingRequest = await Request.findOne({ user: userId, apartment: apartmentId });
+        const existingRequest = await prisma.request.findUnique({
+            where: {
+                apartment_id_user_id: {
+                    apartment_id: apartmentId,
+                    user_id: userId
+                }
+            }
+        });
+
         if (existingRequest) {
             throw new Error("You have already made a request for this apartment");
         }
 
-        const newRequest = new Request({
-            user: userId,
-            apartment: apartmentId,
-            message,
-            status: 'en attente'
+        return prisma.request.create({
+            data: {
+                user_id: userId,
+                apartment_id: apartmentId,
+                message,
+                status: 'waiting'
+            }
         });
-
-        return newRequest.save();
     }
 
     static async getByApartment(apartmentId, ownerId) {
-        const apartment = await Apartment.findById(apartmentId);
+        const apartment = await prisma.apartment.findUnique({
+            where: { id: apartmentId }
+        });
+
         if (!apartment) {
             throw new Error("Apartment not found");
         }
 
-        if (apartment.owner.toString() !== ownerId.toString()) {
+        if (apartment.owner_id !== ownerId) {
             throw new Error("Unauthorized to view requests for this apartment");
         }
 
-        return Request.find({ apartment: apartmentId })
-            .populate('user', 'username email phone profile documents')
-            .sort({ createdAt: -1 });
+        return prisma.request.findMany({
+            where: { apartment_id: apartmentId },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        phone: true,
+                        profile: true,
+                        documents: true
+                    }
+                }
+            },
+            orderBy: { created_at: 'desc' }
+        });
     }
 
     static async getByUser(userId) {
-        return Request.find({ user: userId })
-            .populate('apartment')
-            .sort({ createdAt: -1 });
+        return prisma.request.findMany({
+            where: { user_id: userId },
+            include: {
+                apartment: true
+            },
+            orderBy: { created_at: 'desc' }
+        });
     }
 
     static async getAllForOwner(ownerId) {
-        const apartments = await Apartment.find({ owner: ownerId });
-        const apartmentIds = apartments.map(apt => apt._id);
+        const apartments = await prisma.apartment.findMany({
+            where: { owner_id: ownerId },
+            select: { id: true }
+        });
 
-        return Request.find({ apartment: { $in: apartmentIds } })
-            .populate('user', 'username email phone profile documents')
-            .populate('apartment', 'title address region price')
-            .sort({ createdAt: -1 });
+        const apartmentIds = apartments.map(apt => apt.id);
+
+        return prisma.request.findMany({
+            where: {
+                apartment_id: { in: apartmentIds }
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        phone: true,
+                        profile: true,
+                        documents: true
+                    }
+                },
+                apartment: {
+                    select: {
+                        id: true,
+                        title: true,
+                        address: true,
+                        region: true,
+                        price: true
+                    }
+                }
+            },
+            orderBy: { created_at: 'desc' }
+        });
     }
 
     static async getById(requestId, userId, isOwner = false) {
-        const request = await Request.findById(requestId)
-            .populate('user', 'username email phone profile documents')
-            .populate('apartment');
+        const request = await prisma.request.findUnique({
+            where: { id: requestId },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        phone: true,
+                        profile: true,
+                        documents: true
+                    }
+                },
+                apartment: true
+            }
+        });
 
         if (!request) {
             throw new Error("Request not found");
         }
 
-        if (!isOwner && request.user._id.toString() !== userId.toString()) {
-            const apartment = await Apartment.findById(request.apartment._id);
-            if (!apartment || apartment.owner.toString() !== userId.toString()) {
+        if (!isOwner && request.user_id !== userId) {
+            const apartment = await prisma.apartment.findUnique({
+                where: { id: request.apartment_id }
+            });
+
+            if (!apartment || apartment.owner_id !== userId) {
                 throw new Error("Unauthorized to view this request");
             }
         }
@@ -75,71 +148,104 @@ class RequestService {
     }
 
     static async updateStatus(requestId, status, ownerId, visitDate = null) {
-        const request = await Request.findById(requestId).populate('apartment');
+        const request = await prisma.request.findUnique({
+            where: { id: requestId },
+            include: { apartment: true }
+        });
 
         if (!request) {
             throw new Error("Request not found");
         }
 
-        const apartment = await Apartment.findById(request.apartment._id);
-        if (apartment.owner.toString() !== ownerId.toString()) {
+        const apartment = await prisma.apartment.findUnique({
+            where: { id: request.apartment_id }
+        });
+
+        if (apartment.owner_id !== ownerId) {
             throw new Error("Unauthorized to update this request");
         }
 
-        request.status = status;
-        if (visitDate && status === 'visite planifiée') {
-            request.visitDate = visitDate;
+        const updateData = { status };
+        if (visitDate && status === 'visit_planned') {
+            updateData.visit_date = new Date(visitDate);
         }
 
-        return request.save();
+        return prisma.request.update({
+            where: { id: requestId },
+            data: updateData
+        });
     }
 
     static async addDocument(requestId, userId, documentData) {
-        const request = await Request.findById(requestId);
+        const request = await prisma.request.findUnique({
+            where: { id: requestId }
+        });
 
         if (!request) {
             throw new Error("Request not found");
         }
 
-        if (request.user.toString() !== userId.toString()) {
+        if (request.user_id !== userId) {
             throw new Error("Unauthorized to modify this request");
         }
 
-        request.documents.push(documentData);
-        return request.save();
+        return prisma.requestDocument.create({
+            data: {
+                name: documentData.name,
+                url: documentData.url,
+                request_id: requestId
+            }
+        });
     }
 
     static async delete(requestId, userId) {
-        const request = await Request.findById(requestId);
+        const request = await prisma.request.findUnique({
+            where: { id: requestId }
+        });
 
         if (!request) {
             throw new Error("Request not found");
         }
 
-        if (request.user.toString() !== userId.toString()) {
+        if (request.user_id !== userId) {
             throw new Error("Unauthorized to delete this request");
         }
 
-        return Request.findByIdAndDelete(requestId);
+        // Supprimer d'abord les documents associés
+        await prisma.requestDocument.deleteMany({
+            where: { request_id: requestId }
+        });
+
+        return prisma.request.delete({
+            where: { id: requestId }
+        });
     }
 
     static async getOwnerStats(ownerId) {
-        const apartments = await Apartment.find({ owner: ownerId });
-        const apartmentIds = apartments.map(apt => apt._id);
+        const apartments = await prisma.apartment.findMany({
+            where: { owner_id: ownerId },
+            select: { id: true }
+        });
 
-        const requests = await Request.find({ apartment: { $in: apartmentIds } });
+        const apartmentIds = apartments.map(apt => apt.id);
+
+        const requests = await prisma.request.findMany({
+            where: {
+                apartment_id: { in: apartmentIds }
+            }
+        });
 
         const stats = {
             total: requests.length,
-            enAttente: requests.filter(r => r.status === 'en attente').length,
-            contacté: requests.filter(r => r.status === 'contacté').length,
-            visitePlanifiée: requests.filter(r => r.status === 'visite planifiée').length,
-            accepté: requests.filter(r => r.status === 'accepté').length,
-            refusé: requests.filter(r => r.status === 'refusé').length
+            waiting: requests.filter(r => r.status === 'waiting').length,
+            contacted: requests.filter(r => r.status === 'contacted').length,
+            visit_planned: requests.filter(r => r.status === 'visit_planned').length,
+            accepted: requests.filter(r => r.status === 'accepted').length,
+            refused: requests.filter(r => r.status === 'refused').length
         };
 
         return stats;
     }
 }
 
-module.exports = RequestService;
+export default RequestService;

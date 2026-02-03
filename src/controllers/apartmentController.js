@@ -1,11 +1,11 @@
-const apartmentService = require('../services/apartmentService.js');
+import ApartmentService from '../services/apartmentService.js';
 
 class ApartmentController {
     static async create(req, res) {
         try {
             // req.user.id devrait être ajouté par le middleware d'authentification
             const ownerId = req.user.id;
-            const apartment = await apartmentService.create(req.body, ownerId);
+            const apartment = await ApartmentService.create(req.body, ownerId);
             res.status(201).json({ message: "Apartment created successfully", apartment });
         } catch (error) {
             if (error.message === "All required fields must be provided") {
@@ -24,9 +24,9 @@ class ApartmentController {
                 minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
                 maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
                 minSurface: req.query.minSurface ? Number(req.query.minSurface) : undefined,
-                disponibility: req.query.disponibility
+                availability: req.query.availability
             };
-            const apartments = await apartmentService.getAll(filters);
+            const apartments = await ApartmentService.getAll(filters);
             res.status(200).json({ apartments });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
@@ -36,7 +36,7 @@ class ApartmentController {
     static async getById(req, res) {
         const { id } = req.params;
         try {
-            const apartment = await apartmentService.getById(id);
+            const apartment = await ApartmentService.getById(id);
             res.status(200).json({ apartment });
         } catch (error) {
             if (error.message === "Apartment not found") {
@@ -49,7 +49,7 @@ class ApartmentController {
     static async getMyApartments(req, res) {
         try {
             const ownerId = req.user.id;
-            const apartments = await apartmentService.getByOwner(ownerId);
+            const apartments = await ApartmentService.getByOwner(ownerId);
             res.status(200).json({ apartments });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
@@ -60,7 +60,7 @@ class ApartmentController {
         const { id } = req.params;
         try {
             const ownerId = req.user.id;
-            const apartment = await apartmentService.update(id, req.body, ownerId);
+            const apartment = await ApartmentService.update(id, req.body, ownerId);
             res.status(200).json({ message: "Apartment updated successfully", apartment });
         } catch (error) {
             if (error.message === "Apartment not found") {
@@ -77,7 +77,7 @@ class ApartmentController {
         const { id } = req.params;
         try {
             const ownerId = req.user.id;
-            await apartmentService.delete(id, ownerId);
+            await ApartmentService.delete(id, ownerId);
             res.status(200).json({ message: "Apartment deleted successfully" });
         } catch (error) {
             if (error.message === "Apartment not found") {
@@ -95,7 +95,7 @@ class ApartmentController {
         const { photoUrl } = req.body;
         try {
             const ownerId = req.user.id;
-            const apartment = await apartmentService.addPhoto(id, photoUrl, ownerId);
+            const apartment = await ApartmentService.addPhoto(id, photoUrl, ownerId);
             res.status(200).json({ message: "Photo added successfully", apartment });
         } catch (error) {
             if (error.message === "Apartment not found") {
@@ -113,7 +113,7 @@ class ApartmentController {
         const { photoUrl } = req.body;
         try {
             const ownerId = req.user.id;
-            const apartment = await apartmentService.removePhoto(id, photoUrl, ownerId);
+            const apartment = await ApartmentService.removePhoto(id, photoUrl, ownerId);
             res.status(200).json({ message: "Photo removed successfully", apartment });
         } catch (error) {
             if (error.message === "Apartment not found") {
@@ -127,4 +127,4 @@ class ApartmentController {
     }
 }
 
-module.exports = ApartmentController;
+export default ApartmentController;

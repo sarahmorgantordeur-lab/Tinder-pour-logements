@@ -1,21 +1,22 @@
-const express = require('express');
+import express from 'express';
+import UserController from '../controllers/userController.js';
+import { authenticate } from '../config/jwt.js';
+
 const router = express.Router();
-const userController = require('../controllers/userController.js');
-const { authenticate } = require('../config/jwt.js');
 
-router.get('/profile', authenticate, userController.getProfile);
-router.put('/profile', authenticate, userController.updateProfile);
+router.get('/profile', authenticate, UserController.getProfile);
+router.put('/profile', authenticate, UserController.updateProfile);
 
-router.post('/favorites', authenticate, userController.addFavorite);
-router.delete('/favorites/:apartmentId', authenticate, userController.removeFavorite);
-router.get('/favorites', authenticate, userController.getFavorites);
+router.post('/favorites', authenticate, UserController.addFavorite);
+router.delete('/favorites/:apartmentId', authenticate, UserController.removeFavorite);
+router.get('/favorites', authenticate, UserController.getFavorites);
 
-router.post('/history', authenticate, userController.addToHistory);
-router.get('/history', authenticate, userController.getHistory);
+router.post('/history', authenticate, UserController.addToHistory);
+router.get('/history', authenticate, UserController.getHistory);
 
-router.put('/preferences', authenticate, userController.updatePreferences);
+router.put('/preferences', authenticate, UserController.updatePreferences);
 
-router.post('/documents', authenticate, userController.addDocument);
-router.delete('/documents/:documentId', authenticate, userController.removeDocument);
+router.post('/documents', authenticate, UserController.addDocument);
+router.delete('/documents/:documentId', authenticate, UserController.removeDocument);
 
-module.exports = router;
+export default router;
