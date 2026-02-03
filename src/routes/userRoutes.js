@@ -27,4 +27,7 @@ router.post('/documents', authenticate, uploadDocumentMiddleware, UserController
 router.get('/documents', authenticate, UserController.getDocuments);
 router.delete('/documents/:documentId', authenticate, uuidParamValidation('documentId'), UserController.removeDocument);
 
+// Paramètres de notification
+router.put('/notifications', authenticate, UserController.updateNotificationSettings);
+
 export default router;

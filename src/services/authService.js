@@ -1,6 +1,7 @@
 import prisma from '../config/db.js';
 import { generateToken } from '../config/jwt.js';
 import bcrypt from 'bcrypt';
+import EmailService from './emailService.js';
 
 const SALT_ROUNDS = 12;
 
@@ -28,6 +29,11 @@ class AuthService {
                 username: userName,
                 role
             }
+        });
+
+        // Envoyer l'email de bienvenue (non bloquant)
+        EmailService.sendWelcomeEmail(newUser).catch(err => {
+            console.error('Failed to send welcome email:', err.message);
         });
 
         const { password: _, ...userWithoutPassword } = newUser;

@@ -1,14 +1,13 @@
 import { PrismaClient } from '../generated/prisma/index.js';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 
-const prisma = new PrismaClient();
-
-// log des requêtes Prisma (pour debug)
-prisma.$on('query', (e) => {
-  console.log('Prisma query:', e.query);
+const pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL
 });
 
-prisma.$on('error', (e) => {
-  console.error('Prisma error:', e);
-});
+const adapter = new PrismaPg(pool);
+
+const prisma = new PrismaClient({ adapter });
 
 export default prisma;

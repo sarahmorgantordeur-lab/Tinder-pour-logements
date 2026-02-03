@@ -15,6 +15,7 @@ class UserController {
                     avatar: true,
                     company_name: true,
                     siret: true,
+                    email_notifications: true,
                     profile: true,
                     created_at: true,
                     updated_at: true
@@ -341,6 +342,36 @@ class UserController {
             });
 
             res.status(200).json({ message: "Document removed successfully", documents });
+        } catch (error) {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async updateNotificationSettings(req, res) {
+        try {
+            const userId = req.user.id;
+            const { emailNotifications } = req.body;
+
+            if (typeof emailNotifications !== 'boolean') {
+                return res.status(400).json({ message: "emailNotifications must be a boolean" });
+            }
+
+            const user = await prisma.user.update({
+                where: { id: userId },
+                data: { email_notifications: emailNotifications },
+                select: {
+                    id: true,
+                    email: true,
+                    email_notifications: true
+                }
+            });
+
+            res.status(200).json({
+                message: emailNotifications
+                    ? "Email notifications enabled"
+                    : "Email notifications disabled",
+                user
+            });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }

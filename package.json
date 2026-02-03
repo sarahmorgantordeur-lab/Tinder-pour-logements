@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/sarahmorgantordeur-lab/Tinder-pour-logements#readme",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -34,7 +35,9 @@
     "express-validator": "^7.3.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.13",
+    "pg": "^8.18.0"
   },
   "devDependencies": {
     "prisma": "^7.3.0"

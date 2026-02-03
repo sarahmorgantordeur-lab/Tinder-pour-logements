@@ -193,7 +193,6 @@ export const updateRequestStatusValidation = [
     validate
 ];
 
-// Validation pour les préférences utilisateur
 export const updatePreferencesValidation = [
     body('property_type')
         .optional()

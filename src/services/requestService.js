@@ -1,4 +1,5 @@
 import prisma from '../config/db.js';
+import EmailService from './emailService.js';
 
 class RequestService {
 
@@ -24,7 +25,7 @@ class RequestService {
             throw new Error("You have already made a request for this apartment");
         }
 
-        return prisma.request.create({
+        const request = await prisma.request.create({
             data: {
                 user_id: userId,
                 apartment_id: apartmentId,
@@ -32,6 +33,13 @@ class RequestService {
                 status: 'waiting'
             }
         });
+
+        // Notifier le propriétaire (non bloquant)
+        EmailService.sendNewRequestNotification(apartment.owner_id, request.id).catch(err => {
+            console.error('Failed to send new request notification:', err.message);
+        });
+
+        return request;
     }
 
     static async getByApartment(apartmentId, ownerId) {
@@ -170,10 +178,17 @@ class RequestService {
             updateData.visit_date = new Date(visitDate);
         }
 
-        return prisma.request.update({
+        const updatedRequest = await prisma.request.update({
             where: { id: requestId },
             data: updateData
         });
+
+        // Notifier l'utilisateur du changement de statut (non bloquant)
+        EmailService.sendRequestStatusUpdate(requestId, status).catch(err => {
+            console.error('Failed to send status update notification:', err.message);
+        });
+
+        return updatedRequest;
     }
 
     static async addDocument(requestId, userId, documentData) {

@@ -11,23 +11,25 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 //--------------------------------
 
 model User {
-  id                 String   @id @default(uuid())
-  email              String   @unique
-  password           String
-  username           String
-  role               Role     @default(user)
-  phone              String?
-  avatar             String?
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  password            String
+  username            String
+  role                Role     @default(user)
+  phone               String?
+  avatar              String?
+
+  // Préférences de notification
+  email_notifications Boolean  @default(true)
 
   // Propriétaire / agence
-  company_name       String?
-  siret              String?
+  company_name        String?
+  siret               String?
 
   // Relations
   profile            Profile?
