@@ -30,6 +30,9 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Internal server error' });
 });
 
+app.use('/uploads', express.static('uploads'));
+
+
 // Démarrage du serveur
 const startServer = async () => {
     try {
