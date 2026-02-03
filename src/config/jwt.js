@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import prisma from './db.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -51,7 +52,7 @@ export const decodeToken = (token) => {
   return jwt.decode(token);
 };
 
-export const authenticate = (req, res, next) => {
+export const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -62,7 +63,27 @@ export const authenticate = (req, res, next) => {
 
   try {
     const decoded = verifyToken(token);
-    req.user = decoded;
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        phone: true,
+        avatar: true,
+        company_name: true,
+        siret: true,
+        is_banned: true
+      }
+    });
+    if (!user) {
+      return res.status(401).json({ message: 'Utilisateur non trouvé.' });
+    }
+    if (user.is_banned) {
+      return res.status(403).json({ message: 'Compte suspendu.' });
+    }
+    req.user = user;
     next();
   } catch (error) {
     return res.status(401).json({ message: error.message });

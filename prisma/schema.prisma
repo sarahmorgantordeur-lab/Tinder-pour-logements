@@ -26,6 +26,7 @@ model User {
 
   // Préférences de notification
   email_notifications Boolean  @default(true)
+  is_banned           Boolean  @default(false)
 
   // Propriétaire / agence
   company_name        String?
@@ -52,6 +53,7 @@ enum Role {
   user
   owner
   agency
+  admin
 }
 
 model Profile {
@@ -274,4 +276,3 @@ model RequestDocument {
   request          Request  @relation(fields: [request_id], references: [id])
   request_id       String
 }
-

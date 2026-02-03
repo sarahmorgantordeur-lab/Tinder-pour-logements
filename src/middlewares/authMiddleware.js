@@ -26,7 +26,8 @@ export const authenticate = async (req, res, next) => {
         phone: true,
         avatar: true,
         company_name: true,
-        siret: true
+        siret: true,
+        is_banned: true
       }
     });
 
@@ -34,6 +35,12 @@ export const authenticate = async (req, res, next) => {
       return res.status(401).json({
         success: false,
         message: 'Utilisateur non trouvé.'
+      });
+    }
+    if (user.is_banned) {
+      return res.status(403).json({
+        success: false,
+        message: 'Compte suspendu.'
       });
     }
 
@@ -58,12 +65,17 @@ export const verifySocketToken = async (token) => {
       select: {
         id: true,
         email: true,
-        username: true
+        username: true,
+        is_banned: true
       }
     });
 
     if (!user) {
       throw new Error('Utilisateur non trouvé');
+    }
+
+    if (user.is_banned) {
+      throw new Error('Compte suspendu');
     }
 
     return {
@@ -94,11 +106,12 @@ export const optionalAuthenticate = async (req, res, next) => {
           phone: true,
           avatar: true,
           company_name: true,
-          siret: true
+          siret: true,
+          is_banned: true
         }
       });
 
-      if (user) {
+      if (user && !user.is_banned) {
         req.user = user;
       }
     }

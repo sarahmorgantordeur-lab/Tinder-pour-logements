@@ -10,6 +10,9 @@ class AuthController {
             if (error.message === "Invalid email or password") {
                 return res.status(401).json({ message: error.message });
             }
+            if (error.message === "Compte suspendu") {
+                return res.status(403).json({ message: error.message });
+            }
             res.status(500).json({ message: "Internal server error" });
         }
     }
