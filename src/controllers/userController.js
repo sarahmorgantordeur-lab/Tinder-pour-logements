@@ -75,6 +75,33 @@ class UserController {
         }
     }
 
+    static async uploadAvatar(req, res) {
+        try {
+            const userId = req.user.id;
+
+            if (!req.file) {
+                return res.status(400).json({ message: "No file uploaded" });
+            }
+
+            const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+
+            const user = await prisma.user.update({
+                where: { id: userId },
+                data: { avatar: avatarUrl },
+                select: {
+                    id: true,
+                    email: true,
+                    username: true,
+                    avatar: true
+                }
+            });
+
+            res.status(200).json({ message: "Avatar uploaded successfully", user });
+        } catch (error) {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
     static async addFavorite(req, res) {
         try {
             const userId = req.user.id;
@@ -250,12 +277,18 @@ class UserController {
     static async addDocument(req, res) {
         try {
             const userId = req.user.id;
-            const { name, url, type } = req.body;
+            const { type } = req.body;
 
-            const document = await prisma.document.create({
+            if (!req.file) {
+                return res.status(400).json({ message: "No file uploaded" });
+            }
+
+            const documentUrl = `/uploads/documents/${req.file.filename}`;
+
+            await prisma.document.create({
                 data: {
-                    name,
-                    url,
+                    name: req.file.originalname,
+                    url: documentUrl,
                     type: type || 'other',
                     user_id: userId
                 }
@@ -266,6 +299,20 @@ class UserController {
             });
 
             res.status(200).json({ message: "Document added successfully", documents });
+        } catch (error) {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async getDocuments(req, res) {
+        try {
+            const userId = req.user.id;
+            const documents = await prisma.document.findMany({
+                where: { user_id: userId },
+                orderBy: { uploaded_at: 'desc' }
+            });
+
+            res.status(200).json({ documents });
         } catch (error) {
             res.status(500).json({ message: "Internal server error" });
         }

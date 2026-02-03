@@ -90,13 +90,24 @@ class ApartmentController {
         }
     }
 
-    static async addPhoto(req, res) {
+    static async uploadPictures(req, res) {
         const { id } = req.params;
-        const { photoUrl } = req.body;
         try {
             const ownerId = req.user.id;
-            const apartment = await ApartmentService.addPhoto(id, photoUrl, ownerId);
-            res.status(200).json({ message: "Photo added successfully", apartment });
+
+            if (!req.files || req.files.length === 0) {
+                return res.status(400).json({ message: "No files uploaded" });
+            }
+
+            const pictureUrls = req.files.map(file => `/uploads/apartments/${file.filename}`);
+
+            // Ajouter chaque photo
+            let apartment;
+            for (const url of pictureUrls) {
+                apartment = await ApartmentService.addPhoto(id, url, ownerId);
+            }
+
+            res.status(200).json({ message: "Pictures uploaded successfully", apartment });
         } catch (error) {
             if (error.message === "Apartment not found") {
                 return res.status(404).json({ message: error.message });
@@ -108,13 +119,13 @@ class ApartmentController {
         }
     }
 
-    static async removePhoto(req, res) {
+    static async removePicture(req, res) {
         const { id } = req.params;
-        const { photoUrl } = req.body;
+        const { pictureUrl } = req.body;
         try {
             const ownerId = req.user.id;
-            const apartment = await ApartmentService.removePhoto(id, photoUrl, ownerId);
-            res.status(200).json({ message: "Photo removed successfully", apartment });
+            const apartment = await ApartmentService.removePhoto(id, pictureUrl, ownerId);
+            res.status(200).json({ message: "Picture removed successfully", apartment });
         } catch (error) {
             if (error.message === "Apartment not found") {
                 return res.status(404).json({ message: error.message });
