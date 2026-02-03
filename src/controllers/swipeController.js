@@ -1,10 +1,7 @@
 import SwipeService from '../services/swipeService.js';
 
 class SwipeController {
-    /**
-     * POST /api/swipes
-     * Enregistre un swipe (like ou dislike)
-     */
+
     static async swipe(req, res) {
         try {
             const userId = req.user.id;
@@ -32,10 +29,6 @@ class SwipeController {
         }
     }
 
-    /**
-     * GET /api/swipes/apartments
-     * Récupère les appartements à swiper
-     */
     static async getApartmentsToSwipe(req, res) {
         try {
             const userId = req.user.id;
@@ -49,10 +42,6 @@ class SwipeController {
         }
     }
 
-    /**
-     * GET /api/swipes/history
-     * Récupère l'historique des swipes de l'utilisateur
-     */
     static async getSwipeHistory(req, res) {
         try {
             const userId = req.user.id;
@@ -66,10 +55,6 @@ class SwipeController {
         }
     }
 
-    /**
-     * GET /api/swipes/likes/received
-     * Récupère tous les likes reçus sur les appartements du propriétaire
-     */
     static async getReceivedLikes(req, res) {
         try {
             const ownerId = req.user.id;
@@ -82,10 +67,6 @@ class SwipeController {
         }
     }
 
-    /**
-     * GET /api/swipes/likes/apartment/:apartmentId
-     * Récupère les likes sur un appartement spécifique
-     */
     static async getLikesForApartment(req, res) {
         try {
             const ownerId = req.user.id;
@@ -105,10 +86,6 @@ class SwipeController {
         }
     }
 
-    /**
-     * DELETE /api/swipes/:apartmentId
-     * Supprime un swipe
-     */
     static async deleteSwipe(req, res) {
         try {
             const userId = req.user.id;

@@ -2,10 +2,7 @@ import prisma from '../config/db.js';
 import EmailService from './emailService.js';
 
 class MatchService {
-    /**
-     * Crée un match entre un utilisateur et un appartement
-     * Appelé quand le propriétaire accepte un like
-     */
+
     static async createMatch(ownerId, userId, apartmentId) {
         // Vérifier que l'appartement existe et appartient au propriétaire
         const apartment = await prisma.apartment.findUnique({
@@ -34,7 +31,6 @@ class MatchService {
             throw new Error("User has not liked this apartment");
         }
 
-        // Vérifier qu'un match n'existe pas déjà
         const existingMatch = await prisma.match.findUnique({
             where: {
                 user_id_apartment_id: {
@@ -48,7 +44,6 @@ class MatchService {
             throw new Error("Match already exists");
         }
 
-        // Créer le match
         const match = await prisma.match.create({
             data: {
                 user_id: userId,
@@ -76,7 +71,6 @@ class MatchService {
             }
         });
 
-        // Notifier l'utilisateur du match
         EmailService.sendMatchNotification(userId, apartmentId).catch(err => {
             console.error('Failed to send match notification:', err.message);
         });
@@ -84,9 +78,6 @@ class MatchService {
         return match;
     }
 
-    /**
-     * Récupère les matchs d'un utilisateur (locataire)
-     */
     static async getUserMatches(userId) {
         return prisma.match.findMany({
             where: { user_id: userId },
@@ -114,9 +105,6 @@ class MatchService {
         });
     }
 
-    /**
-     * Récupère les matchs d'un propriétaire (sur ses appartements)
-     */
     static async getOwnerMatches(ownerId) {
         // Récupérer les appartements du propriétaire
         const apartments = await prisma.apartment.findMany({
@@ -159,9 +147,6 @@ class MatchService {
         });
     }
 
-    /**
-     * Récupère un match par son ID avec vérification d'accès
-     */
     static async getMatchById(matchId, userId) {
         const match = await prisma.match.findUnique({
             where: { id: matchId },
@@ -220,9 +205,6 @@ class MatchService {
         return match;
     }
 
-    /**
-     * Supprime un match (uniquement par le propriétaire)
-     */
     static async deleteMatch(matchId, ownerId) {
         const match = await prisma.match.findUnique({
             where: { id: matchId },
@@ -247,9 +229,6 @@ class MatchService {
         });
     }
 
-    /**
-     * Envoie un message dans un match
-     */
     static async sendMessage(matchId, senderId, content) {
         const match = await prisma.match.findUnique({
             where: { id: matchId },
@@ -286,9 +265,6 @@ class MatchService {
         });
     }
 
-    /**
-     * Récupère les messages d'un match
-     */
     static async getMessages(matchId, userId, limit = 50, offset = 0) {
         const match = await prisma.match.findUnique({
             where: { id: matchId },

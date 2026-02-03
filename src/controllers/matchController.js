@@ -1,10 +1,7 @@
 import MatchService from '../services/matchService.js';
 
 class MatchController {
-    /**
-     * POST /api/matches
-     * Crée un match (propriétaire accepte un like)
-     */
+
     static async createMatch(req, res) {
         try {
             const ownerId = req.user.id;
@@ -34,10 +31,6 @@ class MatchController {
         }
     }
 
-    /**
-     * GET /api/matches
-     * Récupère les matchs de l'utilisateur (locataire)
-     */
     static async getUserMatches(req, res) {
         try {
             const userId = req.user.id;
@@ -50,10 +43,6 @@ class MatchController {
         }
     }
 
-    /**
-     * GET /api/matches/owner
-     * Récupère les matchs du propriétaire
-     */
     static async getOwnerMatches(req, res) {
         try {
             const ownerId = req.user.id;
@@ -66,10 +55,6 @@ class MatchController {
         }
     }
 
-    /**
-     * GET /api/matches/:id
-     * Récupère un match par son ID
-     */
     static async getMatchById(req, res) {
         try {
             const userId = req.user.id;
@@ -89,10 +74,6 @@ class MatchController {
         }
     }
 
-    /**
-     * DELETE /api/matches/:id
-     * Supprime un match (propriétaire uniquement)
-     */
     static async deleteMatch(req, res) {
         try {
             const ownerId = req.user.id;
@@ -112,10 +93,6 @@ class MatchController {
         }
     }
 
-    /**
-     * POST /api/matches/:id/messages
-     * Envoie un message dans un match
-     */
     static async sendMessage(req, res) {
         try {
             const senderId = req.user.id;
@@ -140,10 +117,6 @@ class MatchController {
         }
     }
 
-    /**
-     * GET /api/matches/:id/messages
-     * Récupère les messages d'un match
-     */
     static async getMessages(req, res) {
         try {
             const userId = req.user.id;
@@ -165,10 +138,6 @@ class MatchController {
         }
     }
 
-    /**
-     * POST /api/matches/reject
-     * Refuse un like (ne crée pas de match)
-     */
     static async rejectLike(req, res) {
         try {
             const ownerId = req.user.id;

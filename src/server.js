@@ -11,7 +11,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Rate limiting configuration
 const limiter = rateLimit({
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
     max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // 100 requests per window
@@ -22,10 +21,9 @@ const limiter = rateLimit({
     legacyHeaders: false
 });
 
-// Rate limiting plus strict pour l'authentification
 const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 tentatives de connexion
+    windowMs: 15 * 60 * 1000,
+    max: 5,
     message: {
         message: 'Too many login attempts, please try again after 15 minutes.'
     },
@@ -65,7 +63,6 @@ app.use((err, req, res, next) => {
 
 app.use('/uploads', express.static('uploads'));
 
-// Démarrage du serveur
 const startServer = async () => {
     try {
         await prisma.$connect();

@@ -2,9 +2,7 @@ import prisma from '../config/db.js';
 import EmailService from './emailService.js';
 
 class SwipeService {
-    /**
-     * Enregistre un swipe (like ou dislike) d'un utilisateur sur un appartement
-     */
+
     static async swipe(userId, apartmentId, direction) {
         // Vérifier que l'appartement existe
         const apartment = await prisma.apartment.findUnique({
@@ -16,12 +14,10 @@ class SwipeService {
             throw new Error("Apartment not found");
         }
 
-        // Empêcher un propriétaire de swiper sur son propre bien
         if (apartment.owner_id === userId) {
             throw new Error("You cannot swipe on your own apartment");
         }
 
-        // Vérifier si un swipe existe déjà
         const existingSwipe = await prisma.swipe.findUnique({
             where: {
                 user_id_apartment_id: {
@@ -34,13 +30,11 @@ class SwipeService {
         let swipe;
 
         if (existingSwipe) {
-            // Mettre à jour le swipe existant
             swipe = await prisma.swipe.update({
                 where: { id: existingSwipe.id },
                 data: { direction }
             });
         } else {
-            // Créer un nouveau swipe
             swipe = await prisma.swipe.create({
                 data: {
                     user_id: userId,
@@ -49,8 +43,6 @@ class SwipeService {
                 }
             });
         }
-
-        // Si c'est un like, notifier le propriétaire
         if (direction === 'like') {
             EmailService.sendNewLikeNotification(apartment.owner_id, apartmentId, userId).catch(err => {
                 console.error('Failed to send like notification:', err.message);
@@ -60,10 +52,6 @@ class SwipeService {
         return swipe;
     }
 
-    /**
-     * Récupère les appartements à swiper pour un utilisateur
-     * Exclut : ses propres biens, ceux déjà swipés, ceux non disponibles
-     */
     static async getApartmentsToSwipe(userId, limit = 10) {
         // Récupérer les IDs des appartements déjà swipés
         const swipedApartments = await prisma.swipe.findMany({
@@ -85,7 +73,6 @@ class SwipeService {
             id: { notIn: swipedIds }
         };
 
-        // Appliquer les préférences si elles existent
         if (preferences) {
             if (preferences.property_type?.length > 0) {
                 where.property_type = { in: preferences.property_type };
@@ -107,7 +94,6 @@ class SwipeService {
             }
         }
 
-        // Récupérer les appartements
         const apartments = await prisma.apartment.findMany({
             where,
             take: limit,
@@ -127,9 +113,6 @@ class SwipeService {
         return apartments;
     }
 
-    /**
-     * Récupère l'historique des swipes d'un utilisateur
-     */
     static async getUserSwipes(userId, direction = null) {
         const where = { user_id: userId };
         if (direction) {
@@ -155,9 +138,6 @@ class SwipeService {
         });
     }
 
-    /**
-     * Récupère les likes reçus sur les appartements d'un propriétaire
-     */
     static async getLikesForOwner(ownerId) {
         // Récupérer tous les appartements du propriétaire
         const apartments = await prisma.apartment.findMany({
@@ -198,9 +178,6 @@ class SwipeService {
         });
     }
 
-    /**
-     * Récupère les likes sur un appartement spécifique
-     */
     static async getLikesForApartment(apartmentId, ownerId) {
         // Vérifier que l'appartement appartient au propriétaire
         const apartment = await prisma.apartment.findUnique({
@@ -237,9 +214,6 @@ class SwipeService {
         });
     }
 
-    /**
-     * Supprime un swipe
-     */
     static async deleteSwipe(userId, apartmentId) {
         const swipe = await prisma.swipe.findUnique({
             where: {
