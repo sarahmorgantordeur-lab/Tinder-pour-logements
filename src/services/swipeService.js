@@ -61,6 +61,14 @@ class SwipeService {
 
         const swipedIds = swipedApartments.map(s => s.apartment_id);
 
+        // Récupérer les IDs des appartements déjà vus (pour baisser la priorité)
+        const viewedApartments = await prisma.viewedApartment.findMany({
+            where: { user_id: userId },
+            select: { apartment_id: true }
+        });
+
+        const viewedSet = new Set(viewedApartments.map(v => v.apartment_id));
+
         // Récupérer les préférences de l'utilisateur
         const preferences = await prisma.preferences.findUnique({
             where: { user_id: userId }
@@ -72,7 +80,6 @@ class SwipeService {
             owner_id: { not: userId },
             id: { notIn: swipedIds }
         };
-
         if (preferences) {
             if (preferences.property_type?.length > 0) {
                 where.property_type = { in: preferences.property_type };
@@ -93,10 +100,11 @@ class SwipeService {
                 where.region = { in: preferences.regions, mode: 'insensitive' };
             }
         }
+        const candidateLimit = Math.min(Math.max(limit * 5, 30), 100);
 
         const apartments = await prisma.apartment.findMany({
             where,
-            take: limit,
+            take: candidateLimit,
             orderBy: { created_at: 'desc' },
             include: {
                 owner: {
@@ -110,7 +118,72 @@ class SwipeService {
             }
         });
 
-        return apartments;
+        const scored = apartments.map(apartment => ({
+            apartment,
+            score: SwipeService.computeSuggestionScore(apartment, preferences, viewedSet)
+        }));
+
+        scored.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return new Date(b.apartment.created_at).getTime() - new Date(a.apartment.created_at).getTime();
+        });
+
+        return scored.slice(0, limit).map(s => s.apartment);
+    }
+
+    static computeSuggestionScore(apartment, preferences, viewedSet) {
+        let score = 0;
+
+        if (preferences) {
+            if (preferences.property_type?.length > 0) {
+                score += preferences.property_type.includes(apartment.property_type) ? 3 : -1;
+            }
+
+            if (preferences.listing_type) {
+                score += preferences.listing_type === apartment.listing_type ? 2 : -1;
+            }
+
+            const minPrice = preferences.min_price;
+            const maxPrice = preferences.max_price;
+            if (minPrice !== null || maxPrice !== null) {
+                const price = apartment.price;
+                if ((minPrice === null || price >= minPrice) && (maxPrice === null || price <= maxPrice)) {
+                    score += 3;
+                } else {
+                    score -= 2;
+                }
+            }
+
+            if (preferences.min_surface !== null) {
+                score += apartment.surface >= preferences.min_surface ? 2 : -2;
+            }
+
+            if (preferences.regions?.length > 0) {
+                const regionMatch = preferences.regions.some(r =>
+                    r && apartment.region && r.toLowerCase() === apartment.region.toLowerCase()
+                );
+                if (regionMatch) score += 2;
+            }
+
+            if (preferences.tags?.length > 0 && apartment.tags?.length > 0) {
+                const tagSet = new Set(apartment.tags.map(t => t.toLowerCase()));
+                const overlap = preferences.tags.filter(t => tagSet.has(t.toLowerCase())).length;
+                score += Math.min(overlap, 3);
+            }
+        }
+
+        if (viewedSet && viewedSet.has(apartment.id)) {
+            score -= 1;
+        }
+
+        const createdAt = new Date(apartment.created_at);
+        if (!Number.isNaN(createdAt.getTime())) {
+            const days = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+            if (days <= 14) score += 1;
+            else if (days <= 30) score += 0.5;
+        }
+
+        return score;
     }
 
     static async getUserSwipes(userId, direction = null) {
