@@ -9,7 +9,6 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         let uploadPath = path.join(__dirname, '../../uploads');
 
-        // Dossiers différents selon le type de fichier
         if (file.fieldname === 'avatar') {
             uploadPath = path.join(uploadPath, 'avatars');
         } else if (file.fieldname === 'pictures') {

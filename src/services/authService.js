@@ -1,5 +1,8 @@
 import prisma from '../config/db.js';
 import { generateToken } from '../config/jwt.js';
+import bcrypt from 'bcrypt';
+
+const SALT_ROUNDS = 12;
 
 class AuthService {
 
@@ -16,16 +19,19 @@ class AuthService {
             throw new Error("This email is already taken");
         }
 
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
         const newUser = await prisma.user.create({
             data: {
                 email,
-                password,
+                password: hashedPassword,
                 username: userName,
                 role
             }
         });
 
-        return newUser;
+        const { password: _, ...userWithoutPassword } = newUser;
+        return userWithoutPassword;
     }
 
     static async login(email, password) {
@@ -37,14 +43,14 @@ class AuthService {
             throw new Error("Invalid email or password");
         }
 
-        const isPasswordValid = (password === user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             throw new Error("Invalid email or password");
         }
 
         const token = generateToken(user);
 
-        return { user: { id: user.id, email: user.email, userName: user.username }, token };
+        return { user: { id: user.id, email: user.email, userName: user.username, role: user.role }, token };
     }
 }
 
