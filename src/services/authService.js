@@ -48,6 +48,9 @@ class AuthService {
         if (!user) {
             throw new Error("Invalid email or password");
         }
+        if (user.is_banned) {
+            throw new Error("Compte suspendu");
+        }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {

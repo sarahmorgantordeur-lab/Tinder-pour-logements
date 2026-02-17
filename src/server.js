@@ -1,14 +1,18 @@
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import setupRoutes from './routes/index.js';
 import prisma from './config/db.js';
+import { initSocket } from './socket/index.js';
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+initSocket(server);
 const PORT = process.env.PORT || 3000;
 
 const limiter = rateLimit({
@@ -68,7 +72,7 @@ const startServer = async () => {
         await prisma.$connect();
         console.log('Connected to PostgreSQL database');
 
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
     } catch (error) {
