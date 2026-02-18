@@ -75,7 +75,7 @@ export default function Login({ onLogin }) {
                     </div>
 
                     {error && (
-                        <p className="text-sm text-red-600">{error}</p>
+                        <p data-cy="error-message" className="text-sm text-red-600">{error}</p>
                     )}
 
                     <button
