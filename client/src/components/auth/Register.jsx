@@ -4,6 +4,7 @@ export default function Register({ onLogin }) {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
@@ -93,6 +94,21 @@ export default function Register({ onLogin }) {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="phone" className="text-sm font-medium text-zinc-700">
+                            Phone number
+                        </label>
+                        <input
+                            id="phone"
+                            type="tel"
+                            required
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
                             placeholder="you@example.com"
                         />
