@@ -27,6 +27,14 @@ describe("Page d'inscription", () => {
     cy.get('#confirmPassword').should('have.value', this.users.validUser.confirmPassword)
   })
 
+  it('vérifier que le bouton login bascule vers le formulaire de connexion', () => {
+    cy.get('[name="login-btn"]').click()
+
+    cy.get('#email').should('exist')
+    cy.get('#password').should('exist')
+    cy.get('#name').should('not.exist')
+  })
+
   it("afficher un message d'erreur avec un email déjà utilisé", function () {
     fillRegisterForm(this.users.validUser)
 

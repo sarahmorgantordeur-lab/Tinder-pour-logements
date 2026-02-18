@@ -3,6 +3,7 @@ describe('Page de connexion', () => {
   beforeEach(() => {
     cy.visit('http://localhost:5173/')
     cy.fixture('example').as('users')
+    // Le formulaire Login est affiché par défaut (isLogin=true)
   })
 
   const fillLoginForm = (email, password) => {
@@ -15,6 +16,14 @@ describe('Page de connexion', () => {
 
     cy.get('#email').should('have.value', this.users.validUser.email)
     cy.get('#password').should('have.value', this.users.validUser.password)
+  })
+
+  it('vérifier que le bouton register bascule vers le formulaire d\'inscription', () => {
+    cy.get('[name="register-btn"]').click()
+
+    cy.get('#name').should('exist')
+    cy.get('#email').should('exist')
+    cy.get('#confirmPassword').should('exist')
   })
 
   it("afficher un message d'erreur avec des identifiants invalides", function () {
