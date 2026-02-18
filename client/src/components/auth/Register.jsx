@@ -86,31 +86,25 @@ export default function Register({ onLogin }) {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="phone" className="text-sm font-medium text-zinc-700">
-                            Phone number
-                        </label>
                         <input
                             id="phone"
                             type="tel"
                             required
                             value={phone}
+                            aria-label='phone number'
                             onChange={(e) => setPhone(e.target.value)}
-                            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+                            placeholder="Phone Number"
                         />
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="password" className="text-sm font-medium text-zinc-700">
-                            Mot de passe
-                        </label>
                         <input
                             id="password"
                             type="password"
                             required
                             value={password}
                             aria-label='password'
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+                            onChange={(e) => setPassword(e.target.value)} 
                             placeholder="••••••••"
                         />
                     </div>
