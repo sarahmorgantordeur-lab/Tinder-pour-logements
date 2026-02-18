@@ -47,83 +47,63 @@ export default function Register({ onLogin }) {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-zinc-50">
-            <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-md">
-
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1">
-                        <div className="flex flex-col gap-1">
-                            <label htmlFor="name" className="text-sm font-medium text-zinc-700">
-                                Name
-                            </label>
+        <div className="form-main-container">
+            <div className="form-wrapper">
+                <form onSubmit={handleSubmit} className="form-container">
+                    <div className="name-container">
                             <input
                                 id="name"
                                 type="text"
                                 required
                                 value={name}
+                                aria-label='First Name'
                                 onChange={(e) => setName(e.target.value)}
-                                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
-                                placeholder="Dupont"
+                                placeholder="First Name"
                             />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <label htmlFor="surname" className="text-sm font-medium text-zinc-700">
-                                Surname
-                            </label>
                             <input
                                 id="surname"
                                 type="text"
                                 required
                                 value={surname}
+                                aria-label='Last Name'
                                 onChange={(e) => setSurname(e.target.value)}
-                                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+                                placeholder="Last Name"
                             />
-                        </div>
-
                     </div>
 
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="email" className="text-sm font-medium text-zinc-700">
-                            Email
-                        </label>
+                    <div className="">
                         <input
                             id="email"
                             type="email"
                             required
                             value={email}
+                            aria-label='email'
                             onChange={(e) => setEmail(e.target.value)}
-                            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
-                            placeholder="you@example.com"
+                            placeholder="Email"
                         />
                     </div>
 
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="password" className="text-sm font-medium text-zinc-700">
-                            Mot de passe
-                        </label>
+                    <div className="">
                         <input
                             id="password"
                             type="password"
                             required
                             value={password}
+                            aria-label='password'
                             onChange={(e) => setPassword(e.target.value)}
                             className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
                             placeholder="••••••••"
                         />
                     </div>
 
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="confirmPassword" className="text-sm font-medium text-zinc-700">
-                            Confirmer le mot de passe
-                        </label>
+                    <div className="">
                         <input
                             id="confirmPassword"
                             type="password"
                             required
                             value={confirmPassword}
+                            aria-label='confirm password'
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
                             placeholder="••••••••"
                         />
                     </div>
@@ -135,8 +115,7 @@ export default function Register({ onLogin }) {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="mt-2 rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
-                    >
+                        >
                         {loading ? 'Inscription…' : 'S\'inscrire'}
                     </button>
                 </form>

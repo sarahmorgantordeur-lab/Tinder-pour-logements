@@ -3,4 +3,7 @@
 @use "./base";
 
 @use "./pages/LandingPage";
+
 @use "./components/auth/AuthLayoutForm";
+@use "./components/auth/SwitchAuth";
+@use "./components/auth/Auth";

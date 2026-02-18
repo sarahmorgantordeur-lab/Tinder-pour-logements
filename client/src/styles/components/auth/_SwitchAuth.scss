@@ -1,0 +1,33 @@
+@use '../../variables' as *;
+
+.switch-auth-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+
+    .switch-auth-content {
+        display: flex;
+        justify-content: center;
+        background-color: $bg-color-medium;
+        gap: 16px;
+        width: 100%;
+        padding: 8px;
+        border-radius: 16px;
+
+        button {
+            font-size: 18px;
+            cursor: pointer;
+            background-color: $button-bg;
+            color: $main-text-color;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .Inactive-button {
+            background-color: $bg-color-medium;
+            color: $text-muted;
+        }
+    }
+}

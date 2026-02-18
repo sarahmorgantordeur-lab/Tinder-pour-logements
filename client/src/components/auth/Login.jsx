@@ -44,34 +44,30 @@ export default function Login({ onLogin }) {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-zinc-50">
-            <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-md">
+        <div className="form-main-container">
+            <div className="form-wrapper">
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="email" className="text-sm font-medium text-zinc-700">
-                            Email
-                        </label>
+                <form onSubmit={handleSubmit} className="form-container">
+                    <div className="">
                         <input
                             id="email"
                             type="email"
                             required
                             value={email}
+                            aria-label='email'
                             onChange={(e) => setEmail(e.target.value)}
                             className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
-                            placeholder="you@example.com"
+                            placeholder="Email"
                         />
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="password" className="text-sm font-medium text-zinc-700">
-                            Mot de passe
-                        </label>
                         <input
                             id="password"
                             type="password"
                             required
                             value={password}
+                            aria-label='password'
                             onChange={(e) => setPassword(e.target.value)}
                             className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
                             placeholder="••••••••"
