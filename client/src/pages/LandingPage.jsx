@@ -1,3 +1,5 @@
+import AuthLayoutForm from '../components/auth/AuthLayoutForm';
+
 export default function Landing() {
     return (
         <div className="landing-page">
@@ -7,9 +9,7 @@ export default function Landing() {
             <button className="landing-button">Get Started</button>
             </div>
             <div>
-                <div>
-                    <h2 className="landing-subtitle">Login/Register</h2>
-                </div>
+                <AuthLayoutForm />
             </div>
         </div>
     );
