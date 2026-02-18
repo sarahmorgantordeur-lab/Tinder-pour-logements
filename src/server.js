@@ -1,14 +1,11 @@
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import setupRoutes from './routes/index.js';
 import prisma from './config/db.js';
 import { initSocket } from './socket/index.js';
-
-dotenv.config();
 
 const app = express();
 const server = http.createServer(app);

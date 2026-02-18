@@ -1,0 +1,59 @@
+@use "../variables" as *;
+
+.requests-page {
+  h1 {
+    margin-bottom: 24px;
+  }
+}
+
+.requests-empty {
+  text-align: center;
+  color: $text-muted;
+  padding: 60px 20px;
+}
+
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.request-card {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $radius;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  @media (max-width: $mobile) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.request-info {
+  h3 {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: $text-light;
+    margin-bottom: 8px;
+  }
+}
+
+.request-actions {
+  select {
+    background: $input-bg;
+    border: 1.5px solid $input-border;
+    border-radius: $radius-sm;
+    padding: 8px 14px;
+    color: $main-text-color;
+    font-size: 0.9rem;
+  }
+}
