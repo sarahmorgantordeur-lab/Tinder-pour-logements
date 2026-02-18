@@ -1,17 +1,10 @@
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegister }) {
-    const { logout } = useAuth();
+    
 
     const toggleAuth = () => {
-        if (isLogin) {
-            logout();
-        }
         setIsLogin(!isLogin);
-
-        if (isRegister) {
-            logout();
-        }
         setIsRegister(!isRegister);
     };
 
