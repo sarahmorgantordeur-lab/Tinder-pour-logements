@@ -1,0 +1,68 @@
+@use '../../variables' as *;
+
+.form-main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    .form-wrapper {
+        width: 100%;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+
+            .name-container {
+                display: flex;
+                flex-direction: row;
+                gap: 16px;
+
+                input {
+                    flex: 1;
+                }
+            }
+
+            input {
+                width: 100%;
+                font-size: 16px;
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+                border: 1px solid $border-color-muted;
+                outline: none;
+                transition: border-color 0.3s, box-shadow 0.3s;
+                background-color: $input-bg;
+                color: $main-text-color;
+                &::placeholder {
+                    color: $text-muted;
+                }
+
+                &:focus {
+                    border-color: $border-color;
+                    box-shadow: 0 0 0 2px rgba($color: $border-color, $alpha: 0.2);
+                }
+            }
+
+            button {
+                padding: 0.75rem;
+                background-color: $button-bg;
+                color: $main-text-color;
+                border: none;
+                border-radius: 0.5rem;
+                cursor: pointer;
+                font-size: 20px;
+                transition: all 0.3s;
+
+                &:hover {
+                    background-color: rgba($color: $button-bg, $alpha: 0.9);
+                }
+            }
+        }
+    }
+}
+
+
+
