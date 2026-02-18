@@ -11,6 +11,7 @@ export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegis
         <div className="switch-auth-container">
             <div className="switch-auth-content">
                 <button
+                    data-cy="login-btn"
                     onClick={toggleAuth}
                     className={isLogin ?  "" : "Inactive-button" }
                 >
@@ -18,6 +19,7 @@ export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegis
                 </button>
 
                 <button
+                    data-cy="register-btn"
                     onClick={toggleAuth}
                     className={isRegister ? "" : "Inactive-button"}
                 >

@@ -2,8 +2,8 @@
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:run:login": "cypress run --spec 'client/cypress/e2e/authLogin.cy.js'",
-    "cy:run:register": "cypress run --spec 'client/cypress/e2e/authRegister.cy.js'"
+    "cy:run:login": "cypress run --spec 'cypress/e2e/authLogin.cy.js'",
+    "cy:run:register": "cypress run --spec 'cypress/e2e/authRegister.cy.js'"
   },
   "devDependencies": {
     "cypress": "^15.10.0",

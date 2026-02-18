@@ -1,10 +1,9 @@
 describe("Page d'inscription", () => {
 
   beforeEach(() => {
-    cy.visit('http://localhost:5173/')
+    cy.visit('http://localhost:5174/')
     cy.fixture('example').as('users')
-    // Basculer vers le formulaire Register
-    cy.get('[name="register-btn"]').click()
+    cy.get('[data-cy="register-btn"]').click()
   })
 
   const fillRegisterForm = (user) => {
@@ -27,8 +26,8 @@ describe("Page d'inscription", () => {
     cy.get('#confirmPassword').should('have.value', this.users.validUser.confirmPassword)
   })
 
-  it('vérifier que le bouton login bascule vers le formulaire de connexion', () => {
-    cy.get('[name="login-btn"]').click()
+  it('vérifier que le bouton Sign in bascule vers le formulaire de connexion', () => {
+    cy.get('[data-cy="login-btn"]').click()
 
     cy.get('#email').should('exist')
     cy.get('#password').should('exist')
@@ -36,10 +35,15 @@ describe("Page d'inscription", () => {
   })
 
   it("afficher un message d'erreur avec un email déjà utilisé", function () {
-    fillRegisterForm(this.users.validUser)
+    cy.intercept('POST', '**/auth/register', {
+      statusCode: 409,
+      body: { message: 'This email is already taken' }
+    }).as('registerRequest')
 
+    fillRegisterForm(this.users.validUser)
     cy.get('button[type="submit"]').click()
 
+    cy.wait('@registerRequest')
     cy.get('[data-cy="error-message"]').should('be.visible')
   })
 
