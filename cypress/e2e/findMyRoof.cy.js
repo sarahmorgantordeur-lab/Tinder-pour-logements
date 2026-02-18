@@ -1,5 +1,8 @@
-describe('template spec', () => {
-  it('passes', () => {
-    cy.visit('https://localhost:3000/')
+describe('Page principale', () => {
+  it('charge correctement la page d\'accueil', () => {
+    cy.visit('/')
+
+    cy.get('.landing-page').should('exist')
+    cy.get('.landing-title').should('contain', 'Find My Roof')
   })
 })
