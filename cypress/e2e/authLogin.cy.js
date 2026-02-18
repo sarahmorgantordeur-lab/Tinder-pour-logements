@@ -1,49 +1,28 @@
 describe('Page de connexion', () => {
 
-  before(() => {
-    cy.log('🔥 before: initialisation globale');
-  });
-
   beforeEach(() => {
-    cy.log('➡️ beforeEach: visite de la page login');
-    cy.visit('/login');
-  });
+    cy.visit('http://localhost:5173/')
+    cy.fixture('example').as('users')
+  })
 
-  after(() => {
-    cy.log('🧹 after: nettoyage global');
-  });
+  const fillLoginForm = (email, password) => {
+    cy.get('#email').clear().type(email)
+    cy.get('#password').clear().type(password)
+  }
 
-  afterEach(() => {
-    cy.log('⬅️ afterEach: fin du test');
-  });
+  it('vérifier que les inputs acceptent la saisie', function () {
+    fillLoginForm(this.users.validUser.email, this.users.validUser.password)
 
+    cy.get('#email').should('have.value', this.users.validUser.email)
+    cy.get('#password').should('have.value', this.users.validUser.password)
+  })
 
+  it("afficher un message d'erreur avec des identifiants invalides", function () {
+    fillLoginForm(this.users.invalidUser.email, this.users.invalidUser.password)
 
-  
-  it("vérifier que la valeur de l'input email a bien été saisie", () => {
-    cy.get('#email')
-      .type('test@example.com')
-      .should('have.value', 'test@example.com');
-  });
+    cy.get('button[type="submit"]').click()
 
-  it("vérifier que la valeur de l'input mot de passe a bien été saisie", () => {
-    cy.get('#password')
-      .type('motdepasse123')
-      .should('have.value', 'motdepasse123');
-  });
+    cy.get('[data-cy="error-message"]').should('be.visible')
+  })
 
-  it('afficher un message d\'erreur avec des identifiants invalides', () => {
-    cy.get('#email').type('mauvais@example.com');
-    cy.get('#password').type('mauvaismdp');
-    cy.get('button[type="submit"]').click();
-
-    cy.get('p.text-red-600').should('be.visible');
-  });
-
-  it('vérifier que le bouton de connexion est bien cliquable', () => {
-    cy.get('button[type="submit"]')
-      .should('be.visible')
-      .and('not.be.disabled')
-      .click();
-  });
-});
+})

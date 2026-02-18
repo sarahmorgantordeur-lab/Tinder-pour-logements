@@ -13,6 +13,7 @@ export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegis
             <button
                 onClick={toggleAuth}
                 className="text-sm text-zinc-600 hover:text-zinc-900"
+                name="login-btn"
             >
                 {isLogin ? "Sign in" : "Déjà inscrit ? Se connecter"}
             </button>
@@ -20,6 +21,7 @@ export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegis
             <button
                 onClick={toggleAuth}
                 className="text-sm text-zinc-600 hover:text-zinc-900"
+                name="register-btn"
             >
                 {isRegister ? "Sign up" : "Déjà inscrit ? Se connecter"}
             </button>

@@ -24,10 +24,10 @@ export default function Register({ onLogin }) {
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:3000/api/auth/login', {
+            const res = await fetch('http://localhost:3000/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, surname, email, password }),
+                body: JSON.stringify({ userName: name, email, password }),
             });
 
             const data = await res.json();
@@ -78,6 +78,7 @@ export default function Register({ onLogin }) {
                                 required
                                 value={surname}
                                 onChange={(e) => setSurname(e.target.value)}
+                                placeholder='Marie'
                                 className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
                             />
                         </div>
@@ -110,7 +111,6 @@ export default function Register({ onLogin }) {
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
-                            placeholder="you@example.com"
                         />
                     </div>
 
@@ -145,7 +145,7 @@ export default function Register({ onLogin }) {
                     </div>
 
                     {error && (
-                        <p className="text-sm text-red-600">{error}</p>
+                        <p data-cy="error-message" className="text-sm text-red-600">{error}</p>
                     )}
 
                     <button
