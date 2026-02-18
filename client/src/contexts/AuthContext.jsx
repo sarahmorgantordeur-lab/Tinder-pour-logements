@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("user", JSON.stringify(newUser));
             setUser(newUser);
             setToken(newToken);
-            return { success: true, message: "Connexion rÃ©ussie" };
+            return { success: true, message: "Connexion réussie" };
         } catch (error) {
             return {
                 success: false,

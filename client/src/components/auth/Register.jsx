@@ -52,35 +52,35 @@ export default function Register({ onLogin }) {
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="name" className="text-sm font-medium text-zinc-700">
-                            Name
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            required
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
-                            placeholder="Dupont"
-                        />
-                    </div>
+                        <div className="flex flex-col gap-1">
+                            <label htmlFor="name" className="text-sm font-medium text-zinc-700">
+                                Name
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+                                placeholder="Dupont"
+                            />
+                        </div>
 
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="surname" className="text-sm font-medium text-zinc-700">
-                            Surname
-                        </label>
-                        <input
-                            id="surname"
-                            type="text"
-                            required
-                            value={surname}
-                            onChange={(e) => setSurname(e.target.value)}
-                            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
-                        />
-                    </div>
-                    
+                        <div className="flex flex-col gap-1">
+                            <label htmlFor="surname" className="text-sm font-medium text-zinc-700">
+                                Surname
+                            </label>
+                            <input
+                                id="surname"
+                                type="text"
+                                required
+                                value={surname}
+                                onChange={(e) => setSurname(e.target.value)}
+                                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+                            />
+                        </div>
+
                     </div>
 
                     <div className="flex flex-col gap-1">
