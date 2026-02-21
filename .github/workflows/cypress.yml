@@ -14,7 +14,7 @@ jobs:
         with:
           browser: ${{ matrix.browser }}
           start: docker compose up -d
-          wait-on: http://localhost:3000
+          wait-on: http://localhost:5174
           wait-on-timeout: 120
           record: true
         env:
