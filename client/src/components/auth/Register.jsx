@@ -69,7 +69,7 @@ export default function Register({ onLogin }) {
                                 aria-label='Last Name'
                                 onChange={(e) => setSurname(e.target.value)}
                                 placeholder='Marie'
-                                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+                                className=""
                             />
                     </div>
 
@@ -85,7 +85,7 @@ export default function Register({ onLogin }) {
                         />
                     </div>
 
-                    <div className="flex flex-col gap-1">
+                    <div className="">
                         <input
                             id="phone"
                             type="tel"
@@ -97,7 +97,7 @@ export default function Register({ onLogin }) {
                         />
                     </div>
 
-                    <div className="flex flex-col gap-1">
+                    <div className="">
                         <input
                             id="password"
                             type="password"
@@ -122,7 +122,7 @@ export default function Register({ onLogin }) {
                     </div>
 
                     {error && (
-                        <p data-cy="error-message" className="text-sm text-red-600">{error}</p>
+                        <p data-cy="error-message">{error}</p>
                     )}
 
                     <button

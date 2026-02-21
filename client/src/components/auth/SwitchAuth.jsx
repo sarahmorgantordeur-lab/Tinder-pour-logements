@@ -1,5 +1,3 @@
-import { useAuth } from "../../contexts/AuthContext";
-
 export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegister }) {
     
     const toggleAuth = () => {

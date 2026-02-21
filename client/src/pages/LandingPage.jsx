@@ -17,7 +17,6 @@ export default function Landing() {
         </div>
         <div className="landing-forms">
             <AuthLayoutForm />
-            <p>pute</p>
         </div>
     </div>
     );
