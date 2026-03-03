@@ -1,68 +1,54 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import api from "../api";
 
 const HomeContext = createContext(null);
 
 export const HomeProvider = ({ children }) => {
-  const [home, setHome] = useState(() => {
-    const stored = localStorage.getItem("home");
-    return stored ? JSON.parse(stored) : null;
-  });
+  const [apartments, setApartments] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [token, setToken] = useState(
-    localStorage.getItem("token")
-  );
-
-  const [loading, setLoading] = useState(false);
-
-  const register = async (type, price, number, street, city, country) => {
+  const fetchApartments = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const response = await api.post("/home/register", {
-        type,
-        price,
-        number,
-        street,
-        city,
-        country
-      });
-
-      const { home: newHome, token: newToken } = response.data;
-
-      setHome(newHome);
-      setToken(newToken);
-
-      localStorage.setItem("home", JSON.stringify(newHome));
-      localStorage.setItem("token", newToken);
-
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error:
-          error.response?.data?.message ||
-          "Une erreur est survenue",
-      };
+      const response = await api.get("/apartments");
+      setApartments(response.data.apartments ?? response.data);
+      setCurrentIndex(0);
+    } catch {
+      setError("Impossible de charger les logements");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const deleteHome = () => {
-    setHome(null);
-    setToken(null);
-    localStorage.removeItem("home");
-    localStorage.removeItem("token");
+  useEffect(() => {
+    fetchApartments();
+  }, [fetchApartments]);
+
+  const swipe = async (direction) => {
+    const current = apartments[currentIndex];
+    if (!current) return;
+    try {
+      await api.post("/swipes", { apartment_id: current.id, direction });
+    } catch {
+      // swipe enregistré localement même si l'API échoue
+    } finally {
+      setCurrentIndex((prev) => prev + 1);
+    }
   };
 
   return (
     <HomeContext.Provider
       value={{
-        home,
-        token,
+        apartments,
+        currentApartment: apartments[currentIndex] ?? null,
+        remaining: apartments.length - currentIndex,
         loading,
-        register,
-        deleteHome,
+        error,
+        swipe,
+        fetchApartments,
       }}
     >
       {children}
@@ -72,15 +58,6 @@ export const HomeProvider = ({ children }) => {
 
 export const useHome = () => {
   const context = useContext(HomeContext);
-
-  if (!context) {
-    throw new Error(
-      "useHome must be used within a HomeProvider"
-    );
-  }
-
+  if (!context) throw new Error("useHome must be used within a HomeProvider");
   return context;
 };
-
-
-  

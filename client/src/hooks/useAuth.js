@@ -9,10 +9,7 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null;
   });
 
-  const [token, setToken] = useState(
-    localStorage.getItem("token")
-  );
-
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(false);
 
   const register = async (userName, email, password) => {
@@ -23,22 +20,34 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-
-      const { user: newUser, token: newToken } = response.data;
-
+      const { user: newUser } = response.data;
       setUser(newUser);
-      setToken(newToken);
-
       localStorage.setItem("user", JSON.stringify(newUser));
-      localStorage.setItem("token", newToken);
-
       return { success: true };
     } catch (error) {
       return {
         success: false,
-        error:
-          error.response?.data?.message ||
-          "Une erreur est survenue",
+        error: error.response?.data?.message || "Une erreur est survenue",
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email, password) => {
+    setLoading(true);
+    try {
+      const response = await api.post("/auth/login", { email, password });
+      const { token: newToken, user: newUser } = response.data;
+      setUser(newUser);
+      setToken(newToken);
+      localStorage.setItem("user", JSON.stringify(newUser));
+      localStorage.setItem("token", newToken);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Une erreur est survenue",
       };
     } finally {
       setLoading(false);
@@ -53,15 +62,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        loading,
-        register,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={{ user, token, loading, register, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -69,12 +70,6 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error(
-      "useAuth must be used within an AuthProvider"
-    );
-  }
-
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };
