@@ -68,7 +68,7 @@ export default function Register({ onLogin }) {
                                 value={surname}
                                 aria-label='Last Name'
                                 onChange={(e) => setSurname(e.target.value)}
-                                placeholder='Marie'
+                                placeholder='Last Name'
                                 className=""
                             />
                     </div>
