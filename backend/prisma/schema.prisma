@@ -11,6 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 //--------------------------------
@@ -56,15 +57,32 @@ enum Role {
   admin
 }
 
+// Profil locataire — income visible uniquement via les filtres de recherche, pas exposé au propriétaire
 model Profile {
-  id                 String  @id @default(uuid())
+  id                 String   @id @default(uuid())
   bio                String?
   job                String?
-  income             Float?
+  income             Float?   // non exposé au propriétaire, utilisé côté recherche uniquement
   guarantors         Int?
 
-  user               User    @relation(fields: [user_id], references: [id])
-  user_id            String  @unique
+  // Identité
+  first_name         String?
+  last_name          String?
+  gender             Gender?
+
+  // Composition du ménage
+  household_size     Int?     // nombre de personnes
+  has_pets           Boolean  @default(false)
+
+  user               User     @relation(fields: [user_id], references: [id])
+  user_id            String   @unique
+}
+
+enum Gender {
+  male
+  female
+  non_binary
+  prefer_not_to_say
 }
 
 model Picture {
@@ -107,18 +125,22 @@ model ViewedApartment {
   apartment_id      String
 }
 
+// Préférences de recherche locataire
 model Preferences {
-  id                String   @id @default(uuid())
-  property_type     String[]
-  listing_type      String?
+  id                String         @id @default(uuid())
+  property_type     PropertyType[]
+  listing_type      ListingType?
   min_price         Float?
   max_price         Float?
   min_surface       Float?
+  max_surface       Float?
+  has_terrace       Boolean?       // null = peu importe
+  has_garden        Boolean?       // null = peu importe
   regions           String[]
   tags              String[]
 
-  user              User     @relation(fields: [user_id], references: [id])
-  user_id           String   @unique
+  user              User           @relation(fields: [user_id], references: [id])
+  user_id           String         @unique
 }
 
 //-----------------------------
@@ -131,19 +153,21 @@ model Apartment {
   region            String
   city              String?
   postal_code       String?
-  country           String        @default("France")
+  country           String        @default("Belgique")
 
   // Géolocalisation
   latitude          Float?
   longitude         Float?
 
-  property_type     PropertyType  @default(apartment)
+  property_type     PropertyType  @default(appartement)
   listing_type      ListingType   @default(rent)
   price             Float
   surface           Float
   rooms             Int
+  has_terrace       Boolean       @default(false)
+  has_garden        Boolean       @default(false)
   tags              String[]
-  availability      Boolean @default(true)
+  availability      Boolean       @default(true)
 
   owner             User          @relation(fields: [owner_id], references: [id], name: "UserApartments")
   owner_id          String
@@ -167,13 +191,33 @@ model Apartment {
 }
 
 enum PropertyType {
-  apartment
-  house
-  studio
+  // Maisons individuelles
+  bungalow
+  chalet
+  chateau
+  ferme
+  maison_campagne
+  maison_bel_etage
+  maison_maitre
+  manoir
+  pavillon
   villa
-  land
-  commercial_space
-  other
+  // Appartements et dérivés
+  appartement
+  duplex
+  triplex
+  studio
+  penthouse
+  loft
+  kot
+  appartement_service
+  rez_de_chaussee
+  // Immeubles
+  immeuble_appartements
+  immeuble_mixte
+  // Autres
+  bien_exceptionnel
+  autres
 }
 
 enum ListingType {
