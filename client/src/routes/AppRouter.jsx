@@ -1,12 +1,32 @@
 import { Routes, Route } from "react-router-dom";
 import Landing from "../pages/LandingPage";
-import LandlordHome from "../pages/LandlordHome";
+import Home from "../layouts/Home";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+
+function PublicRoute({ children }) {
+  const { token } = useAuth();
+  return token ? <Navigate to="/home" /> : children;
+}
+
+function PrivateRoute({ children }) {
+  const { token } = useAuth();
+  return token ? children : <Navigate to="/" />;
+}
 
 function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/LandlordHome" element={<LandlordHome />} />
+      <Route path="/" element={
+        <PublicRoute>
+          <Landing />
+        </PublicRoute>
+      } />
+      <Route path="/home" element={
+        <PrivateRoute>
+          <Home />
+        </PrivateRoute>
+      } />
     </Routes>
   );
 }

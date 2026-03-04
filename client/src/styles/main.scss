@@ -10,3 +10,7 @@
 
 @use "./components/ui/Button";
 @use "./components/ui/TextInput";
+
+@use "./layouts/components/Headers";
+@use "./layouts/components/Footer";
+@use "./layouts/Home";

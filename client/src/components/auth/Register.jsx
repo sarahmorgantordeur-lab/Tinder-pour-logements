@@ -15,6 +15,7 @@ const fadeVariants = {
 export default function Register({ onLogin }) {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
+    const fullName = surname ? `${name} ${surname}` : name;
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
@@ -44,10 +45,11 @@ export default function Register({ onLogin }) {
         setLoading(true);
 
         try {
+            console.log('Registering with:', { fullName, email, password, phone, role });
             const res = await fetch('http://localhost:3000/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userName: name, email, password }),
+                body: JSON.stringify({ userName: fullName, email, password, phone, role }),
             });
 
             const data = await res.json();
