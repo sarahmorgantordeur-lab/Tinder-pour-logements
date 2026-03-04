@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-
 import Landing from "../pages/LandingPage";
 import LandlordHome from "../pages/LandlordHome";
 
