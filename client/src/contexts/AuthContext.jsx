@@ -1,7 +1,6 @@
 import api from "../api";
-import { createContext, useState } from "react";
-
-const AuthContext = createContext(null);
+import { useState } from "react";
+import AuthContext from "../hooks/useAuth";
 
 export const AuthProvider = ({ children }) => {
 
@@ -12,12 +11,14 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [loading] = useState(false);
 
-    const register = async (userName, email, password) => {
+    const register = async (userName, email, password, phone, role) => {
         try {
             const response = await api.post("/auth/register", {
                 userName,
                 email,
                 password,
+                phone,
+                role
             });
             const { user: newUser } = response.data;
             setUser(newUser);

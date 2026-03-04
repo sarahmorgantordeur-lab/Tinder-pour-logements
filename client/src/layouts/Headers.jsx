@@ -1,19 +1,24 @@
 import Button from "../components/ui/Button";
 import  NavLink  from "../components/navigation/NavLink";
-import { useAuth } from "../contexts/useAuth";
+import { useAuth } from "../hooks/useAuth";
+import FMRIcon from "../assets/icons/FMR.svg?react";
 
 export default function Headers() {
     const { logout } = useAuth();
     return (
         <header className="app-header">
-            <div className="logo">Find My Roof</div>
+            <div className="logo">
+                <FMRIcon />
+            </div>
+            <div className="header-right">
             <nav className="navigation">
                 <NavLink>Home</NavLink>
                 <NavLink>About</NavLink>
                 <NavLink>Contact</NavLink>
             </nav>
-            <div className="logout-container">
-                <Button className="logout-btn" onClick={logout}>Logout</Button>
+            <div>
+                <Button onClick={logout}>Logout</Button>
+            </div>
             </div>
         </header>
     );
