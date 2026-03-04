@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/useAuth';
+import Button from '../ui/Button';
+import TextInput from '../ui/TextInput';
 
 export default function Login({ onLogin }) {
     const [email, setEmail] = useState('');
@@ -39,7 +41,7 @@ export default function Login({ onLogin }) {
 
                 <form onSubmit={handleSubmit} className="form-container">
                     <div className="">
-                        <input
+                        <TextInput
                             id="email"
                             type="email"
                             required
@@ -66,13 +68,13 @@ export default function Login({ onLogin }) {
                         <p data-cy="error-message">{error}</p>
                     )}
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={loading}
                         className=""
                     >
                         {loading ? 'Connexion…' : 'Se connecter'}
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>

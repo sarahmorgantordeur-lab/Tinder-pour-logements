@@ -1,3 +1,5 @@
+import Button from "../ui/Button";
+
 export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegister }) {
     
     const toggleAuth = () => {
@@ -8,21 +10,21 @@ export default function SwitchAuth({ isLogin, setIsLogin, isRegister, setIsRegis
     return (
         <div className="switch-auth-container">
             <div className="switch-auth-content">
-                <button
+                <Button
                     data-cy="login-btn"
                     onClick={toggleAuth}
                     className={isLogin ?  "" : "Inactive-button" }
                 >
                     Sign in
-                </button>
+                </Button>
 
-                <button
+                <Button
                     data-cy="register-btn"
                     onClick={toggleAuth}
                     className={isRegister ? "" : "Inactive-button"}
                 >
                     Sign up
-                </button>
+                </Button>
             </div>
         </div>
     );

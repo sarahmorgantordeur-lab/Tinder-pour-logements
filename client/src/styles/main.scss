@@ -7,3 +7,6 @@
 @use "./components/auth/AuthLayoutForm";
 @use "./components/auth/SwitchAuth";
 @use "./components/auth/Auth";
+
+@use "./components/ui/Button";
+@use "./components/ui/TextInput";
