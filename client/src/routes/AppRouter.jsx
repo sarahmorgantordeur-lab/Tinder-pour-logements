@@ -1,20 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import Landing from "../pages/LandingPage";
-import Home from "../components/home/Home";
-import { HomeProvider } from "../hooks/useHome";
+import LandlordHome from "../pages/LandlordHome";
 
 function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route
-        path="/home"
-        element={
-          <HomeProvider>
-            <Home />
-          </HomeProvider>
-        }
-      />
+      <Route path="/LandlordHome" element={<LandlordHome />} />
     </Routes>
   );
 }
