@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import api from "../api";
+import { HomeContext } from "../hooks/useHome";
 
-const HomeContext = createContext(null);
 
 export const HomeProvider = ({ children }) => {
     const [apartments, setApartments] = useState([]);

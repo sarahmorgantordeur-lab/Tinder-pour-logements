@@ -3,7 +3,17 @@
 @use "./base";
 
 @use "./pages/LandingPage";
+@use "./pages/home_pages/AgencyHome";
+@use "./pages/home_pages/OwnerHome";
+@use "./pages/home_pages/UserHome";
 
 @use "./components/auth/AuthLayoutForm";
 @use "./components/auth/SwitchAuth";
 @use "./components/auth/Auth";
+
+@use "./components/ui/Button";
+@use "./components/ui/TextInput";
+
+@use "./layouts/components/Headers";
+@use "./layouts/components/Footer";
+@use "./layouts/Home";

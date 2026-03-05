@@ -1,8 +1,32 @@
 @use "./variables" as *;
 
+@font-face {
+    font-family: 'BeVietnamPro';
+    src: url('../assets/fonts/BeVietnamPro-Variable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neco';
+    src: url('../assets/fonts/Neco-Variable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
     background-color: $main-bg;
     color: $main-text-color;
 
-    font-family: 'Inter', sans-serif;
+    font-family: 'BeVietnamPro', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Neco', sans-serif;
+}
+
+input, button {
+    font-family: 'BeVietnamPro', sans-serif;
 }

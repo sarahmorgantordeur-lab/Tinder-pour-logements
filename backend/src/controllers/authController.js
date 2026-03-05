@@ -13,18 +13,20 @@ class AuthController {
             if (error.message === "Compte suspendu") {
                 return res.status(403).json({ message: error.message });
             }
+            console.error('[login error]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async register(req, res) {
-        const { email, password, userName, role } = req.body;
+        const { email, password, userName, phone, role } = req.body;
         try {
             const user = await AuthService.register(
                 email,
                 password,
                 userName,
-                role
+                role,
+                phone
             );
 
             res.status(200).json({ message: "User register successfully", user });

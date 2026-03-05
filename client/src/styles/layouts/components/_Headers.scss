@@ -1,0 +1,42 @@
+@use "../../variables" as *;
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: $background-color-light;
+    color: $main-text-color;
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+
+        .navigation{
+            display: flex;
+            gap: 1.5rem;
+
+            a {
+                color: $main-text-color;
+                text-decoration: none;
+                font-size: 1rem;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+
+                .active {
+                    font-weight: bold;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
