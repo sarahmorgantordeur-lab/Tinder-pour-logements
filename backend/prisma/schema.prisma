@@ -439,7 +439,7 @@ model Visit {
   status        VisitStatus  @default(proposee)
   note          String?
 
-  created_at    DateTime     @default(now())
+  created_at    DateTime    @default(now())
 }
 
 enum VisitStatus {
