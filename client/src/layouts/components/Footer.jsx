@@ -1,4 +1,4 @@
-import FMRIcon from "../assets/icons/FMR.svg?react";
+import FMRIcon from "../../assets/icons/FMR.svg?react";
 
 export default function Footer() {
     return (
