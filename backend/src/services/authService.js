@@ -7,7 +7,8 @@ const SALT_ROUNDS = 12;
 
 class AuthService {
 
-    static async register(email, password, userName, role = 'user') {
+    static async register(email, password, userName, role, phone) {
+        
         if (!email || !password || !userName) {
             throw new Error("All fields are required");
         }
@@ -27,6 +28,7 @@ class AuthService {
                 email,
                 password: hashedPassword,
                 username: userName,
+                phone,
                 role
             }
         });

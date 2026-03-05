@@ -1,14 +1,13 @@
+import 'dotenv/config';
+
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import setupRoutes from './routes/index.js';
 import prisma from './config/db.js';
 import { initSocket } from './socket/index.js';
-
-dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
@@ -42,9 +41,9 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(limiter);
-app.use('/api/auth/login', authLimiter);
-app.use('/api/auth/register', authLimiter);
+// app.use(limiter);
+// app.use('/api/auth/login', authLimiter);
+// app.use('/api/auth/register', authLimiter);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
