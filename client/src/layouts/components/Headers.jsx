@@ -1,7 +1,7 @@
-import Button from "../components/ui/Button";
-import  NavLink  from "../components/navigation/NavLink";
-import { useAuth } from "../hooks/useAuth";
-import FMRIcon from "../assets/icons/FMR.svg?react";
+import Button from "../../components/ui/Button";
+import  NavLink  from "../../components/navigation/NavLink";
+import { useAuth } from "../../hooks/useAuth";
+import FMRIcon from "../../assets/icons/FMR.svg?react";
 
 export default function Headers() {
     const { logout } = useAuth();

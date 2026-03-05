@@ -3,6 +3,9 @@
 @use "./base";
 
 @use "./pages/LandingPage";
+@use "./pages/home_pages/AgencyHome";
+@use "./pages/home_pages/OwnerHome";
+@use "./pages/home_pages/UserHome";
 
 @use "./components/auth/AuthLayoutForm";
 @use "./components/auth/SwitchAuth";

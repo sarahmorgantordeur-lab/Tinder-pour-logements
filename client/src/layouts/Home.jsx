@@ -1,6 +1,6 @@
 import { useAuth } from "../hooks/useAuth";
-import Headers from "./Headers";
-import Footer from "./Footer";
+import Headers from "./components/Headers";
+import Footer from "./components/Footer";
 import OwnerHome from "../pages/home_pages/OwnerHome";
 import UserHome from "../pages/home_pages/UserHome";
 import AgencyHome from "../pages/home_pages/AgencyHome";

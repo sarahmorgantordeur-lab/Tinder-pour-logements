@@ -1,0 +1,11 @@
+@use "../../variables" as *;
+
+.owner-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    //temp
+    min-height: 100vh;
+}
