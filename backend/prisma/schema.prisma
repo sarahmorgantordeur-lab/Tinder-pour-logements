@@ -16,37 +16,52 @@ datasource db {
 //--------------------------------
 
 model User {
-  id                  String   @id @default(uuid())
-  email               String   @unique
-  password            String
-  username            String
-  role                Role     @default(user)
-  phone               String?
-  avatar              String?
+  id                     String   @id @default(uuid())
+  name                   String
+  email                  String   @unique
+  password               String
+  username               String
+  role                   Role     @default(user)
+  phone                  String
+  gender                 Gender
+  income                 Int
+  household_composition  Int      @default(1)
+  exotic_animals         Boolean  @default(false)
 
   // Préférences de notification
-  email_notifications Boolean  @default(true)
-  is_banned           Boolean  @default(false)
+  email_notifications    Boolean  @default(true)
+  is_banned              Boolean  @default(false)
 
-  // Propriétaire / agence
-  company_name        String?
-  siret               String?
+  // Agency
+  company_name           String?  @default(null)
+  TVA                    String?  @default(null)
+  links                  String?  @default(null)
+  manager                String?  @default(null)
+  manager_email          String?  @default(null)
+  manager_phone          String?  @default(null)
 
   // Relations
-  profile            Profile?
-  pictures           Picture[]
-  favorites          Favorite[]
-  viewed_apartments  ViewedApartment[]
-  swipes             Swipe[]
-  matches            Match[]
-  requests           Request[]
-  messages           Message[]
-  owned_apartments   Apartment[] @relation("UserApartments")
+  profile                Profile?
+  pictures               Picture[]
+  favorites              Favorite[]
+  viewed_announcements   ViewedAnnouncements[]
+  swipes                 Swipe[]
+  matches                Match[]
+  requests               Request[]
+  messages               Message[]
+  owned_announcements    Announcement[] @relation("UserAnnouncements")
 
-  preferences        Preferences?
+  preferences            Preferences?
 
-  created_at         DateTime @default(now())
-  updated_at         DateTime @updatedAt
+  created_at             DateTime       @default(now())
+  updated_at             DateTime       @updatedAt
+  deleted_at             DateTime?
+}
+
+enum Gender {
+  male
+  female
+  other
 }
 
 enum Role {
@@ -60,120 +75,167 @@ model Profile {
   id                 String  @id @default(uuid())
   bio                String?
   job                String?
-  income             Float?
+  income             Int ?
   guarantors         Int?
 
-  user               User    @relation(fields: [user_id], references: [id])
+  user               User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id            String  @unique
 }
 
+model AgencyProfile {
+  id            String       @id @default(uuid())
+  user          User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String       @unique
+
+  name          String
+  siret         String?
+  verified      Boolean      @default(false)
+}
+
 model Picture {
-  id                 String       @id @default(uuid())
+  id                 String        @id @default(uuid())
   url                String
   type               PictureType
-  uploaded_at        DateTime     @default(now())
+  uploaded_at        DateTime      @default(now())
 
   // Relation avec User (pour les photos de profil)
-  user               User?        @relation(fields: [user_id], references: [id])
+  user               User?         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id            String?
 
-  // Relation avec Apartment (pour les photos d'appartement)
-  apartment          Apartment?   @relation(fields: [apartment_id], references: [id])
-  apartment_id       String?
+  // Relation avec Announcement (pour les photos d'appartement)
+  announcement       Announcement? @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id    String?
 }
 
 enum PictureType {
   profile
-  apartment
+  announcement
 }
 
 model Favorite {
-  id                String     @id @default(uuid())
-  user              User       @relation(fields: [user_id], references: [id])
-  user_id           String
-  apartment         Apartment  @relation(fields: [apartment_id], references: [id])
-  apartment_id      String
+  id                 String        @id @default(uuid())
+  user               User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id            String
+  announcement       Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id    String
 
-  @@unique([user_id, apartment_id])
+  @@unique([user_id, announcement_id])
 }
 
-model ViewedApartment {
-  id                String     @id @default(uuid())
-  viewed_at         DateTime   @default(now())
+model ViewedAnnouncements {
+  id                String        @id @default(uuid())
+  viewed_at         DateTime      @default(now())
 
-  user              User       @relation(fields: [user_id], references: [id])
+  user              User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id           String
-  apartment         Apartment  @relation(fields: [apartment_id], references: [id])
-  apartment_id      String
+  announcement      Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id   String
 }
 
 model Preferences {
-  id                String   @id @default(uuid())
-  property_type     String[]
+  id                String        @id @default(uuid())
+  property_type     PropertyType[]
   listing_type      String?
-  min_price         Float?
-  max_price         Float?
-  min_surface       Float?
+  min_price         Int?
+  max_price         Int?
+  min_surface       Int?
   regions           String[]
-  tags              String[]
 
-  user              User     @relation(fields: [user_id], references: [id])
-  user_id           String   @unique
+  user              User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id           String        @unique
 }
+
+
 
 //-----------------------------
 
-model Apartment {
+model Address {
   id                String        @id @default(uuid())
+  number            String 
+  box               Int?
+  street            String
+  city              String
+  postal_code       String
+}
+
+model Caracteristics {
+  id                String        @id @default(uuid())
+  description       String
+  announcement      Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id   String
+}
+
+model Announcement {
+  id                String                 @id @default(uuid())
   title             String
   description       String?
-  address           String
-  region            String
-  city              String?
-  postal_code       String?
-  country           String        @default("France")
+  address           Address                @relation(fields: [address_id], references: [id])
+  address_id        String
+  status            AnnouncementStatus     @default(draft)
 
   // Géolocalisation
   latitude          Float?
   longitude         Float?
 
-  property_type     PropertyType  @default(apartment)
-  listing_type      ListingType   @default(rent)
-  price             Float
-  surface           Float
+  property_type     PropertyType
+  listing_type      ListingType            @default(rent)
+  price             Int
+  surface           Int
   rooms             Int
-  tags              String[]
-  availability      Boolean @default(true)
+  bathrooms         Int
+  availability      Boolean                @default(true)
 
-  owner             User          @relation(fields: [owner_id], references: [id], name: "UserApartments")
+  owner             User                   @relation(fields: [owner_id], references: [id], name: "UserAnnouncements", onDelete: Cascade)
   owner_id          String
 
   pictures          Picture[]
   favorites         Favorite[]
-  viewedBy          ViewedApartment[]
+  viewedBy          ViewedAnnouncements[]
   swipes            Swipe[]
   matches           Match[]
   requests          Request[]
 
-  created_at        DateTime      @default(now())
-  updated_at        DateTime      @updatedAt
+  created_at        DateTime               @default(now())
+  updated_at        DateTime               @updatedAt
+  deleted_at        DateTime?
 
-  @@index([region])
   @@index([price])
   @@index([listing_type])
   @@index([property_type])
   @@index([surface])
   @@index([latitude, longitude])
+  @@index([listing_type, property_type, price])
+}
+
+enum AnnouncementStatus {
+  draft
+  published
+  rented
+  sold
+  archived
 }
 
 enum PropertyType {
-  apartment
-  house
-  studio
-  villa
-  land
-  commercial_space
-  other
+  Bungalow 
+  Chalet 
+  Castel
+  Farm
+  CountryHouse
+  ApartmentBuilding
+  MixteUseBuilding
+  BelEtageHouse
+  Mansion
+  Villa
+  ManorHouse
+  Pavilion
+  GroundFloor
+  Duplex
+  Triplex
+  Studio
+  Penthouse
+  Loft
+  StudentHousing
+  Other
 }
 
 enum ListingType {
@@ -185,27 +247,27 @@ enum ListingType {
 // Request pour candidature informelle après le swipe
 
 model Request {
-  id                String        @id @default(uuid())
+  id                 String         @id @default(uuid())
 
-  apartment         Apartment     @relation(fields: [apartment_id], references: [id])
-  apartment_id      String
+  announcement       Announcement   @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id    String
 
-  user              User          @relation(fields: [user_id], references: [id])
+  user              User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id           String
 
-  status            RequestStatus @default(waiting)
+  status            RequestStatus   @default(waiting)
   message           String?
 
   documents         RequestDocument[]
 
   visit_date        DateTime?
 
-  created_at        DateTime      @default(now())
-  updated_at        DateTime      @updatedAt
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @updatedAt
 
-  @@unique([apartment_id, user_id])
+  @@unique([announcement_id, user_id])
   @@index([user_id])
-  @@index([apartment_id])
+  @@index([announcement_id])
 }
 
 enum RequestStatus {
@@ -219,17 +281,17 @@ enum RequestStatus {
 //----------------------------
 
 model Swipe {
-  id               String   @id @default(uuid())
-  user             User     @relation(fields: [user_id], references: [id])
-  user_id          String
-  apartment        Apartment @relation(fields: [apartment_id], references: [id])
-  apartment_id     String
-  direction        SwipeDirection
-  created_at       DateTime @default(now())
+  id                String       @id @default(uuid())
+  user              User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id           String
+  announcement      Announcement @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id   String
+  direction         SwipeDirection
+  created_at        DateTime     @default(now())
 
-  @@unique([user_id, apartment_id])
+  @@unique([user_id, announcement_id])
   @@index([user_id])
-  @@index([apartment_id])
+  @@index([announcement_id])
 }
 
 enum SwipeDirection {
@@ -240,17 +302,17 @@ enum SwipeDirection {
 //-------------------------------
 
 model Match {
-  id              String     @id @default(uuid())
-  user            User       @relation(fields: [user_id], references: [id])
-  user_id         String
-  apartment       Apartment  @relation(fields: [apartment_id], references: [id])
-  apartment_id    String
-  messages        Message[]
-  created_at      DateTime   @default(now())
+  id               String        @id @default(uuid())
+  user             User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id          String
+  announcement     Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id  String
+  messages         Message[]
+  created_at       DateTime      @default(now())
 
-  @@unique([user_id, apartment_id])
+  @@unique([user_id, announcement_id])
   @@index([user_id])
-  @@index([apartment_id])
+  @@index([announcement_id])
 }
 
 //------------------------------
@@ -258,11 +320,21 @@ model Match {
 model Message {
   id               String   @id @default(uuid())
   content          String
-  match            Match    @relation(fields: [match_id], references: [id])
+  match            Match    @relation(fields: [match_id], references: [id], onDelete: Cascade)
   match_id         String
-  sender           User     @relation(fields: [sender_id], references: [id])
+  sender           User     @relation(fields: [sender_id], references: [id], onDelete: Cascade)
   sender_id        String
   created_at       DateTime @default(now())
+
+  @@index([match_id])
+}
+
+model Conversation {
+  id        String          @id @default(uuid())
+  match     Match           @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  match_id  String          @unique
+
+  messages  Message[]
 }
 
 //------------------------------
@@ -273,6 +345,137 @@ model RequestDocument {
   url              String
   uploaded_at      DateTime @default(now())
 
-  request          Request  @relation(fields: [request_id], references: [id])
+  request          Request  @relation(fields: [request_id], references: [id], onDelete: Cascade)
   request_id       String
+
+  validated        Boolean  @default(false)
+  validated_at     DateTime?
+}
+
+model Document {
+  id             String      @id @default(uuid())
+  owner          User        @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  owner_id       String
+
+  name           String
+  url            String
+  mime_type      String?
+  size_bytes     Int?
+  hash           String?
+
+  created_at     DateTime    @default(now())
+
+  requests       RequestDocument[]
+  candidateDocs  CandidateDocument[]
+}
+
+
+
+model CandidateDocument {
+  id            String       @id @default(uuid())
+  user          User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+
+  document      Document     @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  document_id   String
+
+  type          DocumentType
+  created_at     DateTime    @default(now())
+}
+
+enum DocumentType {
+  carte_identite
+  preuve_revenus
+  contrat_travail
+  attestation_employeur
+  composition_menage
+  extrait_compte
+  garant
+  autre
+}
+
+
+//-------------------------------
+
+model Decision {
+  id             String       @id @default(uuid())
+  announcement   Announcement @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id String
+
+  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id        String
+
+  decision       DecisionType
+  message        String?
+  created_at     DateTime     @default(now())
+
+  @@unique([announcement_id, user_id])
+}
+
+enum DecisionType {
+  shortlist
+  refuse
+  demande_infos
+  bloque
+}
+
+//-------------------------------
+
+model Visit {
+  id            String        @id @default(uuid())
+
+  announcement  Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
+  announcement_id String
+
+  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+
+  owner         User          @relation(fields: [owner_id], references: [id])
+  owner_id      String
+
+  start         DateTime
+  end           DateTime
+
+  status        VisitStatus  @default(proposee)
+  note          String?
+
+  created_at    DateTime    @default(now())
+}
+
+enum VisitStatus {
+  proposee
+  confirmee
+  annulee
+  terminee
+}
+
+
+//----------------------------------
+// Signalements
+
+model Report {
+  id           String        @id @default(uuid())
+
+  author       User          @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  author_id    String
+
+  target_type  ReportType
+  target_id    String
+
+  reason       String
+  status       ReportStatus  @default(nouveau)
+
+  created_at    DateTime     @default(now())
+}
+
+enum ReportType {
+  announcement
+  user
+  message
+}
+
+enum ReportStatus {
+  nouveau
+  traite
+  rejete
 }
