@@ -7,19 +7,13 @@ const SALT_ROUNDS = 12;
 
 class AuthService {
 
-    static async register(email, password, userName, role, phone) {
-        
-        if (!email || !password || !userName) {
+    static async register(email, password, firstname, lastname, phone, role, address) {
+        if (!email || !password || !firstname || !lastname) {
             throw new Error("All fields are required");
         }
 
-        const existingUser = await prisma.user.findUnique({
-            where: { email }
-        });
-
-        if (existingUser) {
-            throw new Error("This email is already taken");
-        }
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        if (existingUser) throw new Error("This email is already taken");
 
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
@@ -27,13 +21,23 @@ class AuthService {
             data: {
                 email,
                 password: hashedPassword,
-                username: userName,
+                firstname,
+                lastname,
                 phone,
-                role
+                role,
+                address: {
+                    create: {
+                        number: address?.number || '',
+                        box: address?.box || null,
+                        street: address?.street || '',
+                        city: address?.city || '',
+                        postal_code: address?.postal_code || '',
+                        country: address?.country || 'Belgique'
+                    }
+                }
             }
         });
 
-        // Envoyer l'email de bienvenue (non bloquant)
         EmailService.sendWelcomeEmail(newUser).catch(err => {
             console.error('Failed to send welcome email:', err.message);
         });
@@ -43,25 +47,26 @@ class AuthService {
     }
 
     static async login(email, password) {
-        const user = await prisma.user.findUnique({
-            where: { email }
-        });
+        const user = await prisma.user.findUnique({ where: { email } });
 
-        if (!user) {
-            throw new Error("Invalid email or password");
-        }
-        if (user.is_banned) {
-            throw new Error("Compte suspendu");
-        }
+        if (!user) throw new Error("Invalid email or password");
+        if (!user.is_active) throw new Error("Compte désactivé");
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            throw new Error("Invalid email or password");
-        }
+        if (!isPasswordValid) throw new Error("Invalid email or password");
 
         const token = generateToken(user);
 
-        return { user: { id: user.id, email: user.email, userName: user.username, role: user.role }, token };
+        return {
+            user: {
+                id: user.id,
+                email: user.email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                role: user.role
+            },
+            token
+        };
     }
 }
 
