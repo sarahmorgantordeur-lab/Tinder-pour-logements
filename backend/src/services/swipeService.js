@@ -1,5 +1,4 @@
 import prisma from '../config/db.js';
-import EmailService from './emailService.js';
 
 class SwipeService {
 
@@ -27,16 +26,30 @@ class SwipeService {
                 where: { id: existingSwipe.id },
                 data: { direction }
             });
+
+            // Si le like est retiré, supprimer la conversation associée
+            if (!direction) {
+                await prisma.conversation.deleteMany({ where: { swipe_id: swipe.id } });
+            }
         } else {
             swipe = await prisma.swipe.create({
                 data: { user_id: userId, property_id: propertyId, direction }
             });
         }
 
+        // Like → ouvrir la conversation automatiquement
         if (direction === true) {
-            EmailService.sendNewLikeNotification(property.owner_id, propertyId, userId).catch(err => {
-                console.error('Failed to send like notification:', err.message);
-            });
+            const existing = await prisma.conversation.findUnique({ where: { swipe_id: swipe.id } });
+            if (!existing) {
+                await prisma.conversation.create({
+                    data: {
+                        swipe_id: swipe.id,
+                        property_id: propertyId,
+                        tenant_id: userId,
+                        owner_id: property.owner_id
+                    }
+                });
+            }
         }
 
         return swipe;
