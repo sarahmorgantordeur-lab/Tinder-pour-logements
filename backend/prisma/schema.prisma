@@ -1,0 +1,302 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// UTILISATEUR
+// ─────────────────────────────────────────────
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  firstname      String
+  lastname       String
+  phone          String?
+  avatar         String?
+  bio            String?
+  role           Role     @default(user)
+  is_active      Boolean  @default(true)
+
+  // Relations
+  agency                  Agency?
+  tenant_profile          TenantProfile?
+  properties              Property[]       @relation("UserProperties")
+  favorites               Favorite[]
+  swipes                  Swipe[]
+  matches                 Match[]
+  conversations_as_tenant Conversation[]   @relation("TenantConversations")
+  conversations_as_owner  Conversation[]   @relation("OwnerConversations")
+  messages                Message[]
+
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  deleted_at     DateTime?
+}
+
+enum Role {
+  user
+  owner
+  agency
+}
+
+// ─────────────────────────────────────────────
+// AGENCE (profil agence rattaché au compte)
+// ─────────────────────────────────────────────
+
+model Agency {
+  id          String   @id @default(uuid())
+  nom_agence  String
+  numero_tva  String?
+  numero_bce  String?
+  site_web    String?
+  adresse     String?
+  ville       String?
+  code_postal String?
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String   @unique
+
+  created_at  DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────
+// PROFIL LOCATAIRE
+// (income non exposé au propriétaire — contrôle côté API)
+// ─────────────────────────────────────────────
+
+model TenantProfile {
+  id             String         @id @default(uuid())
+  gender         Gender?
+  household_size Int?           // nombre de personnes dans le foyer
+  has_pets       Boolean        @default(false)
+  income         Float?         // non visible par le propriétaire
+
+  // Critères de recherche
+  budget_max     Float?
+  min_surface    Int?           // m²
+  max_surface    Int?           // m² — null = peu importe
+  has_terrace    Boolean?       // null = peu importe
+  has_garden     Boolean?       // null = peu importe
+  regions        String[]
+  property_types PropertyType[] // plusieurs types possibles
+
+  user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id        String         @unique
+
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+}
+
+enum Gender {
+  male
+  female
+  non_binary
+  prefer_not_to_say
+}
+
+// ─────────────────────────────────────────────
+// BIEN IMMOBILIER
+// ─────────────────────────────────────────────
+
+model Property {
+  id             String         @id @default(uuid())
+  title          String
+  description    String?
+  property_type  PropertyType
+  status         PropertyStatus @default(draft)
+
+  // Adresse
+  number         String?
+  box            String?
+  street         String
+  city           String
+  postal_code    String
+  country        String         @default("Belgique")
+
+  // Caractéristiques
+  price          Float
+  charges        Float?
+  surface        Int            // m²
+  rooms          Int
+  bedrooms       Int?
+  bathrooms      Int?
+  has_terrace    Boolean        @default(false)
+  has_garden     Boolean        @default(false)
+  parking        Boolean        @default(false)
+  furnished      Boolean        @default(false)
+  pets_allowed   Boolean        @default(false)
+  available_from DateTime?
+
+  owner          User           @relation(fields: [owner_id], references: [id], name: "UserProperties", onDelete: Cascade)
+  owner_id       String
+
+  photos         PropertyPhoto[]
+  favorites      Favorite[]
+  swipes         Swipe[]
+  matches        Match[]
+  conversations  Conversation[]
+
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  deleted_at     DateTime?
+
+  @@index([city])
+  @@index([price])
+  @@index([surface])
+  @@index([property_type])
+  @@index([status])
+}
+
+enum PropertyType {
+  Bungalow
+  Chalet
+  Castel
+  Farm
+  CountryHouse
+  ApartmentBuilding
+  MixedUseBuilding
+  BelEtageHouse
+  Mansion
+  Villa
+  ManorHouse
+  Pavilion
+  GroundFloor
+  Duplex
+  Triplex
+  Studio
+  Penthouse
+  Loft
+  StudentHousing
+  ServiceApartment
+  Appartement
+  Other
+}
+
+enum PropertyStatus {
+  draft
+  published
+  rented
+  archived
+}
+
+model PropertyPhoto {
+  id          String   @id @default(uuid())
+  url         String
+  order       Int      @default(0)
+
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  uploaded_at DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────
+// FAVORIS
+// ─────────────────────────────────────────────
+
+model Favorite {
+  id          String   @id @default(uuid())
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  created_at  DateTime @default(now())
+
+  @@unique([user_id, property_id])
+}
+
+// ─────────────────────────────────────────────
+// SWIPE (locataire sur un bien)
+// direction : true = like / false = dislike
+// ─────────────────────────────────────────────
+
+model Swipe {
+  id          String   @id @default(uuid())
+  direction   Boolean
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  created_at  DateTime @default(now())
+
+  @@unique([user_id, property_id])
+  @@index([user_id])
+  @@index([property_id])
+}
+
+// ─────────────────────────────────────────────
+// MATCH (locataire liké + propriétaire accepte)
+// ─────────────────────────────────────────────
+
+model Match {
+  id           String        @id @default(uuid())
+
+  user         User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id      String
+  property     Property      @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id  String
+
+  conversation Conversation?
+
+  created_at   DateTime      @default(now())
+
+  @@unique([user_id, property_id])
+  @@index([user_id])
+  @@index([property_id])
+}
+
+// ─────────────────────────────────────────────
+// CONVERSATION (ouverte après un match)
+// ─────────────────────────────────────────────
+
+model Conversation {
+  id          String    @id @default(uuid())
+
+  match       Match     @relation(fields: [match_id], references: [id], onDelete: Cascade)
+  match_id    String    @unique
+
+  property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  tenant      User      @relation(fields: [tenant_id], references: [id], name: "TenantConversations", onDelete: Cascade)
+  tenant_id   String
+  owner       User      @relation(fields: [owner_id], references: [id], name: "OwnerConversations", onDelete: Cascade)
+  owner_id    String
+
+  messages    Message[]
+
+  created_at  DateTime  @default(now())
+}
+
+// ─────────────────────────────────────────────
+// MESSAGE
+// ─────────────────────────────────────────────
+
+model Message {
+  id              String       @id @default(uuid())
+  content         String
+  read            Boolean      @default(false)
+
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  conversation_id String
+
+  sender          User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  sender_id       String
+
+  created_at      DateTime     @default(now())
+
+  @@index([conversation_id])
+}
