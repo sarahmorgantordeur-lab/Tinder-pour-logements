@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -11,218 +8,135 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+
 }
 
-//--------------------------------
+// ─────────────────────────────────────────────
+// UTILISATEUR
+// ─────────────────────────────────────────────
 
 model User {
-  id                     String   @id @default(uuid())
-  name                   String
-  email                  String   @unique
-  password               String
-  username               String
-  role                   Role     @default(user)
-  phone                  String
-  gender                 Gender
-  income                 Int
-  household_composition  Int      @default(1)
-  exotic_animals         Boolean  @default(false)
-
-  // Préférences de notification
-  email_notifications    Boolean  @default(true)
-  is_banned              Boolean  @default(false)
-
-  // Agency
-  company_name           String?  @default(null)
-  TVA                    String?  @default(null)
-  links                  String?  @default(null)
-  manager                String?  @default(null)
-  manager_email          String?  @default(null)
-  manager_phone          String?  @default(null)
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  firstname      String
+  lastname       String
+  phone          String?
+  avatar         String?
+  bio            String?
+  role           Role     @default(user)
+  is_active      Boolean  @default(true)
 
   // Relations
-  profile                Profile?
-  pictures               Picture[]
-  favorites              Favorite[]
-  viewed_announcements   ViewedAnnouncements[]
-  swipes                 Swipe[]
-  matches                Match[]
-  requests               Request[]
-  messages               Message[]
-  owned_announcements    Announcement[] @relation("UserAnnouncements")
+  agency                  Agency?
+  tenant_profile          TenantProfile?
+  properties              Property[]       @relation("UserProperties")
+  swipes                  Swipe[]
+  conversations_as_tenant Conversation[]   @relation("TenantConversations")
+  conversations_as_owner  Conversation[]   @relation("OwnerConversations")
+  messages                Message[]
+  address                 Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id              String
 
-  preferences            Preferences?
-
-  created_at             DateTime       @default(now())
-  updated_at             DateTime       @updatedAt
-  deleted_at             DateTime?
-}
-
-enum Gender {
-  male
-  female
-  other
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  deleted_at     DateTime?
 }
 
 enum Role {
   user
   owner
   agency
-  admin
 }
 
-model Profile {
-  id                 String  @id @default(uuid())
-  bio                String?
-  job                String?
-  income             Int ?
-  guarantors         Int?
+// ─────────────────────────────────────────────
+// AGENCE (profil agence rattaché au compte)
+// ─────────────────────────────────────────────
 
-  user               User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id            String  @unique
+model Agency {
+  id          String   @id @default(uuid())
+  nom_agence  String
+  numero_tva  String?
+  numero_bce  String?
+  site_web    String?
+  address     Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id  String
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String   @unique
+
+  created_at  DateTime @default(now())
 }
 
-model AgencyProfile {
-  id            String       @id @default(uuid())
-  user          User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id       String       @unique
+// ─────────────────────────────────────────────
+// PROFIL LOCATAIRE
+// (income non exposé au propriétaire — contrôle côté API)
+// ─────────────────────────────────────────────
 
-  name          String
-  siret         String?
-  verified      Boolean      @default(false)
+model TenantProfile {
+  id             String         @id @default(uuid())
+  household_size Int?           // nombre de personnes dans le foyer
+
+  // Critères de recherche
+  budget_max     Float?
+  min_surface    Int?           // m²
+  max_surface    Int?           // m² — null = peu importe
+  regions        String[]
+  property_types PropertyType[] // plusieurs types possibles
+
+  user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id        String         @unique
+
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
 }
 
-model Picture {
-  id                 String        @id @default(uuid())
-  url                String
-  type               PictureType
-  uploaded_at        DateTime      @default(now())
+// ─────────────────────────────────────────────
+// BIEN IMMOBILIER
+// ─────────────────────────────────────────────
 
-  // Relation avec User (pour les photos de profil)
-  user               User?         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id            String?
+model Property {
+  id             String         @id @default(uuid())
+  title          String
+  description    String?
+  property_type  PropertyType
+  status         PropertyStatus @default(draft)
 
-  // Relation avec Announcement (pour les photos d'appartement)
-  announcement       Announcement? @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id    String?
-}
+  address        Address        @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id     String
 
-enum PictureType {
-  profile
-  announcement
-}
+  // Caractéristiques
+  price          Int
+  surface        Int            // m²
+  rooms          Int
+  parking        Boolean        @default(false)
 
-model Favorite {
-  id                 String        @id @default(uuid())
-  user               User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id            String
-  announcement       Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id    String
+  owner          User           @relation(fields: [owner_id], references: [id], name: "UserProperties", onDelete: Cascade)
+  owner_id       String
 
-  @@unique([user_id, announcement_id])
-}
+  photos         PropertyPhoto[]
+  swipes         Swipe[]
+  conversations  Conversation[]
 
-model ViewedAnnouncements {
-  id                String        @id @default(uuid())
-  viewed_at         DateTime      @default(now())
-
-  user              User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id           String
-  announcement      Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id   String
-}
-
-model Preferences {
-  id                String        @id @default(uuid())
-  property_type     PropertyType[]
-  listing_type      String?
-  min_price         Int?
-  max_price         Int?
-  min_surface       Int?
-  regions           String[]
-
-  user              User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id           String        @unique
-}
-
-
-
-//-----------------------------
-
-model Address {
-  id                String        @id @default(uuid())
-  number            String 
-  box               Int?
-  street            String
-  city              String
-  postal_code       String
-}
-
-model Caracteristics {
-  id                String        @id @default(uuid())
-  description       String
-  announcement      Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id   String
-}
-
-model Announcement {
-  id                String                 @id @default(uuid())
-  title             String
-  description       String?
-  address           Address                @relation(fields: [address_id], references: [id])
-  address_id        String
-  status            AnnouncementStatus     @default(draft)
-
-  // Géolocalisation
-  latitude          Float?
-  longitude         Float?
-
-  property_type     PropertyType
-  listing_type      ListingType            @default(rent)
-  price             Int
-  surface           Int
-  rooms             Int
-  bathrooms         Int
-  availability      Boolean                @default(true)
-
-  owner             User                   @relation(fields: [owner_id], references: [id], name: "UserAnnouncements", onDelete: Cascade)
-  owner_id          String
-
-  pictures          Picture[]
-  favorites         Favorite[]
-  viewedBy          ViewedAnnouncements[]
-  swipes            Swipe[]
-  matches           Match[]
-  requests          Request[]
-
-  created_at        DateTime               @default(now())
-  updated_at        DateTime               @updatedAt
-  deleted_at        DateTime?
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  deleted_at     DateTime?
 
   @@index([price])
-  @@index([listing_type])
-  @@index([property_type])
   @@index([surface])
-  @@index([latitude, longitude])
-  @@index([listing_type, property_type, price])
-}
-
-enum AnnouncementStatus {
-  draft
-  published
-  rented
-  sold
-  archived
+  @@index([property_type])
+  @@index([status])
 }
 
 enum PropertyType {
-  Bungalow 
-  Chalet 
+  Bungalow
+  Chalet
   Castel
   Farm
   CountryHouse
   ApartmentBuilding
-  MixteUseBuilding
+  MixedUseBuilding
   BelEtageHouse
   Mansion
   Villa
@@ -235,247 +149,111 @@ enum PropertyType {
   Penthouse
   Loft
   StudentHousing
+  ServiceApartment
+  Appartement
   Other
 }
 
-enum ListingType {
-  rent
-  sale
+enum PropertyStatus {
+  draft
+  published
+  rented
+  archived
 }
 
-//-----------------------------
-// Request pour candidature informelle après le swipe
+model PropertyPhoto {
+  id          String   @id @default(uuid())
+  url         String
+  order       Int      @default(0)
 
-model Request {
-  id                 String         @id @default(uuid())
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
 
-  announcement       Announcement   @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id    String
-
-  user              User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id           String
-
-  status            RequestStatus   @default(waiting)
-  message           String?
-
-  documents         RequestDocument[]
-
-  visit_date        DateTime?
-
-  created_at        DateTime       @default(now())
-  updated_at        DateTime       @updatedAt
-
-  @@unique([announcement_id, user_id])
-  @@index([user_id])
-  @@index([announcement_id])
+  uploaded_at DateTime @default(now())
 }
 
-enum RequestStatus {
-  waiting
-  contacted
-  visit_planned
-  accepted
-  refused
-}
-
-//----------------------------
+// ─────────────────────────────────────────────
+// SWIPE (locataire sur un bien)
+// direction : true = like / false = dislike
+// ─────────────────────────────────────────────
 
 model Swipe {
-  id                String       @id @default(uuid())
-  user              User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id           String
-  announcement      Announcement @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id   String
-  direction         SwipeDirection
-  created_at        DateTime     @default(now())
+  id          String   @id @default(uuid())
+  direction   Boolean
 
-  @@unique([user_id, announcement_id])
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  created_at  DateTime @default(now())
+
+  @@unique([user_id, property_id])
   @@index([user_id])
-  @@index([announcement_id])
+  @@index([property_id])
 }
 
-enum SwipeDirection {
-  like
-  dislike
-}
-
-//-------------------------------
-
-model Match {
-  id               String        @id @default(uuid())
-  user             User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id          String
-  announcement     Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id  String
-  messages         Message[]
-  created_at       DateTime      @default(now())
-
-  @@unique([user_id, announcement_id])
-  @@index([user_id])
-  @@index([announcement_id])
-}
-
-//------------------------------
-
-model Message {
-  id               String   @id @default(uuid())
-  content          String
-  match            Match    @relation(fields: [match_id], references: [id], onDelete: Cascade)
-  match_id         String
-  sender           User     @relation(fields: [sender_id], references: [id], onDelete: Cascade)
-  sender_id        String
-  created_at       DateTime @default(now())
-
-  @@index([match_id])
-}
+// ─────────────────────────────────────────────
+// CONVERSATION (ouverte après un swipe)
+// ─────────────────────────────────────────────
 
 model Conversation {
-  id        String          @id @default(uuid())
-  match     Match           @relation(fields: [match_id], references: [id], onDelete: Cascade)
-  match_id  String          @unique
+  id          String    @id @default(uuid())
 
-  messages  Message[]
+  swipe       Swipe     @relation(fields: [swipe_id], references: [id], onDelete: Cascade)
+  swipe_id    String    @unique
+
+  property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  tenant      User      @relation(fields: [tenant_id], references: [id], name: "TenantConversations", onDelete: Cascade)
+  tenant_id   String
+  owner       User      @relation(fields: [owner_id], references: [id], name: "OwnerConversations", onDelete: Cascade)
+  owner_id    String
+
+  messages Message[]
+
+  created_at  DateTime  @default(now())
 }
 
-//------------------------------
+// ─────────────────────────────────────────────
+// MESSAGE
+// ─────────────────────────────────────────────
 
-model RequestDocument {
-  id               String   @id @default(uuid())
-  name             String
-  url              String
-  uploaded_at      DateTime @default(now())
+model Message {
+  id              String       @id @default(uuid())
+  content         String
+  read            Boolean      @default(false)
 
-  request          Request  @relation(fields: [request_id], references: [id], onDelete: Cascade)
-  request_id       String
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  conversation_id String
 
-  validated        Boolean  @default(false)
-  validated_at     DateTime?
+  sender          User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  sender_id       String
+
+  created_at      DateTime     @default(now())
+
+  @@index([conversation_id])
 }
 
-model Document {
-  id             String      @id @default(uuid())
-  owner          User        @relation(fields: [owner_id], references: [id], onDelete: Cascade)
-  owner_id       String
+// ─────────────────────────────────────────────
+// ADDRESS
+// ─────────────────────────────────────────────
 
-  name           String
-  url            String
-  mime_type      String?
-  size_bytes     Int?
-  hash           String?
+model Address {
+  id              String       @id @default(uuid())
+  number          String
+  box             String?
+  street          String
+  city            String
+  postal_code     String
+  country         String
 
-  created_at     DateTime    @default(now())
+  users           User[]
+  agencies        Agency[]
+  properties      Property[]
 
-  requests       RequestDocument[]
-  candidateDocs  CandidateDocument[]
-}
+  created_at      DateTime     @default(now())
 
-
-
-model CandidateDocument {
-  id            String       @id @default(uuid())
-  user          User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id       String
-
-  document      Document     @relation(fields: [document_id], references: [id], onDelete: Cascade)
-  document_id   String
-
-  type          DocumentType
-  created_at     DateTime    @default(now())
-}
-
-enum DocumentType {
-  carte_identite
-  preuve_revenus
-  contrat_travail
-  attestation_employeur
-  composition_menage
-  extrait_compte
-  garant
-  autre
-}
-
-
-//-------------------------------
-
-model Decision {
-  id             String       @id @default(uuid())
-  announcement   Announcement @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id String
-
-  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id        String
-
-  decision       DecisionType
-  message        String?
-  created_at     DateTime     @default(now())
-
-  @@unique([announcement_id, user_id])
-}
-
-enum DecisionType {
-  shortlist
-  refuse
-  demande_infos
-  bloque
-}
-
-//-------------------------------
-
-model Visit {
-  id            String        @id @default(uuid())
-
-  announcement  Announcement  @relation(fields: [announcement_id], references: [id], onDelete: Cascade)
-  announcement_id String
-
-  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id       String
-
-  owner         User          @relation(fields: [owner_id], references: [id])
-  owner_id      String
-
-  start         DateTime
-  end           DateTime
-
-  status        VisitStatus  @default(proposee)
-  note          String?
-
-  created_at    DateTime    @default(now())
-}
-
-enum VisitStatus {
-  proposee
-  confirmee
-  annulee
-  terminee
-}
-
-
-//----------------------------------
-// Signalements
-
-model Report {
-  id           String        @id @default(uuid())
-
-  author       User          @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  author_id    String
-
-  target_type  ReportType
-  target_id    String
-
-  reason       String
-  status       ReportStatus  @default(nouveau)
-
-  created_at    DateTime     @default(now())
-}
-
-enum ReportType {
-  announcement
-  user
-  message
-}
-
-enum ReportStatus {
-  nouveau
-  traite
-  rejete
+  @@index([city])
 }

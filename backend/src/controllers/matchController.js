@@ -1,165 +1,111 @@
-import MatchService from '../services/matchService.js';
+import ConversationService from '../services/matchService.js';
 
-class MatchController {
+class ConversationController {
 
-    static async createMatch(req, res) {
+    static async createConversation(req, res) {
         try {
-            const ownerId = req.user.id;
-            const { userId, apartmentId } = req.body;
+            const { swipeId } = req.body;
+            if (!swipeId) return res.status(400).json({ message: "swipeId is required" });
 
-            if (!userId || !apartmentId) {
-                return res.status(400).json({ message: "userId and apartmentId are required" });
-            }
-
-            const match = await MatchService.createMatch(ownerId, userId, apartmentId);
-            res.status(201).json({ message: "Match created", match });
+            const conversation = await ConversationService.createConversation(req.user.id, swipeId);
+            res.status(201).json({ message: "Conversation created", conversation });
         } catch (error) {
-            if (error.message === "Apartment not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "Unauthorized to create match for this apartment") {
-                return res.status(403).json({ message: error.message });
-            }
-            if (error.message === "User has not liked this apartment") {
-                return res.status(400).json({ message: error.message });
-            }
-            if (error.message === "Match already exists") {
-                return res.status(409).json({ message: error.message });
-            }
-            console.error('Create match error:', error);
+            if (error.message === "Swipe not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Tenant has not liked this property") return res.status(400).json({ message: error.message });
+            if (error.message === "Unauthorized") return res.status(403).json({ message: error.message });
+            if (error.message === "Conversation already exists") return res.status(409).json({ message: error.message });
+            console.error('[createConversation]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async getUserMatches(req, res) {
+    static async getUserConversations(req, res) {
         try {
-            const userId = req.user.id;
-
-            const matches = await MatchService.getUserMatches(userId);
-            res.status(200).json({ matches });
+            const conversations = await ConversationService.getUserConversations(req.user.id);
+            res.status(200).json({ conversations });
         } catch (error) {
-            console.error('Get user matches error:', error);
+            console.error('[getUserConversations]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async getOwnerMatches(req, res) {
+    static async getOwnerConversations(req, res) {
         try {
-            const ownerId = req.user.id;
-
-            const matches = await MatchService.getOwnerMatches(ownerId);
-            res.status(200).json({ matches });
+            const conversations = await ConversationService.getOwnerConversations(req.user.id);
+            res.status(200).json({ conversations });
         } catch (error) {
-            console.error('Get owner matches error:', error);
+            console.error('[getOwnerConversations]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async getMatchById(req, res) {
+    static async getById(req, res) {
         try {
-            const userId = req.user.id;
-            const { id } = req.params;
-
-            const match = await MatchService.getMatchById(id, userId);
-            res.status(200).json({ match });
+            const conversation = await ConversationService.getById(req.params.id, req.user.id);
+            res.status(200).json({ conversation });
         } catch (error) {
-            if (error.message === "Match not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "Unauthorized to view this match") {
-                return res.status(403).json({ message: error.message });
-            }
-            console.error('Get match by id error:', error);
+            if (error.message === "Conversation not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Unauthorized to view this conversation") return res.status(403).json({ message: error.message });
+            console.error('[getConversationById]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async deleteMatch(req, res) {
+    static async deleteConversation(req, res) {
         try {
-            const ownerId = req.user.id;
-            const { id } = req.params;
-
-            await MatchService.deleteMatch(id, ownerId);
-            res.status(200).json({ message: "Match deleted" });
+            await ConversationService.deleteConversation(req.params.id, req.user.id);
+            res.status(200).json({ message: "Conversation deleted" });
         } catch (error) {
-            if (error.message === "Match not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "Unauthorized to delete this match") {
-                return res.status(403).json({ message: error.message });
-            }
-            console.error('Delete match error:', error);
+            if (error.message === "Conversation not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Unauthorized to delete this conversation") return res.status(403).json({ message: error.message });
+            console.error('[deleteConversation]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async sendMessage(req, res) {
         try {
-            const senderId = req.user.id;
-            const { id } = req.params;
             const { content } = req.body;
+            if (!content?.trim()) return res.status(400).json({ message: "Message content is required" });
 
-            if (!content || content.trim() === '') {
-                return res.status(400).json({ message: "Message content is required" });
-            }
-
-            const message = await MatchService.sendMessage(id, senderId, content);
+            const message = await ConversationService.sendMessage(req.params.id, req.user.id, content);
             res.status(201).json({ message: "Message sent", data: message });
         } catch (error) {
-            if (error.message === "Match not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "Unauthorized to send message in this match") {
-                return res.status(403).json({ message: error.message });
-            }
-            console.error('Send message error:', error);
+            if (error.message === "Conversation not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Unauthorized to send message in this conversation") return res.status(403).json({ message: error.message });
+            console.error('[sendMessage]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async getMessages(req, res) {
         try {
-            const userId = req.user.id;
-            const { id } = req.params;
             const limit = parseInt(req.query.limit) || 50;
             const offset = parseInt(req.query.offset) || 0;
-
-            const messages = await MatchService.getMessages(id, userId, limit, offset);
+            const messages = await ConversationService.getMessages(req.params.id, req.user.id, limit, offset);
             res.status(200).json({ messages });
         } catch (error) {
-            if (error.message === "Match not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "Unauthorized to view messages") {
-                return res.status(403).json({ message: error.message });
-            }
-            console.error('Get messages error:', error);
+            if (error.message === "Conversation not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Unauthorized to view messages") return res.status(403).json({ message: error.message });
+            console.error('[getMessages]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async rejectLike(req, res) {
         try {
-            const ownerId = req.user.id;
-            const { userId, apartmentId } = req.body;
+            const { swipeId } = req.body;
+            if (!swipeId) return res.status(400).json({ message: "swipeId is required" });
 
-            if (!userId || !apartmentId) {
-                return res.status(400).json({ message: "userId and apartmentId are required" });
-            }
-
-            const result = await MatchService.rejectLike(ownerId, userId, apartmentId);
+            const result = await ConversationService.rejectLike(req.user.id, swipeId);
             res.status(200).json(result);
         } catch (error) {
-            if (error.message === "Apartment not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "Unauthorized") {
-                return res.status(403).json({ message: error.message });
-            }
-            console.error('Reject like error:', error);
+            if (error.message === "Swipe not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Unauthorized") return res.status(403).json({ message: error.message });
+            console.error('[rejectLike]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 }
 
-export default MatchController;
+export default ConversationController;

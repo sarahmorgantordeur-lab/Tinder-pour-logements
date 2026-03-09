@@ -1,23 +1,23 @@
 import express from 'express';
-import MatchController from '../controllers/matchController.js';
+import ConversationController from '../controllers/matchController.js';
 import { authenticate } from '../config/jwt.js';
 import { isUser, isOwnerOrAgency } from '../middlewares/roleMiddleware.js';
 import { uuidParamValidation } from '../utils/validators.js';
 
 const router = express.Router();
 
-// Routes pour les propriétaires/agences
-router.post('/', authenticate, isOwnerOrAgency, MatchController.createMatch);
-router.post('/reject', authenticate, isOwnerOrAgency, MatchController.rejectLike);
-router.get('/owner', authenticate, isOwnerOrAgency, MatchController.getOwnerMatches);
-router.delete('/:id', authenticate, isOwnerOrAgency, uuidParamValidation('id'), MatchController.deleteMatch);
+// Propriétaires / agences — ouvrir ou rejeter
+router.post('/', authenticate, isOwnerOrAgency, ConversationController.createConversation);
+router.post('/reject', authenticate, isOwnerOrAgency, ConversationController.rejectLike);
+router.get('/owner', authenticate, isOwnerOrAgency, ConversationController.getOwnerConversations);
+router.delete('/:id', authenticate, isOwnerOrAgency, uuidParamValidation('id'), ConversationController.deleteConversation);
 
-// Routes pour les locataires (users)
-router.get('/', authenticate, isUser, MatchController.getUserMatches);
+// Locataires
+router.get('/', authenticate, isUser, ConversationController.getUserConversations);
 
-// Routes communes (accessibles par les deux parties d'un match)
-router.get('/:id', authenticate, uuidParamValidation('id'), MatchController.getMatchById);
-router.post('/:id/messages', authenticate, uuidParamValidation('id'), MatchController.sendMessage);
-router.get('/:id/messages', authenticate, uuidParamValidation('id'), MatchController.getMessages);
+// Commun
+router.get('/:id', authenticate, uuidParamValidation('id'), ConversationController.getById);
+router.post('/:id/messages', authenticate, uuidParamValidation('id'), ConversationController.sendMessage);
+router.get('/:id/messages', authenticate, uuidParamValidation('id'), ConversationController.getMessages);
 
 export default router;

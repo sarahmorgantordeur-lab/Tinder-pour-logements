@@ -4,100 +4,80 @@ class SwipeController {
 
     static async swipe(req, res) {
         try {
-            const userId = req.user.id;
-            const { apartmentId, direction } = req.body;
+            const { propertyId, direction } = req.body;
 
-            if (!apartmentId || !direction) {
-                return res.status(400).json({ message: "apartmentId and direction are required" });
+            if (propertyId === undefined || direction === undefined) {
+                return res.status(400).json({ message: "propertyId and direction (boolean) are required" });
+            }
+            if (typeof direction !== 'boolean') {
+                return res.status(400).json({ message: "direction must be a boolean (true = like, false = dislike)" });
             }
 
-            if (!['like', 'dislike'].includes(direction)) {
-                return res.status(400).json({ message: "direction must be 'like' or 'dislike'" });
-            }
-
-            const swipe = await SwipeService.swipe(userId, apartmentId, direction);
+            const swipe = await SwipeService.swipe(req.user.id, propertyId, direction);
             res.status(200).json({ message: "Swipe recorded", swipe });
         } catch (error) {
-            if (error.message === "Apartment not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "You cannot swipe on your own apartment") {
-                return res.status(403).json({ message: error.message });
-            }
-            console.error('Swipe error:', error);
+            if (error.message === "Property not found") return res.status(404).json({ message: error.message });
+            if (error.message === "You cannot swipe on your own property") return res.status(403).json({ message: error.message });
+            console.error('[swipe]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async getApartmentsToSwipe(req, res) {
+    static async getPropertiesToSwipe(req, res) {
         try {
-            const userId = req.user.id;
             const limit = parseInt(req.query.limit) || 10;
-
-            const apartments = await SwipeService.getApartmentsToSwipe(userId, limit);
-            res.status(200).json({ apartments });
+            const properties = await SwipeService.getPropertiesToSwipe(req.user.id, limit);
+            res.status(200).json({ properties });
         } catch (error) {
-            console.error('Get apartments to swipe error:', error);
+            console.error('[getPropertiesToSwipe]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async getSwipeHistory(req, res) {
         try {
-            const userId = req.user.id;
-            const direction = req.query.direction; // 'like', 'dislike', or null for all
+            // direction query: "true" | "false" | undefined
+            let direction = null;
+            if (req.query.direction === 'true') direction = true;
+            else if (req.query.direction === 'false') direction = false;
 
-            const swipes = await SwipeService.getUserSwipes(userId, direction);
+            const swipes = await SwipeService.getUserSwipes(req.user.id, direction);
             res.status(200).json({ swipes });
         } catch (error) {
-            console.error('Get swipe history error:', error);
+            console.error('[getSwipeHistory]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async getReceivedLikes(req, res) {
         try {
-            const ownerId = req.user.id;
-
-            const likes = await SwipeService.getLikesForOwner(ownerId);
+            const likes = await SwipeService.getLikesForOwner(req.user.id);
             res.status(200).json({ likes });
         } catch (error) {
-            console.error('Get received likes error:', error);
+            console.error('[getReceivedLikes]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async getLikesForApartment(req, res) {
+    static async getLikesForProperty(req, res) {
         try {
-            const ownerId = req.user.id;
-            const { apartmentId } = req.params;
-
-            const likes = await SwipeService.getLikesForApartment(apartmentId, ownerId);
+            const likes = await SwipeService.getLikesForProperty(req.params.propertyId, req.user.id);
             res.status(200).json({ likes });
         } catch (error) {
-            if (error.message === "Apartment not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === "Unauthorized to view likes for this apartment") {
-                return res.status(403).json({ message: error.message });
-            }
-            console.error('Get likes for apartment error:', error);
+            if (error.message === "Property not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Unauthorized to view likes for this property") return res.status(403).json({ message: error.message });
+            console.error('[getLikesForProperty]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async deleteSwipe(req, res) {
         try {
-            const userId = req.user.id;
-            const { apartmentId } = req.params;
-
-            await SwipeService.deleteSwipe(userId, apartmentId);
+            await SwipeService.deleteSwipe(req.user.id, req.params.propertyId);
             res.status(200).json({ message: "Swipe deleted" });
         } catch (error) {
-            if (error.message === "Swipe not found") {
-                return res.status(404).json({ message: error.message });
-            }
-            console.error('Delete swipe error:', error);
+            if (error.message === "Swipe not found") return res.status(404).json({ message: error.message });
+            console.error('[deleteSwipe]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
