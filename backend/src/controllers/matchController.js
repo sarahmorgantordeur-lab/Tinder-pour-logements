@@ -92,20 +92,6 @@ class ConversationController {
         }
     }
 
-    static async rejectLike(req, res) {
-        try {
-            const { swipeId } = req.body;
-            if (!swipeId) return res.status(400).json({ message: "swipeId is required" });
-
-            const result = await ConversationService.rejectLike(req.user.id, swipeId);
-            res.status(200).json(result);
-        } catch (error) {
-            if (error.message === "Swipe not found") return res.status(404).json({ message: error.message });
-            if (error.message === "Unauthorized") return res.status(403).json({ message: error.message });
-            console.error('[rejectLike]', error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
 }
 
 export default ConversationController;
