@@ -63,7 +63,11 @@ class AuthService {
                 email: user.email,
                 firstname: user.firstname,
                 lastname: user.lastname,
-                role: user.role
+                phone: user.phone,
+                role: user.role,
+                avatar: user.avatar,
+                tenant_profile: user.tenant_profile,
+                agency: user.agency
             },
             token
         };
