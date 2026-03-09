@@ -10,9 +10,7 @@ const fadeVariants = {
     exit: { opacity: 0 },
 };
 
-export default function AuthLayoutForm() {
-    const [isLogin, setIsLogin] = useState(true);
-    const [isRegister, setIsRegister] = useState(false);
+export default function AuthLayoutForm({ isLogin, isRegister, setIsLogin, setIsRegister }) {
 
     const toggleAuthMode = () => {
         setIsLogin((prev) => !prev);
