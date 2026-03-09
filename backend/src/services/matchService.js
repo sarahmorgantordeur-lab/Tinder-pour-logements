@@ -1,101 +1,70 @@
 import prisma from '../config/db.js';
-import EmailService from './emailService.js';
 
-class MatchService {
-
-    static async createMatch(ownerId, userId, apartmentId) {
-        // Vérifier que l'appartement existe et appartient au propriétaire
-        const apartment = await prisma.apartment.findUnique({
-            where: { id: apartmentId }
-        });
-
-        if (!apartment) {
-            throw new Error("Apartment not found");
+const conversationInclude = {
+    property: {
+        include: {
+            address: true,
+            photos: { orderBy: { order: 'asc' }, take: 1 }
         }
-
-        if (apartment.owner_id !== ownerId) {
-            throw new Error("Unauthorized to create match for this apartment");
+    },
+    tenant: {
+        select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+            email: true,
+            phone: true,
+            avatar: true,
+            tenant_profile: true
         }
+    },
+    owner: {
+        select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+            email: true,
+            phone: true,
+            avatar: true,
+            agency: true
+        }
+    }
+};
 
-        // Vérifier qu'un like existe
+class ConversationService {
+
+    // Propriétaire ouvre une conversation à partir d'un swipe like
+    static async createConversation(ownerId, swipeId) {
         const swipe = await prisma.swipe.findUnique({
-            where: {
-                user_id_apartment_id: {
-                    user_id: userId,
-                    apartment_id: apartmentId
-                }
-            }
+            where: { id: swipeId },
+            include: { property: true, user: true }
         });
 
-        if (!swipe || swipe.direction !== 'like') {
-            throw new Error("User has not liked this apartment");
-        }
+        if (!swipe) throw new Error("Swipe not found");
+        if (!swipe.direction) throw new Error("Tenant has not liked this property");
+        if (swipe.property.owner_id !== ownerId) throw new Error("Unauthorized");
 
-        const existingMatch = await prisma.match.findUnique({
-            where: {
-                user_id_apartment_id: {
-                    user_id: userId,
-                    apartment_id: apartmentId
-                }
-            }
-        });
+        const existing = await prisma.conversation.findUnique({ where: { swipe_id: swipeId } });
+        if (existing) throw new Error("Conversation already exists");
 
-        if (existingMatch) {
-            throw new Error("Match already exists");
-        }
-
-        const match = await prisma.match.create({
+        const conversation = await prisma.conversation.create({
             data: {
-                user_id: userId,
-                apartment_id: apartmentId
+                swipe_id: swipeId,
+                property_id: swipe.property_id,
+                tenant_id: swipe.user_id,
+                owner_id: ownerId
             },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        email: true
-                    }
-                },
-                apartment: {
-                    include: {
-                        owner: {
-                            select: {
-                                id: true,
-                                username: true,
-                                email: true
-                            }
-                        }
-                    }
-                }
-            }
+            include: conversationInclude
         });
 
-        EmailService.sendMatchNotification(userId, apartmentId).catch(err => {
-            console.error('Failed to send match notification:', err.message);
-        });
-
-        return match;
+        return conversation;
     }
 
-    static async getUserMatches(userId) {
-        return prisma.match.findMany({
-            where: { user_id: userId },
+    static async getUserConversations(userId) {
+        return prisma.conversation.findMany({
+            where: { tenant_id: userId },
             include: {
-                apartment: {
-                    include: {
-                        owner: {
-                            select: {
-                                id: true,
-                                username: true,
-                                email: true,
-                                phone: true,
-                                avatar: true,
-                                company_name: true
-                            }
-                        }
-                    }
-                },
+                ...conversationInclude,
                 messages: {
                     orderBy: { created_at: 'desc' },
                     take: 1
@@ -105,39 +74,11 @@ class MatchService {
         });
     }
 
-    static async getOwnerMatches(ownerId) {
-        // Récupérer les appartements du propriétaire
-        const apartments = await prisma.apartment.findMany({
+    static async getOwnerConversations(ownerId) {
+        return prisma.conversation.findMany({
             where: { owner_id: ownerId },
-            select: { id: true }
-        });
-
-        const apartmentIds = apartments.map(a => a.id);
-
-        return prisma.match.findMany({
-            where: {
-                apartment_id: { in: apartmentIds }
-            },
             include: {
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        email: true,
-                        phone: true,
-                        avatar: true,
-                        profile: true
-                    }
-                },
-                apartment: {
-                    select: {
-                        id: true,
-                        title: true,
-                        address: true,
-                        price: true,
-                        pictures: true
-                    }
-                },
+                ...conversationInclude,
                 messages: {
                     orderBy: { created_at: 'desc' },
                     take: 1
@@ -147,191 +88,83 @@ class MatchService {
         });
     }
 
-    static async getMatchById(matchId, userId) {
-        const match = await prisma.match.findUnique({
-            where: { id: matchId },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        email: true,
-                        phone: true,
-                        avatar: true,
-                        profile: true
-                    }
-                },
-                apartment: {
-                    include: {
-                        owner: {
-                            select: {
-                                id: true,
-                                username: true,
-                                email: true,
-                                phone: true,
-                                avatar: true,
-                                company_name: true
-                            }
-                        }
-                    }
-                },
-                messages: {
-                    orderBy: { created_at: 'asc' },
-                    include: {
-                        sender: {
-                            select: {
-                                id: true,
-                                username: true,
-                                avatar: true
-                            }
-                        }
-                    }
-                }
-            }
+    static async getById(conversationId, userId) {
+        const conversation = await prisma.conversation.findUnique({
+            where: { id: conversationId },
+            include: conversationInclude
         });
 
-        if (!match) {
-            throw new Error("Match not found");
+        if (!conversation) throw new Error("Conversation not found");
+        if (conversation.tenant_id !== userId && conversation.owner_id !== userId) {
+            throw new Error("Unauthorized to view this conversation");
         }
 
-        // Vérifier que l'utilisateur a accès au match
-        const isUser = match.user_id === userId;
-        const isOwner = match.apartment.owner_id === userId;
-
-        if (!isUser && !isOwner) {
-            throw new Error("Unauthorized to view this match");
-        }
-
-        return match;
+        return conversation;
     }
 
-    static async deleteMatch(matchId, ownerId) {
-        const match = await prisma.match.findUnique({
-            where: { id: matchId },
-            include: { apartment: true }
+    static async deleteConversation(conversationId, ownerId) {
+        const conversation = await prisma.conversation.findUnique({
+            where: { id: conversationId }
         });
 
-        if (!match) {
-            throw new Error("Match not found");
-        }
+        if (!conversation) throw new Error("Conversation not found");
+        if (conversation.owner_id !== ownerId) throw new Error("Unauthorized to delete this conversation");
 
-        if (match.apartment.owner_id !== ownerId) {
-            throw new Error("Unauthorized to delete this match");
-        }
-
-        // Supprimer d'abord les messages associés
-        await prisma.message.deleteMany({
-            where: { match_id: matchId }
-        });
-
-        return prisma.match.delete({
-            where: { id: matchId }
-        });
+        return prisma.conversation.delete({ where: { id: conversationId } });
     }
 
-    static async sendMessage(matchId, senderId, content) {
-        const match = await prisma.match.findUnique({
-            where: { id: matchId },
-            include: { apartment: true }
+    static async sendMessage(conversationId, senderId, content) {
+        const conversation = await prisma.conversation.findUnique({
+            where: { id: conversationId }
         });
 
-        if (!match) {
-            throw new Error("Match not found");
-        }
-
-        // Vérifier que l'expéditeur fait partie du match
-        const isUser = match.user_id === senderId;
-        const isOwner = match.apartment.owner_id === senderId;
-
-        if (!isUser && !isOwner) {
-            throw new Error("Unauthorized to send message in this match");
+        if (!conversation) throw new Error("Conversation not found");
+        if (conversation.tenant_id !== senderId && conversation.owner_id !== senderId) {
+            throw new Error("Unauthorized to send message in this conversation");
         }
 
         return prisma.message.create({
             data: {
                 content,
-                match_id: matchId,
+                conversation_id: conversationId,
                 sender_id: senderId
             },
             include: {
-                sender: {
-                    select: {
-                        id: true,
-                        username: true,
-                        avatar: true
-                    }
-                }
+                sender: { select: { id: true, firstname: true, lastname: true, avatar: true } }
             }
         });
     }
 
-    static async getMessages(matchId, userId, limit = 50, offset = 0) {
-        const match = await prisma.match.findUnique({
-            where: { id: matchId },
-            include: { apartment: true }
+    static async getMessages(conversationId, userId, limit = 50, offset = 0) {
+        const conversation = await prisma.conversation.findUnique({
+            where: { id: conversationId }
         });
 
-        if (!match) {
-            throw new Error("Match not found");
-        }
-
-        // Vérifier l'accès
-        const isUser = match.user_id === userId;
-        const isOwner = match.apartment.owner_id === userId;
-
-        if (!isUser && !isOwner) {
+        if (!conversation) throw new Error("Conversation not found");
+        if (conversation.tenant_id !== userId && conversation.owner_id !== userId) {
             throw new Error("Unauthorized to view messages");
         }
 
-        return prisma.message.findMany({
-            where: { match_id: matchId },
-            include: {
-                sender: {
-                    select: {
-                        id: true,
-                        username: true,
-                        avatar: true
-                    }
-                }
+        // Marquer les messages non lus comme lus
+        await prisma.message.updateMany({
+            where: {
+                conversation_id: conversationId,
+                sender_id: { not: userId },
+                read: false
             },
-            orderBy: { created_at: 'desc' },
+            data: { read: true }
+        });
+
+        return prisma.message.findMany({
+            where: { conversation_id: conversationId },
+            include: {
+                sender: { select: { id: true, firstname: true, lastname: true, avatar: true } }
+            },
+            orderBy: { created_at: 'asc' },
             take: limit,
             skip: offset
         });
     }
-
-    static async rejectLike(ownerId, userId, apartmentId) {
-        // Vérifier que l'appartement appartient au propriétaire
-        const apartment = await prisma.apartment.findUnique({
-            where: { id: apartmentId }
-        });
-
-        if (!apartment) {
-            throw new Error("Apartment not found");
-        }
-
-        if (apartment.owner_id !== ownerId) {
-            throw new Error("Unauthorized");
-        }
-
-        // Supprimer le swipe
-        const swipe = await prisma.swipe.findUnique({
-            where: {
-                user_id_apartment_id: {
-                    user_id: userId,
-                    apartment_id: apartmentId
-                }
-            }
-        });
-
-        if (swipe) {
-            await prisma.swipe.delete({
-                where: { id: swipe.id }
-            });
-        }
-
-        return { success: true, message: "Like rejected" };
-    }
 }
 
-export default MatchService;
+export default ConversationService;
