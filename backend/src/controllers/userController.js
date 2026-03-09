@@ -18,8 +18,6 @@ class UserController {
                     address: true,
                     agency: true,
                     tenant_profile: true,
-                    profile_photos: { orderBy: { uploaded_at: 'desc' } },
-                    documents: { orderBy: { uploaded_at: 'desc' } },
                     created_at: true,
                     updated_at: true
                 }
@@ -83,73 +81,6 @@ class UserController {
             res.status(200).json({ message: "Avatar uploaded successfully", user });
         } catch (error) {
             console.error('[uploadAvatar]', error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    // Photo de profil supplémentaire (galerie)
-    static async uploadProfilePhoto(req, res) {
-        try {
-            if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-
-            const url = `/uploads/avatars/${req.file.filename}`;
-            const photo = await prisma.profilePhoto.create({
-                data: { url, user_id: req.user.id }
-            });
-
-            res.status(201).json({ message: "Profile photo uploaded", photo });
-        } catch (error) {
-            console.error('[uploadProfilePhoto]', error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async deleteProfilePhoto(req, res) {
-        try {
-            const { id } = req.params;
-            const photo = await prisma.profilePhoto.findUnique({ where: { id } });
-
-            if (!photo) return res.status(404).json({ message: "Photo not found" });
-            if (photo.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
-
-            await prisma.profilePhoto.delete({ where: { id } });
-            res.status(200).json({ message: "Photo deleted" });
-        } catch (error) {
-            console.error('[deleteProfilePhoto]', error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    // Documents locataire
-    static async uploadDocument(req, res) {
-        try {
-            if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-
-            const { label } = req.body;
-            const url = `/uploads/documents/${req.file.filename}`;
-            const document = await prisma.document.create({
-                data: { url, label: label || null, user_id: req.user.id }
-            });
-
-            res.status(201).json({ message: "Document uploaded", document });
-        } catch (error) {
-            console.error('[uploadDocument]', error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async deleteDocument(req, res) {
-        try {
-            const { id } = req.params;
-            const document = await prisma.document.findUnique({ where: { id } });
-
-            if (!document) return res.status(404).json({ message: "Document not found" });
-            if (document.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
-
-            await prisma.document.delete({ where: { id } });
-            res.status(200).json({ message: "Document deleted" });
-        } catch (error) {
-            console.error('[deleteDocument]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }

@@ -9,12 +9,10 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         let uploadPath = path.join(__dirname, '../../uploads');
 
-        if (file.fieldname === 'avatar' || file.fieldname === 'profile_photo') {
+        if (file.fieldname === 'avatar') {
             uploadPath = path.join(uploadPath, 'avatars');
         } else if (file.fieldname === 'pictures') {
             uploadPath = path.join(uploadPath, 'properties');
-        } else if (file.fieldname === 'document') {
-            uploadPath = path.join(uploadPath, 'documents');
         }
 
         cb(null, uploadPath);
@@ -32,15 +30,6 @@ const imageFilter = (req, file, cb) => {
         cb(null, true);
     } else {
         cb(new Error('Type de fichier non autorisé. Utilisez JPG, PNG ou WebP.'), false);
-    }
-};
-
-const documentFilter = (req, file, cb) => {
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error('Type de fichier non autorisé. Utilisez PDF, JPG ou PNG.'), false);
     }
 };
 
@@ -62,14 +51,6 @@ export const uploadAvatarMiddleware = handleUpload(
     multer({ storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).single('avatar')
 );
 
-export const uploadProfilePhotoMiddleware = handleUpload(
-    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).single('profile_photo')
-);
-
 export const uploadPicturesMiddleware = handleUpload(
     multer({ storage, fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }).array('pictures', 10)
-);
-
-export const uploadDocumentMiddleware = handleUpload(
-    multer({ storage, fileFilter: documentFilter, limits: { fileSize: 10 * 1024 * 1024 } }).single('document')
 );

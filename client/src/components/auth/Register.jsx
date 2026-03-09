@@ -1,10 +1,11 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import TenantIcon from '../../assets/icons/Tenant.svg?react';
 import LandlordIcon from '../../assets/icons/Landlord.svg?react';
 import AgencyIcon from '../../assets/icons/Agency.svg?react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
+import useAuth from '../../hooks/useAuth';
 
 const fadeVariants = {
     initial: { opacity: 0 },
@@ -13,9 +14,9 @@ const fadeVariants = {
 };
 
 export default function Register({ onLogin }) {
+    const { register } = useAuth();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
-    const fullName = surname ? `${name} ${surname}` : name;
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
@@ -35,33 +36,30 @@ export default function Register({ onLogin }) {
     useEffect(() => {
         if (role === 'agency') {
             setSurname('');
-            setName('');
         }
     }, [role]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (password !== confirmPassword) {
+            setError('Les mots de passe ne correspondent pas');
+            return;
+        }
+
         setLoading(true);
-
         try {
-            console.log('Registering with:', { fullName, email, password, phone, role });
-            const res = await fetch('http://localhost:3000/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userName: fullName, email, password, phone, role }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setError(data.message || 'Erreur de connexion');
+            // Pour agence : name = nom d'agence, surname = vide
+            const agencyName = role === 'agency' ? name : '';
+            const result = await register(name, surname, agencyName, email, password, phone, role);
+            if (!result.success) {
+                setError(result.error || "Erreur lors de l'inscription");
                 return;
             }
-
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            onLogin?.(data.user, data.token);
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            const token = localStorage.getItem('token');
+            onLogin?.(user, token);
         } catch {
             setError('Impossible de contacter le serveur');
         } finally {
@@ -87,6 +85,7 @@ export default function Register({ onLogin }) {
                             <p className={`role-text ${role === 'agency' ? 'text-selected' : ''}`}>Agency</p>
                         </div>
                     </div>
+
                     <AnimatePresence mode="wait">
                         {role === 'agency' ? (
                             <motion.div
@@ -139,6 +138,7 @@ export default function Register({ onLogin }) {
                             </motion.div>
                         )}
                     </AnimatePresence>
+
                     <div className="">
                         <input
                             id="email"
@@ -170,7 +170,7 @@ export default function Register({ onLogin }) {
                             required
                             value={password}
                             aria-label='password'
-                            onChange={(e) => setPassword(e.target.value)} 
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
                         />
                     </div>
@@ -182,7 +182,7 @@ export default function Register({ onLogin }) {
                             required
                             value={confirmPassword}
                             aria-label='confirm password'
-                            onChange={(e) => setConfirmPassword(e.target.value)} 
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="Confirm Password"
                         />
                     </div>
@@ -191,11 +191,8 @@ export default function Register({ onLogin }) {
                         <p data-cy="error-message">{error}</p>
                     )}
 
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        >
-                        {loading ? 'Inscription…' : 'S\'inscrire'}
+                    <Button type="submit" disabled={loading}>
+                        {loading ? 'Inscription…' : "S'inscrire"}
                     </Button>
                 </form>
             </div>
