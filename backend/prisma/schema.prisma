@@ -9,7 +9,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-
 }
 
 // ─────────────────────────────────────────────
@@ -31,12 +30,14 @@ model User {
   // Relations
   agency                  Agency?
   tenant_profile          TenantProfile?
-  properties              Property[]       @relation("UserProperties")
+  properties              Property[]        @relation("UserProperties")
   swipes                  Swipe[]
-  conversations_as_tenant Conversation[]   @relation("TenantConversations")
-  conversations_as_owner  Conversation[]   @relation("OwnerConversations")
+  conversations_as_tenant Conversation[]    @relation("TenantConversations")
+  conversations_as_owner  Conversation[]    @relation("OwnerConversations")
   messages                Message[]
-  address                 Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  profile_photos          ProfilePhoto[]
+  documents               Document[]
+  address                 Address           @relation(fields: [address_id], references: [id], onDelete: Cascade)
   address_id              String
 
   created_at     DateTime @default(now())
@@ -51,39 +52,37 @@ enum Role {
 }
 
 // ─────────────────────────────────────────────
-// AGENCE (profil agence rattaché au compte)
+// AGENCE
 // ─────────────────────────────────────────────
 
 model Agency {
-  id          String   @id @default(uuid())
+  id          String  @id @default(uuid())
   nom_agence  String
   numero_tva  String?
   numero_bce  String?
   site_web    String?
-  address     Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+
+  address     Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
   address_id  String
 
-  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id     String   @unique
+  user        User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String  @unique
 
   created_at  DateTime @default(now())
 }
 
 // ─────────────────────────────────────────────
 // PROFIL LOCATAIRE
-// (income non exposé au propriétaire — contrôle côté API)
 // ─────────────────────────────────────────────
 
 model TenantProfile {
   id             String         @id @default(uuid())
-  household_size Int?           // nombre de personnes dans le foyer
-
-  // Critères de recherche
+  household_size Int?
   budget_max     Float?
-  min_surface    Int?           // m²
-  max_surface    Int?           // m² — null = peu importe
+  min_surface    Int?
+  max_surface    Int?
   regions        String[]
-  property_types PropertyType[] // plusieurs types possibles
+  property_types PropertyType[]
 
   user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id        String         @unique
@@ -106,16 +105,15 @@ model Property {
   address        Address        @relation(fields: [address_id], references: [id], onDelete: Cascade)
   address_id     String
 
-  // Caractéristiques
   price          Int
-  surface        Int            // m²
+  surface        Int
   rooms          Int
   parking        Boolean        @default(false)
 
   owner          User           @relation(fields: [owner_id], references: [id], name: "UserProperties", onDelete: Cascade)
   owner_id       String
 
-  photos         PropertyPhoto[]
+  photos         AnnouncementPhoto[]
   swipes         Swipe[]
   conversations  Conversation[]
 
@@ -161,7 +159,8 @@ enum PropertyStatus {
   archived
 }
 
-model PropertyPhoto {
+// Photos d'une annonce
+model AnnouncementPhoto {
   id          String   @id @default(uuid())
   url         String
   order       Int      @default(0)
@@ -172,9 +171,31 @@ model PropertyPhoto {
   uploaded_at DateTime @default(now())
 }
 
+// Photos de profil utilisateur
+model ProfilePhoto {
+  id          String   @id @default(uuid())
+  url         String
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+
+  uploaded_at DateTime @default(now())
+}
+
+// Documents locataire (justificatifs, bulletins de salaire…)
+model Document {
+  id          String   @id @default(uuid())
+  url         String
+  label       String?
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+
+  uploaded_at DateTime @default(now())
+}
+
 // ─────────────────────────────────────────────
-// SWIPE (locataire sur un bien)
-// direction : true = like / false = dislike
+// SWIPE
 // ─────────────────────────────────────────────
 
 model Swipe {
@@ -186,6 +207,8 @@ model Swipe {
   property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
   property_id String
 
+  conversation Conversation?
+
   created_at  DateTime @default(now())
 
   @@unique([user_id, property_id])
@@ -194,7 +217,7 @@ model Swipe {
 }
 
 // ─────────────────────────────────────────────
-// CONVERSATION (ouverte après un swipe)
+// CONVERSATION
 // ─────────────────────────────────────────────
 
 model Conversation {
@@ -211,7 +234,7 @@ model Conversation {
   owner       User      @relation(fields: [owner_id], references: [id], name: "OwnerConversations", onDelete: Cascade)
   owner_id    String
 
-  messages Message[]
+  messages    Message[]
 
   created_at  DateTime  @default(now())
 }
@@ -241,19 +264,19 @@ model Message {
 // ─────────────────────────────────────────────
 
 model Address {
-  id              String       @id @default(uuid())
-  number          String
-  box             String?
-  street          String
-  city            String
-  postal_code     String
-  country         String
+  id          String     @id @default(uuid())
+  number      String
+  box         String?
+  street      String
+  city        String
+  postal_code String
+  country     String
 
-  users           User[]
-  agencies        Agency[]
-  properties      Property[]
+  users       User[]
+  agencies    Agency[]
+  properties  Property[]
 
-  created_at      DateTime     @default(now())
+  created_at  DateTime   @default(now())
 
   @@index([city])
 }
