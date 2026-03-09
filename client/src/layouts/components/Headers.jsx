@@ -13,6 +13,7 @@ export default function Headers() {
             <div className="header-right">
             <nav className="navigation">
                 <NavLink>Home</NavLink>
+                <NavLink>Profile</NavLink>
                 <NavLink>About</NavLink>
                 <NavLink>Contact</NavLink>
             </nav>
