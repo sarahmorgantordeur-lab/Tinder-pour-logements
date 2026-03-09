@@ -1,5 +1,7 @@
 import prisma from '../config/db.js';
 
+const ACTIVE_MSG = { deleted_at: null };
+
 const conversationInclude = {
     property: {
         include: {
@@ -34,6 +36,7 @@ const conversationInclude = {
 const listInclude = (userId) => ({
     ...conversationInclude,
     messages: {
+        where: ACTIVE_MSG,
         orderBy: { created_at: 'desc' },
         take: 1,
         include: {
@@ -42,14 +45,13 @@ const listInclude = (userId) => ({
     },
     _count: {
         select: {
-            messages: { where: { sender_id: { not: userId }, read: false } }
+            messages: { where: { ...ACTIVE_MSG, sender_id: { not: userId }, read: false } }
         }
     }
 });
 
 class ConversationService {
 
-    // Propriétaire ouvre une conversation à partir d'un swipe like
     static async createConversation(ownerId, swipeId) {
         const swipe = await prisma.swipe.findUnique({
             where: { id: swipeId },
@@ -149,18 +151,19 @@ class ConversationService {
             throw new Error("Unauthorized to view messages");
         }
 
-        // Marquer les messages non lus comme lus
+        // Marquer les messages non lus (et non supprimés) comme lus
         await prisma.message.updateMany({
             where: {
                 conversation_id: conversationId,
                 sender_id: { not: userId },
-                read: false
+                read: false,
+                deleted_at: null
             },
             data: { read: true }
         });
 
         return prisma.message.findMany({
-            where: { conversation_id: conversationId },
+            where: { conversation_id: conversationId, deleted_at: null },
             include: {
                 sender: { select: { id: true, firstname: true, lastname: true, avatar: true } }
             },

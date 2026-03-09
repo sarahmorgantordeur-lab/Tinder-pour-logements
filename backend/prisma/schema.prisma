@@ -8,7 +8,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ─────────────────────────────────────────────
@@ -255,8 +254,10 @@ model Message {
   sender_id       String
 
   created_at      DateTime     @default(now())
+  deleted_at      DateTime?
 
   @@index([conversation_id])
+  @@index([deleted_at])
 }
 
 // ─────────────────────────────────────────────
