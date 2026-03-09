@@ -10,17 +10,17 @@ router.use(authenticate, isAdmin);
 // Users
 router.get('/users', AdminController.listUsers);
 router.patch('/users/:id/role', uuidParamValidation('id'), AdminController.updateUserRole);
-router.patch('/users/:id/ban', uuidParamValidation('id'), AdminController.setUserBan);
+router.patch('/users/:id/active', uuidParamValidation('id'), AdminController.setUserActive);
 router.delete('/users/:id', uuidParamValidation('id'), AdminController.deleteUser);
 
-// Apartments
-router.get('/apartments', AdminController.listApartments);
-router.delete('/apartments/:id', uuidParamValidation('id'), AdminController.deleteApartment);
+// Properties
+router.get('/properties', AdminController.listProperties);
+router.delete('/properties/:id', uuidParamValidation('id'), AdminController.deleteProperty);
 
-// Matches
-router.get('/matches', AdminController.listMatches);
-router.get('/matches/:id', uuidParamValidation('id'), AdminController.getMatchById);
-router.delete('/matches/:id', uuidParamValidation('id'), AdminController.deleteMatch);
+// Conversations
+router.get('/conversations', AdminController.listConversations);
+router.get('/conversations/:id', uuidParamValidation('id'), AdminController.getConversationById);
+router.delete('/conversations/:id', uuidParamValidation('id'), AdminController.deleteConversation);
 
 // Messages
 router.get('/messages', AdminController.listMessages);
