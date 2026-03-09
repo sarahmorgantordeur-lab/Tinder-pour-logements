@@ -6,9 +6,8 @@ import { uuidParamValidation } from '../utils/validators.js';
 
 const router = express.Router();
 
-// Propriétaires / agences — ouvrir ou rejeter
+// Propriétaires / agences
 router.post('/', authenticate, isOwnerOrAgency, ConversationController.createConversation);
-router.post('/reject', authenticate, isOwnerOrAgency, ConversationController.rejectLike);
 router.get('/owner', authenticate, isOwnerOrAgency, ConversationController.getOwnerConversations);
 router.delete('/:id', authenticate, isOwnerOrAgency, uuidParamValidation('id'), ConversationController.deleteConversation);
 

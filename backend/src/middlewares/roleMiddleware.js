@@ -24,5 +24,5 @@ export const requireRole = (...allowedRoles) => {
 };
 
 export const isOwner = requireRole('owner');
-export const isAgency = requireRole('agency')
+export const isAgency = requireRole('agency');
 export const isUser = requireRole('user');
