@@ -65,7 +65,7 @@ async function main() {
         create: {
             nom_agence: 'RE/MAX Brussels',
             numero_tva: 'BE0123456789',
-            user_id: agencyUser.id,
+            user: { connect: { id: agencyUser.id } },
             address: {
                 create: {
                     number: '50',
@@ -317,10 +317,11 @@ async function main() {
     ];
 
     let created = 0;
-    for (const { address, ...data } of properties) {
+    for (const { address, owner_id, ...data } of properties) {
         await prisma.property.create({
             data: {
                 ...data,
+                owner: { connect: { id: owner_id } },
                 address: { create: address }
             }
         });
