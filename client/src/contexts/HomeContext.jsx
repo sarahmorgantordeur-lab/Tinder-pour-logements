@@ -23,15 +23,26 @@ export const HomeProvider = ({ children }) => {
         }
     }, []);
 
+    const fetchApartementNames = useCallback(async () => {
+        try {
+            const response = await api.get("/agencies");
+            console.log(response.data);
+            return response.data.agencies.map((agency) => agency.name);
+        } catch {
+            return [];
+        }
+    }, []);
+
     useEffect(() => {
         fetchApartments();
-    }, [fetchApartments]);
+        fetchApartementNames();
+    }, [fetchApartments, fetchApartementNames]);
 
     const swipe = async (direction) => {
         const current = apartments[currentIndex];
         if (!current) return;
         try {
-            await api.post("/swipes", { apartment_id: current.id, direction });
+            await api.post("/swipes", { appartement_id: current.id, direction });
         } catch {
             // swipe enregistré localement même si l'API échoue
         } finally {

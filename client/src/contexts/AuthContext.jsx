@@ -11,10 +11,12 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [loading] = useState(false);
 
-    const register = async (userName, email, password, phone, role) => {
+    const register = async (name, surname, agencyName, email, password, phone, role) => {
         try {
             const response = await api.post("/auth/register", {
-                userName,
+                firstname: name,
+                lastname : surname,
+                nom_agence: agencyName,
                 email,
                 password,
                 phone,
