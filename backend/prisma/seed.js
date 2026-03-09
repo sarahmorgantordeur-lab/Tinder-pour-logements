@@ -8,336 +8,327 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-    console.log('🌱 Seeding database with Belgian apartments...');
+    console.log('🌱 Seeding database...');
 
-    // --- Propriétaires fictifs ---
     const hashedPassword = await bcrypt.hash('Password123!', 10);
 
+    // --- Propriétaire particulier ---
     const owner1 = await prisma.user.upsert({
         where: { email: 'thomas.dupont@immobe.be' },
         update: {},
         create: {
             email: 'thomas.dupont@immobe.be',
             password: hashedPassword,
-            username: 'Thomas Dupont',
+            firstname: 'Thomas',
+            lastname: 'Dupont',
             role: 'owner',
             phone: '+32 477 12 34 56',
+            address: {
+                create: {
+                    number: '42',
+                    street: 'Rue du Bailli',
+                    city: 'Ixelles',
+                    postal_code: '1050',
+                    country: 'Belgique'
+                }
+            }
         }
     });
 
-    const owner2 = await prisma.user.upsert({
-        where: { email: 'agence@remax-brussels.be' },
+    // --- Utilisateur agence ---
+    const agencyUser = await prisma.user.upsert({
+        where: { email: 'contact@remax-brussels.be' },
         update: {},
         create: {
-            email: 'agence@remax-brussels.be',
+            email: 'contact@remax-brussels.be',
             password: hashedPassword,
-            username: 'RE/MAX Brussels',
+            firstname: 'RE/MAX',
+            lastname: 'Brussels',
             role: 'agency',
             phone: '+32 2 123 45 67',
-            company_name: 'RE/MAX Brussels',
-            siret: 'BE0123456789',
+            address: {
+                create: {
+                    number: '50',
+                    street: 'Meir',
+                    city: 'Anvers',
+                    postal_code: '2000',
+                    country: 'Belgique'
+                }
+            }
         }
     });
 
-    console.log('✅ Owners created:', owner1.username, '&', owner2.username);
+    // Profil agence
+    await prisma.agency.upsert({
+        where: { user_id: agencyUser.id },
+        update: {},
+        create: {
+            nom_agence: 'RE/MAX Brussels',
+            numero_tva: 'BE0123456789',
+            user_id: agencyUser.id,
+            address: {
+                create: {
+                    number: '50',
+                    street: 'Meir',
+                    city: 'Anvers',
+                    postal_code: '2000',
+                    country: 'Belgique'
+                }
+            }
+        }
+    });
 
-    // --- Appartements fictifs en Belgique ---
-    const apartments = [
+    // --- Locataire ---
+    const tenant = await prisma.user.upsert({
+        where: { email: 'alice.martin@gmail.com' },
+        update: {},
+        create: {
+            email: 'alice.martin@gmail.com',
+            password: hashedPassword,
+            firstname: 'Alice',
+            lastname: 'Martin',
+            role: 'user',
+            phone: '+32 496 55 44 33',
+            address: {
+                create: {
+                    number: '8',
+                    street: 'Quai de la Goffe',
+                    city: 'Liège',
+                    postal_code: '4000',
+                    country: 'Belgique'
+                }
+            },
+            tenant_profile: {
+                create: {
+                    household_size: 2,
+                    budget_max: 1200,
+                    min_surface: 50,
+                    regions: ['Bruxelles', 'Brabant Wallon'],
+                    property_types: ['Appartement', 'Duplex', 'Studio']
+                }
+            }
+        }
+    });
+
+    console.log(
+        '✅ Users:',
+        owner1.firstname, owner1.lastname, '|',
+        agencyUser.firstname, agencyUser.lastname, '|',
+        tenant.firstname, tenant.lastname
+    );
+
+    // --- Biens immobiliers ---
+    const properties = [
         // Bruxelles
         {
             title: 'Bel appartement lumineux à Ixelles',
-            description: 'Superbe appartement de 2 chambres situé en plein cœur d\'Ixelles. Parquet en chêne, double vitrage, cave incluse. Proche du Bois de la Cambre et des transports en commun.',
-            address: 'Rue du Bailli 42',
-            city: 'Ixelles',
-            postal_code: '1050',
-            region: 'Bruxelles',
-            country: 'Belgique',
-            latitude: 50.8244,
-            longitude: 4.3698,
-            property_type: 'apartment',
-            listing_type: 'rent',
+            description: 'Superbe appartement 2 chambres en plein cœur d\'Ixelles. Parquet chêne, double vitrage, cave incluse.',
+            property_type: 'Appartement',
+            status: 'published',
             price: 1250,
             surface: 78,
             rooms: 3,
-            tags: ['parquet', 'lumineux', 'cave', 'transports'],
+            parking: false,
             owner_id: owner1.id,
+            address: { number: '42', street: 'Rue du Bailli', city: 'Ixelles', postal_code: '1050', country: 'Belgique' }
         },
         {
             title: 'Studio moderne près de la Grand-Place',
-            description: 'Studio entièrement rénové au cœur de Bruxelles, idéal pour étudiant ou jeune professionnel. Cuisine équipée, salle de bain moderne.',
-            address: 'Rue des Bouchers 15',
-            city: 'Bruxelles',
-            postal_code: '1000',
-            region: 'Bruxelles',
-            country: 'Belgique',
-            latitude: 50.8480,
-            longitude: 4.3560,
-            property_type: 'studio',
-            listing_type: 'rent',
+            description: 'Studio entièrement rénové au cœur de Bruxelles. Cuisine équipée, salle de bain moderne.',
+            property_type: 'Studio',
+            status: 'published',
             price: 750,
             surface: 32,
             rooms: 1,
-            tags: ['rénové', 'centre-ville', 'cuisine équipée'],
-            owner_id: owner2.id,
+            parking: false,
+            owner_id: agencyUser.id,
+            address: { number: '15', street: 'Rue des Bouchers', city: 'Bruxelles', postal_code: '1000', country: 'Belgique' }
         },
         {
             title: 'Maison de maître à Etterbeek',
-            description: 'Magnifique maison de maître avec jardin privatif. 4 chambres, 2 salles de bain, garage double. Proche des institutions européennes.',
-            address: 'Avenue de Tervueren 88',
-            city: 'Etterbeek',
-            postal_code: '1040',
-            region: 'Bruxelles',
-            country: 'Belgique',
-            latitude: 50.8386,
-            longitude: 4.3918,
-            property_type: 'house',
-            listing_type: 'rent',
+            description: 'Magnifique maison de maître avec jardin privatif. 4 chambres, 2 salles de bain, garage double.',
+            property_type: 'Mansion',
+            status: 'published',
             price: 2800,
             surface: 220,
             rooms: 5,
-            tags: ['jardin', 'garage', 'maison de maître', 'institutions européennes'],
-            owner_id: owner2.id,
+            parking: true,
+            owner_id: agencyUser.id,
+            address: { number: '88', street: 'Avenue de Tervueren', city: 'Etterbeek', postal_code: '1040', country: 'Belgique' }
         },
         {
-            title: 'Appartement à vendre - Schaerbeek',
-            description: 'Appartement 3 chambres à vendre dans un immeuble de belle époque entièrement rénové. Hauts plafonds, moulures d\'époque, terrasse de 12m².',
-            address: 'Rue Royale Sainte-Marie 54',
-            city: 'Schaerbeek',
-            postal_code: '1030',
-            region: 'Bruxelles',
-            country: 'Belgique',
-            latitude: 50.8640,
-            longitude: 4.3728,
-            property_type: 'apartment',
-            listing_type: 'sale',
-            price: 320000,
+            title: 'Duplex à Schaerbeek',
+            description: 'Duplex 3 chambres dans un immeuble belle époque rénové. Hauts plafonds, moulures, terrasse 12m².',
+            property_type: 'Duplex',
+            status: 'published',
+            price: 1600,
             surface: 105,
             rooms: 4,
-            tags: ['terrasse', 'belle époque', 'rénové', 'hauts plafonds'],
+            parking: false,
             owner_id: owner1.id,
+            address: { number: '54', street: 'Rue Royale Sainte-Marie', city: 'Schaerbeek', postal_code: '1030', country: 'Belgique' }
         },
 
         // Liège
         {
             title: 'Appartement cosy en bord de Meuse',
-            description: 'Charmant appartement 2 chambres avec vue sur la Meuse. Parquet, double vitrage, ascenseur. À deux pas du centre historique de Liège.',
-            address: 'Quai de la Goffe 8',
-            city: 'Liège',
-            postal_code: '4000',
-            region: 'Liège',
-            country: 'Belgique',
-            latitude: 50.6452,
-            longitude: 5.5727,
-            property_type: 'apartment',
-            listing_type: 'rent',
+            description: 'Charmant appartement 2 chambres avec vue sur la Meuse. Parquet, ascenseur.',
+            property_type: 'Appartement',
+            status: 'published',
             price: 850,
             surface: 68,
             rooms: 3,
-            tags: ['vue sur Meuse', 'ascenseur', 'parquet', 'centre historique'],
+            parking: false,
             owner_id: owner1.id,
+            address: { number: '8', street: 'Quai de la Goffe', city: 'Liège', postal_code: '4000', country: 'Belgique' }
         },
         {
             title: 'Studio étudiant près de l\'ULiège',
-            description: 'Studio fonctionnel idéal pour étudiant, à 5 minutes à pied de l\'Université de Liège. Internet inclus dans le loyer.',
-            address: 'Rue de Bruxelles 101',
-            city: 'Liège',
-            postal_code: '4000',
-            region: 'Liège',
-            country: 'Belgique',
-            latitude: 50.5820,
-            longitude: 5.5630,
-            property_type: 'studio',
-            listing_type: 'rent',
+            description: 'Studio fonctionnel à 5 minutes de l\'ULiège. Internet inclus dans le loyer.',
+            property_type: 'StudentHousing',
+            status: 'published',
             price: 490,
             surface: 25,
             rooms: 1,
-            tags: ['étudiant', 'internet inclus', 'université'],
-            owner_id: owner2.id,
+            parking: false,
+            owner_id: agencyUser.id,
+            address: { number: '101', street: 'Rue de Bruxelles', city: 'Liège', postal_code: '4000', country: 'Belgique' }
         },
         {
             title: 'Villa avec piscine à Angleur',
-            description: 'Splendide villa contemporaine 5 chambres avec piscine chauffée, double garage et grand jardin paysager. Domotique complète.',
-            address: 'Route du Condroz 12',
-            city: 'Angleur',
-            postal_code: '4031',
-            region: 'Liège',
-            country: 'Belgique',
-            latitude: 50.6001,
-            longitude: 5.6107,
-            property_type: 'villa',
-            listing_type: 'sale',
-            price: 680000,
+            description: 'Villa contemporaine 5 chambres avec piscine chauffée, double garage et grand jardin.',
+            property_type: 'Villa',
+            status: 'published',
+            price: 3500,
             surface: 310,
             rooms: 6,
-            tags: ['piscine', 'villa', 'garage', 'jardin', 'domotique'],
+            parking: true,
             owner_id: owner1.id,
+            address: { number: '12', street: 'Route du Condroz', city: 'Angleur', postal_code: '4031', country: 'Belgique' }
         },
 
         // Gand
         {
-            title: 'Appartement design dans le Patershol',
-            description: 'Loft design au cœur du quartier historique Patershol. Cuisine américaine haut de gamme, mezzanine, poutres apparentes.',
-            address: 'Kraanlei 23',
-            city: 'Gand',
-            postal_code: '9000',
-            region: 'Flandre Orientale',
-            country: 'Belgique',
-            latitude: 51.0576,
-            longitude: 3.7189,
-            property_type: 'apartment',
-            listing_type: 'rent',
+            title: 'Loft design dans le Patershol',
+            description: 'Loft design au cœur du quartier historique Patershol. Cuisine américaine, mezzanine, poutres apparentes.',
+            property_type: 'Loft',
+            status: 'published',
             price: 1100,
             surface: 85,
             rooms: 2,
-            tags: ['loft', 'design', 'poutres apparentes', 'quartier historique'],
-            owner_id: owner2.id,
+            parking: false,
+            owner_id: agencyUser.id,
+            address: { number: '23', street: 'Kraanlei', city: 'Gand', postal_code: '9000', country: 'Belgique' }
         },
         {
             title: 'Maison familiale à Gand-Nord',
-            description: 'Belle maison 4 chambres avec jardin et garage. Quartier calme et résidentiel, école à 200m, parc à 5 minutes.',
-            address: 'Wondelgemstraat 67',
-            city: 'Gand',
-            postal_code: '9000',
-            region: 'Flandre Orientale',
-            country: 'Belgique',
-            latitude: 51.0748,
-            longitude: 3.7180,
-            property_type: 'house',
-            listing_type: 'rent',
+            description: 'Belle maison 4 chambres avec jardin et garage. Quartier calme, école à 200m.',
+            property_type: 'BelEtageHouse',
+            status: 'published',
             price: 1450,
             surface: 165,
             rooms: 5,
-            tags: ['jardin', 'garage', 'calme', 'école proche'],
+            parking: true,
             owner_id: owner1.id,
+            address: { number: '67', street: 'Wondelgemstraat', city: 'Gand', postal_code: '9000', country: 'Belgique' }
         },
 
         // Anvers
         {
             title: 'Penthouse avec terrasse panoramique',
-            description: 'Exceptionnel penthouse au 8ème étage avec terrasse de 60m² offrant une vue panoramique sur les toits d\'Anvers. Finitions luxueuses.',
-            address: 'Meir 50',
-            city: 'Anvers',
-            postal_code: '2000',
-            region: 'Anvers',
-            country: 'Belgique',
-            latitude: 51.2194,
-            longitude: 4.4025,
-            property_type: 'apartment',
-            listing_type: 'sale',
-            price: 875000,
+            description: 'Exceptionnel penthouse au 8ème étage, terrasse 60m², vue panoramique sur les toits d\'Anvers.',
+            property_type: 'Penthouse',
+            status: 'published',
+            price: 3800,
             surface: 190,
             rooms: 4,
-            tags: ['penthouse', 'terrasse', 'vue panoramique', 'luxe'],
-            owner_id: owner2.id,
+            parking: true,
+            owner_id: agencyUser.id,
+            address: { number: '50', street: 'Meir', city: 'Anvers', postal_code: '2000', country: 'Belgique' }
         },
         {
             title: 'Appartement 2 chambres - Zuid',
-            description: 'Appartement contemporain dans le quartier branché du Zuid. Proche des musées, restaurants et vie nocturne anversoise.',
-            address: 'Leopold de Waelplaats 14',
-            city: 'Anvers',
-            postal_code: '2000',
-            region: 'Anvers',
-            country: 'Belgique',
-            latitude: 51.2061,
-            longitude: 4.3990,
-            property_type: 'apartment',
-            listing_type: 'rent',
+            description: 'Appartement contemporain dans le quartier branché du Zuid. Proche musées et restaurants.',
+            property_type: 'Appartement',
+            status: 'published',
             price: 980,
             surface: 72,
             rooms: 3,
-            tags: ['contemporain', 'quartier branché', 'musées', 'vie nocturne'],
+            parking: false,
             owner_id: owner1.id,
+            address: { number: '14', street: 'Leopold de Waelplaats', city: 'Anvers', postal_code: '2000', country: 'Belgique' }
         },
 
         // Bruges
         {
-            title: 'Charmante maison de ville à Bruges',
-            description: 'Maison de ville rénovée avec goût dans le centre historique de Bruges. Vue sur canal depuis le salon, jardin intérieur.',
-            address: 'Dijver 9',
-            city: 'Bruges',
-            postal_code: '8000',
-            region: 'Flandre Occidentale',
-            country: 'Belgique',
-            latitude: 51.2040,
-            longitude: 3.2200,
-            property_type: 'house',
-            listing_type: 'sale',
-            price: 420000,
+            title: 'Maison de ville à Bruges',
+            description: 'Maison rénovée dans le centre historique de Bruges. Vue sur canal depuis le salon, jardin intérieur.',
+            property_type: 'BelEtageHouse',
+            status: 'published',
+            price: 1900,
             surface: 145,
             rooms: 4,
-            tags: ['vue canal', 'centre historique', 'jardin', 'rénové'],
-            owner_id: owner2.id,
+            parking: false,
+            owner_id: agencyUser.id,
+            address: { number: '9', street: 'Dijver', city: 'Bruges', postal_code: '8000', country: 'Belgique' }
         },
 
         // Namur
         {
             title: 'Appartement vue sur la Citadelle',
-            description: 'Appartement 2 chambres avec balcon offrant une vue imprenable sur la Citadelle de Namur. Quartier calme, parking privé inclus.',
-            address: 'Route Merveilleuse 34',
-            city: 'Namur',
-            postal_code: '5000',
-            region: 'Namur',
-            country: 'Belgique',
-            latitude: 50.4647,
-            longitude: 4.8628,
-            property_type: 'apartment',
-            listing_type: 'rent',
+            description: 'Appartement 2 chambres avec balcon et vue imprenable sur la Citadelle de Namur. Parking privé inclus.',
+            property_type: 'Appartement',
+            status: 'published',
             price: 790,
             surface: 65,
             rooms: 3,
-            tags: ['balcon', 'vue citadelle', 'parking inclus', 'calme'],
+            parking: true,
             owner_id: owner1.id,
+            address: { number: '34', street: 'Route Merveilleuse', city: 'Namur', postal_code: '5000', country: 'Belgique' }
         },
 
         // Louvain
         {
             title: 'Kot étudiant proche KU Leuven',
-            description: 'Studio meublé entièrement équipé, idéal pour étudiant de la KU Leuven. Charges comprises (eau, électricité, internet).',
-            address: 'Naamsestraat 118',
-            city: 'Louvain',
-            postal_code: '3000',
-            region: 'Brabant Flamand',
-            country: 'Belgique',
-            latitude: 50.8748,
-            longitude: 4.6988,
-            property_type: 'studio',
-            listing_type: 'rent',
+            description: 'Studio meublé entièrement équipé pour étudiant. Charges comprises (eau, électricité, internet).',
+            property_type: 'StudentHousing',
+            status: 'published',
             price: 580,
             surface: 22,
             rooms: 1,
-            tags: ['meublé', 'charges comprises', 'étudiant', 'KU Leuven'],
-            owner_id: owner2.id,
+            parking: false,
+            owner_id: agencyUser.id,
+            address: { number: '118', street: 'Naamsestraat', city: 'Louvain', postal_code: '3000', country: 'Belgique' }
         },
 
         // Charleroi
         {
             title: 'Maison à rénover - Opportunité investissement',
-            description: 'Maison 3 façades à rénover entièrement. Grand potentiel, jardin de 300m². Idéale pour investisseur ou famille bricoleur.',
-            address: 'Rue de Marcinelle 45',
-            city: 'Charleroi',
-            postal_code: '6000',
-            region: 'Hainaut',
-            country: 'Belgique',
-            latitude: 50.4108,
-            longitude: 4.4444,
-            property_type: 'house',
-            listing_type: 'sale',
-            price: 95000,
+            description: 'Maison 3 façades à rénover. Grand potentiel, jardin de 300m².',
+            property_type: 'CountryHouse',
+            status: 'published',
+            price: 700,
             surface: 130,
             rooms: 4,
-            tags: ['à rénover', 'investissement', 'jardin', '3 façades'],
+            parking: false,
             owner_id: owner1.id,
+            address: { number: '45', street: 'Rue de Marcinelle', city: 'Charleroi', postal_code: '6000', country: 'Belgique' }
         },
     ];
 
     let created = 0;
-    for (const apt of apartments) {
-        await prisma.apartment.create({ data: apt });
+    for (const { address, ...data } of properties) {
+        await prisma.property.create({
+            data: {
+                ...data,
+                address: { create: address }
+            }
+        });
         created++;
-        console.log(`  ✅ [${created}/${apartments.length}] ${apt.title}`);
+        console.log(`  ✅ [${created}/${properties.length}] ${data.title}`);
     }
 
-    console.log(`\n🎉 Done! ${created} apartments created in the database.`);
+    console.log(`\n🎉 Done! ${created} properties created.`);
 }
 
 main()
