@@ -13,7 +13,6 @@ export const authenticate = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-
     const decoded = verifyToken(token);
 
     const user = await prisma.user.findUnique({
@@ -21,13 +20,12 @@ export const authenticate = async (req, res, next) => {
       select: {
         id: true,
         email: true,
-        username: true,
+        firstname: true,
+        lastname: true,
         role: true,
         phone: true,
         avatar: true,
-        company_name: true,
-        siret: true,
-        is_banned: true
+        is_active: true
       }
     });
 
@@ -37,7 +35,7 @@ export const authenticate = async (req, res, next) => {
         message: 'Utilisateur non trouvé.'
       });
     }
-    if (user.is_banned) {
+    if (!user.is_active) {
       return res.status(403).json({
         success: false,
         message: 'Compte suspendu.'
@@ -48,7 +46,6 @@ export const authenticate = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Authentication error:', error.message);
-
     return res.status(401).json({
       success: false,
       message: error.message || 'Token invalide ou expiré.'
@@ -65,24 +62,16 @@ export const verifySocketToken = async (token) => {
       select: {
         id: true,
         email: true,
-        username: true,
-        is_banned: true
+        firstname: true,
+        lastname: true,
+        is_active: true
       }
     });
 
-    if (!user) {
-      throw new Error('Utilisateur non trouvé');
-    }
+    if (!user) throw new Error('Utilisateur non trouvé');
+    if (!user.is_active) throw new Error('Compte suspendu');
 
-    if (user.is_banned) {
-      throw new Error('Compte suspendu');
-    }
-
-    return {
-      id: user.id,
-      email: user.email,
-      username: user.username
-    };
+    return { id: user.id, email: user.email, firstname: user.firstname, lastname: user.lastname };
   } catch (error) {
     console.error('Socket authentication error:', error.message);
     throw new Error('Authentication failed');
@@ -101,24 +90,22 @@ export const optionalAuthenticate = async (req, res, next) => {
         select: {
           id: true,
           email: true,
-          username: true,
+          firstname: true,
+          lastname: true,
           role: true,
           phone: true,
           avatar: true,
-          company_name: true,
-          siret: true,
-          is_banned: true
+          is_active: true
         }
       });
 
-      if (user && !user.is_banned) {
+      if (user && user.is_active) {
         req.user = user;
       }
     }
 
     next();
   } catch (error) {
-    // En cas d'erreur, on continue sans utilisateur authentifié
     next();
   }
 };
