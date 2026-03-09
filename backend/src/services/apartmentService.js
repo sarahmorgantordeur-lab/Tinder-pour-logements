@@ -50,7 +50,7 @@ class PropertyService {
     }
 
     static async getAll(filters = {}) {
-        const where = { status: { notIn: ['archived', 'Masked'] } };
+        const where = { status: { not: 'archived' } };
 
         if (filters.propertyType) where.property_type = filters.propertyType;
         if (filters.city) where.address = { city: { contains: filters.city, mode: 'insensitive' } };
@@ -147,12 +147,12 @@ class PropertyService {
         if (!property) throw new Error("Property not found");
         if (property.owner_id !== ownerId) throw new Error("Unauthorized to modify this property");
 
-        const lastPhoto = await prisma.propertyPhoto.findFirst({
+        const lastPhoto = await prisma.announcementPhoto.findFirst({
             where: { property_id: id },
             orderBy: { order: 'desc' }
         });
 
-        await prisma.propertyPhoto.create({
+        await prisma.announcementPhoto.create({
             data: {
                 url: photoUrl,
                 order: lastPhoto ? lastPhoto.order + 1 : 0,
@@ -177,7 +177,7 @@ class PropertyService {
 
         const photo = property.photos.find(p => p.url === photoUrl);
         if (photo) {
-            await prisma.propertyPhoto.delete({ where: { id: photo.id } });
+            await prisma.announcementPhoto.delete({ where: { id: photo.id } });
         }
 
         return prisma.property.findUnique({

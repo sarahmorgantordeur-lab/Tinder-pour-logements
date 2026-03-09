@@ -31,6 +31,22 @@ const conversationInclude = {
     }
 };
 
+const listInclude = (userId) => ({
+    ...conversationInclude,
+    messages: {
+        orderBy: { created_at: 'desc' },
+        take: 1,
+        include: {
+            sender: { select: { id: true, firstname: true, lastname: true } }
+        }
+    },
+    _count: {
+        select: {
+            messages: { where: { sender_id: { not: userId }, read: false } }
+        }
+    }
+});
+
 class ConversationService {
 
     // Propriétaire ouvre une conversation à partir d'un swipe like
@@ -63,13 +79,7 @@ class ConversationService {
     static async getUserConversations(userId) {
         return prisma.conversation.findMany({
             where: { tenant_id: userId },
-            include: {
-                ...conversationInclude,
-                messages: {
-                    orderBy: { created_at: 'desc' },
-                    take: 1
-                }
-            },
+            include: listInclude(userId),
             orderBy: { created_at: 'desc' }
         });
     }
@@ -77,13 +87,7 @@ class ConversationService {
     static async getOwnerConversations(ownerId) {
         return prisma.conversation.findMany({
             where: { owner_id: ownerId },
-            include: {
-                ...conversationInclude,
-                messages: {
-                    orderBy: { created_at: 'desc' },
-                    take: 1
-                }
-            },
+            include: listInclude(ownerId),
             orderBy: { created_at: 'desc' }
         });
     }

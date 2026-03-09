@@ -30,7 +30,7 @@ class AuthController {
                 role,
                 address
             );
-            res.status(201).json({ message: "User registered successfully", user, token });
+            res.status(200).json({ message: "User registered successfully", user });
         } catch (error) {
             if (error.message === "This email is already taken") {
                 return res.status(409).json({ message: error.message });
