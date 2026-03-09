@@ -8,6 +8,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+
 }
 
 // ─────────────────────────────────────────────
@@ -30,12 +32,12 @@ model User {
   agency                  Agency?
   tenant_profile          TenantProfile?
   properties              Property[]       @relation("UserProperties")
-  favorites               Favorite[]
   swipes                  Swipe[]
-  matches                 Match[]
   conversations_as_tenant Conversation[]   @relation("TenantConversations")
   conversations_as_owner  Conversation[]   @relation("OwnerConversations")
   messages                Message[]
+  address                 Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id              String
 
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
@@ -58,9 +60,8 @@ model Agency {
   numero_tva  String?
   numero_bce  String?
   site_web    String?
-  adresse     String?
-  ville       String?
-  code_postal String?
+  address     Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id  String
 
   user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id     String   @unique
@@ -75,17 +76,12 @@ model Agency {
 
 model TenantProfile {
   id             String         @id @default(uuid())
-  gender         Gender?
   household_size Int?           // nombre de personnes dans le foyer
-  has_pets       Boolean        @default(false)
-  income         Float?         // non visible par le propriétaire
 
   // Critères de recherche
   budget_max     Float?
   min_surface    Int?           // m²
   max_surface    Int?           // m² — null = peu importe
-  has_terrace    Boolean?       // null = peu importe
-  has_garden     Boolean?       // null = peu importe
   regions        String[]
   property_types PropertyType[] // plusieurs types possibles
 
@@ -94,13 +90,6 @@ model TenantProfile {
 
   created_at     DateTime       @default(now())
   updated_at     DateTime       @updatedAt
-}
-
-enum Gender {
-  male
-  female
-  non_binary
-  prefer_not_to_say
 }
 
 // ─────────────────────────────────────────────
@@ -114,42 +103,26 @@ model Property {
   property_type  PropertyType
   status         PropertyStatus @default(draft)
 
-  // Adresse
-  number         String?
-  box            String?
-  street         String
-  city           String
-  postal_code    String
-  country        String         @default("Belgique")
+  address        Address        @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id     String
 
   // Caractéristiques
-  price          Float
-  charges        Float?
+  price          Int
   surface        Int            // m²
   rooms          Int
-  bedrooms       Int?
-  bathrooms      Int?
-  has_terrace    Boolean        @default(false)
-  has_garden     Boolean        @default(false)
   parking        Boolean        @default(false)
-  furnished      Boolean        @default(false)
-  pets_allowed   Boolean        @default(false)
-  available_from DateTime?
 
   owner          User           @relation(fields: [owner_id], references: [id], name: "UserProperties", onDelete: Cascade)
   owner_id       String
 
   photos         PropertyPhoto[]
-  favorites      Favorite[]
   swipes         Swipe[]
-  matches        Match[]
   conversations  Conversation[]
 
   created_at     DateTime       @default(now())
   updated_at     DateTime       @updatedAt
   deleted_at     DateTime?
 
-  @@index([city])
   @@index([price])
   @@index([surface])
   @@index([property_type])
@@ -200,23 +173,6 @@ model PropertyPhoto {
 }
 
 // ─────────────────────────────────────────────
-// FAVORIS
-// ─────────────────────────────────────────────
-
-model Favorite {
-  id          String   @id @default(uuid())
-
-  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id     String
-  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
-  property_id String
-
-  created_at  DateTime @default(now())
-
-  @@unique([user_id, property_id])
-}
-
-// ─────────────────────────────────────────────
 // SWIPE (locataire sur un bien)
 // direction : true = like / false = dislike
 // ─────────────────────────────────────────────
@@ -238,35 +194,14 @@ model Swipe {
 }
 
 // ─────────────────────────────────────────────
-// MATCH (locataire liké + propriétaire accepte)
-// ─────────────────────────────────────────────
-
-model Match {
-  id           String        @id @default(uuid())
-
-  user         User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id      String
-  property     Property      @relation(fields: [property_id], references: [id], onDelete: Cascade)
-  property_id  String
-
-  conversation Conversation?
-
-  created_at   DateTime      @default(now())
-
-  @@unique([user_id, property_id])
-  @@index([user_id])
-  @@index([property_id])
-}
-
-// ─────────────────────────────────────────────
-// CONVERSATION (ouverte après un match)
+// CONVERSATION (ouverte après un swipe)
 // ─────────────────────────────────────────────
 
 model Conversation {
   id          String    @id @default(uuid())
 
-  match       Match     @relation(fields: [match_id], references: [id], onDelete: Cascade)
-  match_id    String    @unique
+  swipe       Swipe     @relation(fields: [swipe_id], references: [id], onDelete: Cascade)
+  swipe_id    String    @unique
 
   property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
   property_id String
@@ -276,7 +211,7 @@ model Conversation {
   owner       User      @relation(fields: [owner_id], references: [id], name: "OwnerConversations", onDelete: Cascade)
   owner_id    String
 
-  messages    Message[]
+  messages Message[]
 
   created_at  DateTime  @default(now())
 }
@@ -299,4 +234,26 @@ model Message {
   created_at      DateTime     @default(now())
 
   @@index([conversation_id])
+}
+
+// ─────────────────────────────────────────────
+// ADDRESS
+// ─────────────────────────────────────────────
+
+model Address {
+  id              String       @id @default(uuid())
+  number          String
+  box             String?
+  street          String
+  city            String
+  postal_code     String
+  country         String
+
+  users           User[]
+  agencies        Agency[]
+  properties      Property[]
+
+  created_at      DateTime     @default(now())
+
+  @@index([city])
 }

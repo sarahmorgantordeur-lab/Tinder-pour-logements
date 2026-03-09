@@ -1,5 +1,4 @@
 import prisma from '../config/db.js';
-import EmailService from './emailService.js';
 
 const conversationInclude = {
     property: {
@@ -56,10 +55,6 @@ class ConversationService {
                 owner_id: ownerId
             },
             include: conversationInclude
-        });
-
-        EmailService.sendMatchNotification(swipe.user_id, swipe.property_id).catch(err => {
-            console.error('Failed to send match notification:', err.message);
         });
 
         return conversation;
@@ -169,20 +164,6 @@ class ConversationService {
             take: limit,
             skip: offset
         });
-    }
-
-    // Propriétaire rejette un like (supprime le swipe)
-    static async rejectLike(ownerId, swipeId) {
-        const swipe = await prisma.swipe.findUnique({
-            where: { id: swipeId },
-            include: { property: true }
-        });
-
-        if (!swipe) throw new Error("Swipe not found");
-        if (swipe.property.owner_id !== ownerId) throw new Error("Unauthorized");
-
-        await prisma.swipe.delete({ where: { id: swipeId } });
-        return { success: true, message: "Like rejected" };
     }
 }
 
