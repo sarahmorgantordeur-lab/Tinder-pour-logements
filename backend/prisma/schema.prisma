@@ -2,14 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-
+  provider = "postgresql"
 }
 
 // ─────────────────────────────────────────────
@@ -17,37 +15,37 @@ datasource db {
 // ─────────────────────────────────────────────
 
 model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
-  password       String
-  firstname      String
-  lastname       String
-  phone          String?
-  avatar         String?
-  bio            String?
-  role           Role     @default(user)
-  is_active      Boolean  @default(true)
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  firstname      String
+  lastname       String
+  phone          String?
+  avatar         String?
+  bio            String?
+  role           Role     @default(user)
+  is_active      Boolean  @default(true)
 
-  // Relations
-  agency                  Agency?
-  tenant_profile          TenantProfile?
-  properties              Property[]       @relation("UserProperties")
-  swipes                  Swipe[]
-  conversations_as_tenant Conversation[]   @relation("TenantConversations")
-  conversations_as_owner  Conversation[]   @relation("OwnerConversations")
-  messages                Message[]
-  address                 Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
-  address_id              String
+  // Relations
+  agency                  Agency?
+  tenant_profile          TenantProfile?
+  properties              Property[]       @relation("UserProperties")
+  swipes                  Swipe[]
+  conversations_as_tenant Conversation[]   @relation("TenantConversations")
+  conversations_as_owner  Conversation[]   @relation("OwnerConversations")
+  messages                Message[]
+  address                 Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id              String
 
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
-  deleted_at     DateTime?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  deleted_at     DateTime?
 }
 
 enum Role {
-  user
-  owner
-  agency
+  user
+  owner
+  agency
 }
 
 // ─────────────────────────────────────────────
@@ -55,18 +53,18 @@ enum Role {
 // ─────────────────────────────────────────────
 
 model Agency {
-  id          String   @id @default(uuid())
-  nom_agence  String
-  numero_tva  String?
-  numero_bce  String?
-  site_web    String?
-  address     Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
-  address_id  String
+  id          String   @id @default(uuid())
+  nom_agence  String
+  numero_tva  String?
+  numero_bce  String?
+  site_web    String?
+  address     Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id  String
 
-  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id     String   @unique
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String   @unique
 
-  created_at  DateTime @default(now())
+  created_at  DateTime @default(now())
 }
 
 // ─────────────────────────────────────────────
@@ -75,21 +73,21 @@ model Agency {
 // ─────────────────────────────────────────────
 
 model TenantProfile {
-  id             String         @id @default(uuid())
-  household_size Int?           // nombre de personnes dans le foyer
+  id             String         @id @default(uuid())
+  household_size Int?           // nombre de personnes dans le foyer
 
-  // Critères de recherche
-  budget_max     Float?
-  min_surface    Int?           // m²
-  max_surface    Int?           // m² — null = peu importe
-  regions        String[]
-  property_types PropertyType[] // plusieurs types possibles
+  // Critères de recherche
+  budget_max     Float?
+  min_surface    Int?           // m²
+  max_surface    Int?           // m² — null = peu importe
+  regions        String[]
+  property_types PropertyType[] // plusieurs types possibles
 
-  user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id        String         @unique
+  user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id        String         @unique
 
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
 }
 
 // ─────────────────────────────────────────────
@@ -97,80 +95,80 @@ model TenantProfile {
 // ─────────────────────────────────────────────
 
 model Property {
-  id             String         @id @default(uuid())
-  title          String
-  description    String?
-  property_type  PropertyType
-  status         PropertyStatus @default(draft)
+  id             String         @id @default(uuid())
+  title          String
+  description    String?
+  property_type  PropertyType
+  status         PropertyStatus @default(draft)
 
-  address        Address        @relation(fields: [address_id], references: [id], onDelete: Cascade)
-  address_id     String
+  address        Address        @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id     String
 
-  // Caractéristiques
-  price          Int
-  surface        Int            // m²
-  rooms          Int
-  parking        Boolean        @default(false)
+  // Caractéristiques
+  price          Int
+  surface        Int            // m²
+  rooms          Int
+  parking        Boolean        @default(false)
 
-  owner          User           @relation(fields: [owner_id], references: [id], name: "UserProperties", onDelete: Cascade)
-  owner_id       String
+  owner          User           @relation(fields: [owner_id], references: [id], name: "UserProperties", onDelete: Cascade)
+  owner_id       String
 
-  photos         PropertyPhoto[]
-  swipes         Swipe[]
-  conversations  Conversation[]
+  photos         PropertyPhoto[]
+  swipes         Swipe[]
+  conversations  Conversation[]
 
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
-  deleted_at     DateTime?
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  deleted_at     DateTime?
 
-  @@index([price])
-  @@index([surface])
-  @@index([property_type])
-  @@index([status])
+  @@index([price])
+  @@index([surface])
+  @@index([property_type])
+  @@index([status])
 }
 
 enum PropertyType {
-  Bungalow
-  Chalet
-  Castel
-  Farm
-  CountryHouse
-  ApartmentBuilding
-  MixedUseBuilding
-  BelEtageHouse
-  Mansion
-  Villa
-  ManorHouse
-  Pavilion
-  GroundFloor
-  Duplex
-  Triplex
-  Studio
-  Penthouse
-  Loft
-  StudentHousing
-  ServiceApartment
-  Appartement
-  Other
+  Bungalow
+  Chalet
+  Castel
+  Farm
+  CountryHouse
+  ApartmentBuilding
+  MixedUseBuilding
+  BelEtageHouse
+  Mansion
+  Villa
+  ManorHouse
+  Pavilion
+  GroundFloor
+  Duplex
+  Triplex
+  Studio
+  Penthouse
+  Loft
+  StudentHousing
+  ServiceApartment
+  Appartement
+  Other
 }
 
 enum PropertyStatus {
-  draft
-  published
-  rented
-  archived
-  Masked
+  draft
+  published
+  rented
+  archived
+  Masked
 }
 
 model PropertyPhoto {
-  id          String   @id @default(uuid())
-  url         String
-  order       Int      @default(0)
+  id          String   @id @default(uuid())
+  url         String
+  order       Int      @default(0)
 
-  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
-  property_id String
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
 
-  uploaded_at DateTime @default(now())
+  uploaded_at DateTime @default(now())
 }
 
 // ─────────────────────────────────────────────
@@ -179,19 +177,21 @@ model PropertyPhoto {
 // ─────────────────────────────────────────────
 
 model Swipe {
-  id          String   @id @default(uuid())
-  direction   Boolean
+  id          String   @id @default(uuid())
+  direction   Boolean
 
-  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id     String
-  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
-  property_id String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
 
-  created_at  DateTime @default(now())
+  conversation Conversation?
 
-  @@unique([user_id, property_id])
-  @@index([user_id])
-  @@index([property_id])
+  created_at  DateTime @default(now())
+
+  @@unique([user_id, property_id])
+  @@index([user_id])
+  @@index([property_id])
 }
 
 // ─────────────────────────────────────────────
@@ -199,22 +199,22 @@ model Swipe {
 // ─────────────────────────────────────────────
 
 model Conversation {
-  id          String    @id @default(uuid())
+  id          String    @id @default(uuid())
 
-  swipe       Swipe     @relation(fields: [swipe_id], references: [id], onDelete: Cascade)
-  swipe_id    String    @unique
+  swipe       Swipe     @relation(fields: [swipe_id], references: [id], onDelete: Cascade)
+  swipe_id    String    @unique
 
-  property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
-  property_id String
+  property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
 
-  tenant      User      @relation(fields: [tenant_id], references: [id], name: "TenantConversations", onDelete: Cascade)
-  tenant_id   String
-  owner       User      @relation(fields: [owner_id], references: [id], name: "OwnerConversations", onDelete: Cascade)
-  owner_id    String
+  tenant      User      @relation(fields: [tenant_id], references: [id], name: "TenantConversations", onDelete: Cascade)
+  tenant_id   String
+  owner       User      @relation(fields: [owner_id], references: [id], name: "OwnerConversations", onDelete: Cascade)
+  owner_id    String
 
-  messages Message[]
+  messages Message[]
 
-  created_at  DateTime  @default(now())
+  created_at  DateTime  @default(now())
 }
 
 // ─────────────────────────────────────────────
@@ -222,19 +222,19 @@ model Conversation {
 // ─────────────────────────────────────────────
 
 model Message {
-  id              String       @id @default(uuid())
-  content         String
-  read            Boolean      @default(false)
+  id              String       @id @default(uuid())
+  content         String
+  read            Boolean      @default(false)
 
-  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
-  conversation_id String
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  conversation_id String
 
-  sender          User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
-  sender_id       String
+  sender          User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  sender_id       String
 
-  created_at      DateTime     @default(now())
+  created_at      DateTime     @default(now())
 
-  @@index([conversation_id])
+  @@index([conversation_id])
 }
 
 // ─────────────────────────────────────────────
@@ -242,19 +242,19 @@ model Message {
 // ─────────────────────────────────────────────
 
 model Address {
-  id              String       @id @default(uuid())
-  number          String
-  box             String?
-  street          String
-  city            String
-  postal_code     String
-  country         String
+  id              String       @id @default(uuid())
+  number          String
+  box             String?
+  street          String
+  city            String
+  postal_code     String
+  country         String
 
-  users           User[]
-  agencies        Agency[]
-  properties      Property[]
+  users           User[]
+  agencies        Agency[]
+  properties      Property[]
 
-  created_at      DateTime     @default(now())
+  created_at      DateTime     @default(now())
 
-  @@index([city])
+  @@index([city])
 }

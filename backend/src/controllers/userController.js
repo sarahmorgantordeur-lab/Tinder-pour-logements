@@ -3,66 +3,57 @@ import prisma from '../config/db.js';
 class UserController {
     static async getProfile(req, res) {
         try {
-            const userId = req.user.id;
             const user = await prisma.user.findUnique({
-                where: { id: userId },
+                where: { id: req.user.id },
                 select: {
                     id: true,
                     email: true,
-                    username: true,
+                    firstname: true,
+                    lastname: true,
                     role: true,
                     phone: true,
                     avatar: true,
-                    company_name: true,
-                    siret: true,
-                    email_notifications: true,
-                    profile: true,
-                    pictures: true,
+                    bio: true,
+                    is_active: true,
+                    address: true,
+                    agency: true,
+                    tenant_profile: true,
                     created_at: true,
                     updated_at: true
                 }
             });
 
-            if (!user) {
-                return res.status(404).json({ message: "User not found" });
-            }
-
+            if (!user) return res.status(404).json({ message: "User not found" });
             res.status(200).json({ user });
         } catch (error) {
+            console.error('[getProfile]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async updateProfile(req, res) {
         try {
-            const userId = req.user.id;
-            const updateData = req.body;
+            const { firstname, lastname, phone, bio, avatar } = req.body;
 
-            // Interdire la modification du mot de passe et de l'email via cette route
-            delete updateData.password;
-            delete updateData.email;
-
-            // Convertir les champs camelCase vers snake_case
             const prismaData = {};
-            if (updateData.username !== undefined) prismaData.username = updateData.username;
-            if (updateData.phone !== undefined) prismaData.phone = updateData.phone;
-            if (updateData.avatar !== undefined) prismaData.avatar = updateData.avatar;
-            if (updateData.companyName !== undefined) prismaData.company_name = updateData.companyName;
-            if (updateData.siret !== undefined) prismaData.siret = updateData.siret;
+            if (firstname !== undefined) prismaData.firstname = firstname;
+            if (lastname !== undefined) prismaData.lastname = lastname;
+            if (phone !== undefined) prismaData.phone = phone;
+            if (bio !== undefined) prismaData.bio = bio;
+            if (avatar !== undefined) prismaData.avatar = avatar;
 
             const user = await prisma.user.update({
-                where: { id: userId },
+                where: { id: req.user.id },
                 data: prismaData,
                 select: {
                     id: true,
                     email: true,
-                    username: true,
+                    firstname: true,
+                    lastname: true,
                     role: true,
                     phone: true,
                     avatar: true,
-                    company_name: true,
-                    siret: true,
-                    profile: true,
+                    bio: true,
                     created_at: true,
                     updated_at: true
                 }
@@ -70,321 +61,98 @@ class UserController {
 
             res.status(200).json({ message: "Profile updated successfully", user });
         } catch (error) {
-            if (error.code === 'P2025') {
-                return res.status(404).json({ message: "User not found" });
-            }
+            if (error.code === 'P2025') return res.status(404).json({ message: "User not found" });
+            console.error('[updateProfile]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
     static async uploadAvatar(req, res) {
         try {
-            const userId = req.user.id;
-
-            if (!req.file) {
-                return res.status(400).json({ message: "No file uploaded" });
-            }
+            if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
             const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-
-            // Mise à jour du champ avatar de l'utilisateur
             const user = await prisma.user.update({
-                where: { id: userId },
+                where: { id: req.user.id },
                 data: { avatar: avatarUrl },
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    avatar: true
-                }
-            });
-
-            // Auto-création d'une entrée Picture avec type 'profile'
-            await prisma.picture.create({
-                data: {
-                    url: avatarUrl,
-                    type: 'profile',
-                    user_id: userId
-                }
+                select: { id: true, email: true, firstname: true, lastname: true, avatar: true }
             });
 
             res.status(200).json({ message: "Avatar uploaded successfully", user });
         } catch (error) {
+            console.error('[uploadAvatar]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async addFavorite(req, res) {
+    // Profil locataire
+    static async updateTenantProfile(req, res) {
         try {
-            const userId = req.user.id;
-            const { apartmentId } = req.body;
+            const { household_size, budget_max, min_surface, max_surface, regions, property_types } = req.body;
 
-            const apartment = await prisma.apartment.findUnique({
-                where: { id: apartmentId }
-            });
-
-            if (!apartment) {
-                return res.status(404).json({ message: "Apartment not found" });
-            }
-
-            const existingFavorite = await prisma.favorite.findUnique({
-                where: {
-                    user_id_apartment_id: {
-                        user_id: userId,
-                        apartment_id: apartmentId
-                    }
-                }
-            });
-
-            if (existingFavorite) {
-                return res.status(400).json({ message: "Apartment already in favorites" });
-            }
-
-            await prisma.favorite.create({
-                data: {
-                    user_id: userId,
-                    apartment_id: apartmentId
-                }
-            });
-
-            const favorites = await prisma.favorite.findMany({
-                where: { user_id: userId },
-                include: { apartment: true }
-            });
-
-            res.status(200).json({ message: "Apartment added to favorites", favorites });
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async removeFavorite(req, res) {
-        try {
-            const userId = req.user.id;
-            const { apartmentId } = req.params;
-
-            await prisma.favorite.delete({
-                where: {
-                    user_id_apartment_id: {
-                        user_id: userId,
-                        apartment_id: apartmentId
-                    }
-                }
-            });
-
-            const favorites = await prisma.favorite.findMany({
-                where: { user_id: userId },
-                include: { apartment: true }
-            });
-
-            res.status(200).json({ message: "Apartment removed from favorites", favorites });
-        } catch (error) {
-            if (error.code === 'P2025') {
-                return res.status(404).json({ message: "Favorite not found" });
-            }
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async getFavorites(req, res) {
-        try {
-            const userId = req.user.id;
-            const favorites = await prisma.favorite.findMany({
-                where: { user_id: userId },
-                include: { apartment: true }
-            });
-
-            res.status(200).json({ favorites: favorites.map(f => f.apartment) });
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async addToHistory(req, res) {
-        try {
-            const userId = req.user.id;
-            const { apartmentId } = req.body;
-
-            const apartment = await prisma.apartment.findUnique({
-                where: { id: apartmentId }
-            });
-
-            if (!apartment) {
-                return res.status(404).json({ message: "Apartment not found" });
-            }
-
-            const existingView = await prisma.viewedApartment.findFirst({
-                where: {
-                    user_id: userId,
-                    apartment_id: apartmentId
-                }
-            });
-
-            if (existingView) {
-                await prisma.viewedApartment.update({
-                    where: { id: existingView.id },
-                    data: { viewed_at: new Date() }
-                });
-            } else {
-                await prisma.viewedApartment.create({
-                    data: {
-                        user_id: userId,
-                        apartment_id: apartmentId
-                    }
-                });
-            }
-
-            res.status(200).json({ message: "Apartment added to history" });
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async getHistory(req, res) {
-        try {
-            const userId = req.user.id;
-            const history = await prisma.viewedApartment.findMany({
-                where: { user_id: userId },
-                include: { apartment: true },
-                orderBy: { viewed_at: 'desc' }
-            });
-
-            res.status(200).json({ history });
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async updatePreferences(req, res) {
-        try {
-            const userId = req.user.id;
-            const preferences = req.body;
-
-            // Convertir les champs
-            const prismaData = {
-                property_type: preferences.propertyType || [],
-                listing_type: preferences.listingType,
-                min_price: preferences.minPrice ? parseFloat(preferences.minPrice) : null,
-                max_price: preferences.maxPrice ? parseFloat(preferences.maxPrice) : null,
-                min_surface: preferences.minSurface ? parseFloat(preferences.minSurface) : null,
-                regions: preferences.regions || [],
-                tags: preferences.tags || []
+            const data = {
+                household_size: household_size ? parseInt(household_size) : null,
+                budget_max: budget_max ? parseFloat(budget_max) : null,
+                min_surface: min_surface ? parseInt(min_surface) : null,
+                max_surface: max_surface ? parseInt(max_surface) : null,
+                regions: regions || [],
+                property_types: property_types || []
             };
 
-            const updatedPreferences = await prisma.preferences.upsert({
-                where: { user_id: userId },
-                update: prismaData,
-                create: {
-                    ...prismaData,
-                    user_id: userId
-                }
+            const profile = await prisma.tenantProfile.upsert({
+                where: { user_id: req.user.id },
+                update: data,
+                create: { ...data, user_id: req.user.id }
             });
 
-            res.status(200).json({ message: "Preferences updated successfully", preferences: updatedPreferences });
+            res.status(200).json({ message: "Tenant profile updated successfully", profile });
         } catch (error) {
+            console.error('[updateTenantProfile]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
 
-    static async addProfilePicture(req, res) {
+    // Profil agence
+    static async updateAgency(req, res) {
         try {
-            const userId = req.user.id;
+            const { nom_agence, numero_tva, numero_bce, site_web, address } = req.body;
 
-            if (!req.file) {
-                return res.status(400).json({ message: "No file uploaded" });
+            if (!nom_agence) return res.status(400).json({ message: "nom_agence is required" });
+
+            const existingAgency = await prisma.agency.findUnique({ where: { user_id: req.user.id } });
+
+            let agency;
+            if (existingAgency) {
+                if (address) {
+                    await prisma.address.update({ where: { id: existingAgency.address_id }, data: address });
+                }
+                agency = await prisma.agency.update({
+                    where: { user_id: req.user.id },
+                    data: { nom_agence, numero_tva, numero_bce, site_web }
+                });
+            } else {
+                if (!address?.street) return res.status(400).json({ message: "Agency address is required" });
+                agency = await prisma.agency.create({
+                    data: {
+                        nom_agence, numero_tva, numero_bce, site_web,
+                        address: {
+                            create: {
+                                number: address.number || '',
+                                box: address.box || null,
+                                street: address.street,
+                                city: address.city,
+                                postal_code: address.postal_code,
+                                country: address.country || 'Belgique'
+                            }
+                        },
+                        user_id: req.user.id
+                    }
+                });
             }
 
-            const pictureUrl = `/uploads/avatars/${req.file.filename}`;
-
-            // Créer une entrée Picture avec type 'profile'
-            await prisma.picture.create({
-                data: {
-                    url: pictureUrl,
-                    type: 'profile',
-                    user_id: userId
-                }
-            });
-
-            const pictures = await prisma.picture.findMany({
-                where: { user_id: userId, type: 'profile' },
-                orderBy: { uploaded_at: 'desc' }
-            });
-
-            res.status(200).json({ message: "Picture added successfully", pictures });
+            res.status(200).json({ message: "Agency updated successfully", agency });
         } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async getProfilePictures(req, res) {
-        try {
-            const userId = req.user.id;
-            const pictures = await prisma.picture.findMany({
-                where: { user_id: userId, type: 'profile' },
-                orderBy: { uploaded_at: 'desc' }
-            });
-
-            res.status(200).json({ pictures });
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async removeProfilePicture(req, res) {
-        try {
-            const userId = req.user.id;
-            const { pictureId } = req.params;
-
-            // Vérifier que la photo appartient à l'utilisateur
-            const picture = await prisma.picture.findUnique({
-                where: { id: pictureId }
-            });
-
-            if (!picture || picture.user_id !== userId) {
-                return res.status(404).json({ message: "Picture not found" });
-            }
-
-            await prisma.picture.delete({
-                where: { id: pictureId }
-            });
-
-            const pictures = await prisma.picture.findMany({
-                where: { user_id: userId, type: 'profile' },
-                orderBy: { uploaded_at: 'desc' }
-            });
-
-            res.status(200).json({ message: "Picture removed successfully", pictures });
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async updateNotificationSettings(req, res) {
-        try {
-            const userId = req.user.id;
-            const { emailNotifications } = req.body;
-
-            if (typeof emailNotifications !== 'boolean') {
-                return res.status(400).json({ message: "emailNotifications must be a boolean" });
-            }
-
-            const user = await prisma.user.update({
-                where: { id: userId },
-                data: { email_notifications: emailNotifications },
-                select: {
-                    id: true,
-                    email: true,
-                    email_notifications: true
-                }
-            });
-
-            res.status(200).json({
-                message: emailNotifications
-                    ? "Email notifications enabled"
-                    : "Email notifications disabled",
-                user
-            });
-        } catch (error) {
+            console.error('[updateAgency]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }

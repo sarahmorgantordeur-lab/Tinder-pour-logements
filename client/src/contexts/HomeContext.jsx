@@ -13,8 +13,8 @@ export const HomeProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await api.get("/apartments");
-            setApartments(response.data.apartments ?? response.data);
+            const response = await api.get("/properties");
+            setApartments(Array.isArray(response.data) ? response.data : []);
             setCurrentIndex(0);
         } catch {
             setError("Impossible de charger les logements");
@@ -23,11 +23,12 @@ export const HomeProvider = ({ children }) => {
         }
     }, []);
 
-    const fetchApartementNames = useCallback(async () => {
+    // Autocomplete agences — nécessite au moins 3 caractères
+    const fetchAgencyNames = useCallback(async (q) => {
+        if (!q || q.length < 3) return [];
         try {
-            const response = await api.get("/agencies");
-            console.log(response.data);
-            return response.data.agencies.map((agency) => agency.name);
+            const response = await api.get(`/auth/agencies?q=${encodeURIComponent(q)}`);
+            return response.data.map((agency) => agency.nom_agence);
         } catch {
             return [];
         }
@@ -35,14 +36,13 @@ export const HomeProvider = ({ children }) => {
 
     useEffect(() => {
         fetchApartments();
-        fetchApartementNames();
-    }, [fetchApartments, fetchApartementNames]);
+    }, [fetchApartments]);
 
     const swipe = async (direction) => {
         const current = apartments[currentIndex];
         if (!current) return;
         try {
-            await api.post("/swipes", { appartement_id: current.id, direction });
+            await api.post("/swipes", { propertyId: current.id, direction });
         } catch {
             // swipe enregistré localement même si l'API échoue
         } finally {
@@ -58,9 +58,8 @@ export const HomeProvider = ({ children }) => {
         error,
         swipe,
         fetchApartments,
+        fetchAgencyNames,
     };
 
     return <HomeContext.Provider value={value}>{children}</HomeContext.Provider>;
 };
-
-

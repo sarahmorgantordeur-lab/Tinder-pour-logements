@@ -6,14 +6,14 @@ import { uuidParamValidation } from '../utils/validators.js';
 
 const router = express.Router();
 
-// Routes pour les locataires (users)
+// Locataires
 router.post('/', authenticate, isUser, SwipeController.swipe);
-router.get('/apartments', authenticate, isUser, SwipeController.getApartmentsToSwipe);
+router.get('/properties', authenticate, isUser, SwipeController.getPropertiesToSwipe);
 router.get('/history', authenticate, isUser, SwipeController.getSwipeHistory);
-router.delete('/:apartmentId', authenticate, isUser, uuidParamValidation('apartmentId'), SwipeController.deleteSwipe);
+router.delete('/:propertyId', authenticate, isUser, uuidParamValidation('propertyId'), SwipeController.deleteSwipe);
 
-// Routes pour les propriétaires/agences
+// Propriétaires / agences
 router.get('/likes/received', authenticate, isOwnerOrAgency, SwipeController.getReceivedLikes);
-router.get('/likes/apartment/:apartmentId', authenticate, isOwnerOrAgency, uuidParamValidation('apartmentId'), SwipeController.getLikesForApartment);
+router.get('/likes/property/:propertyId', authenticate, isOwnerOrAgency, uuidParamValidation('propertyId'), SwipeController.getLikesForProperty);
 
 export default router;

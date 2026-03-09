@@ -15,16 +15,23 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await api.post("/auth/register", {
                 firstname: name,
-                lastname : surname,
-                nom_agence: agencyName,
+                lastname: surname,
                 email,
                 password,
                 phone,
                 role
             });
-            const { user: newUser } = response.data;
-            setUser(newUser);
+            const { user: newUser, token: newToken } = response.data;
+            localStorage.setItem("token", newToken);
             localStorage.setItem("user", JSON.stringify(newUser));
+            setUser(newUser);
+            setToken(newToken);
+
+            // Si agence, créer le profil agence après l'inscription
+            if (role === 'agency' && agencyName) {
+                await api.put("/users/agency", { nom_agence: agencyName });
+            }
+
             return { success: true };
         } catch (error) {
             return {

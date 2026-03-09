@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
         if (file.fieldname === 'avatar') {
             uploadPath = path.join(uploadPath, 'avatars');
         } else if (file.fieldname === 'pictures') {
-            uploadPath = path.join(uploadPath, 'apartments');
+            uploadPath = path.join(uploadPath, 'properties');
         }
 
         cb(null, uploadPath);
@@ -26,7 +26,6 @@ const storage = multer.diskStorage({
 
 const imageFilter = (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
@@ -34,39 +33,24 @@ const imageFilter = (req, file, cb) => {
     }
 };
 
-// Configurations multer pour les images uniquement
-const uploadAvatar = multer({
-    storage,
-    fileFilter: imageFilter,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB
-}).single('avatar');
-
-const uploadApartmentPictures = multer({
-    storage,
-    fileFilter: imageFilter,
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB
-}).array('pictures', 10); // Max 10 images
-
-// Middleware wrapper pour gérer les erreurs multer
 const handleUpload = (uploadFn) => {
     return (req, res, next) => {
         uploadFn(req, res, (err) => {
             if (err instanceof multer.MulterError) {
-                if (err.code === 'LIMIT_FILE_SIZE') {
-                    return res.status(400).json({ message: 'Fichier trop volumineux' });
-                }
-                if (err.code === 'LIMIT_FILE_COUNT') {
-                    return res.status(400).json({ message: 'Trop de fichiers' });
-                }
+                if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ message: 'Fichier trop volumineux' });
+                if (err.code === 'LIMIT_FILE_COUNT') return res.status(400).json({ message: 'Trop de fichiers' });
                 return res.status(400).json({ message: err.message });
             }
-            if (err) {
-                return res.status(400).json({ message: err.message });
-            }
+            if (err) return res.status(400).json({ message: err.message });
             next();
         });
     };
 };
 
-export const uploadAvatarMiddleware = handleUpload(uploadAvatar);
-export const uploadPicturesMiddleware = handleUpload(uploadApartmentPictures);
+export const uploadAvatarMiddleware = handleUpload(
+    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).single('avatar')
+);
+
+export const uploadPicturesMiddleware = handleUpload(
+    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }).array('pictures', 10)
+);

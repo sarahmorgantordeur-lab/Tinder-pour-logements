@@ -10,7 +10,7 @@ class AuthController {
             if (error.message === "Invalid email or password") {
                 return res.status(401).json({ message: error.message });
             }
-            if (error.message === "Compte suspendu") {
+            if (error.message === "Compte désactivé") {
                 return res.status(403).json({ message: error.message });
             }
             console.error('[login error]', error);
@@ -19,26 +19,26 @@ class AuthController {
     }
 
     static async register(req, res) {
-        const { email, password, userName, phone, role } = req.body;
+        const { email, password, firstname, lastname, phone, role, address } = req.body;
         try {
-            const user = await AuthService.register(
+            const { user, token } = await AuthService.register(
                 email,
                 password,
-                userName,
+                firstname,
+                lastname,
+                phone,
                 role,
-                phone
+                address
             );
-
-            res.status(200).json({ message: "User register successfully", user });
+            res.status(201).json({ message: "User registered successfully", user, token });
         } catch (error) {
             if (error.message === "This email is already taken") {
                 return res.status(409).json({ message: error.message });
             }
-
             if (error.message === "All fields are required") {
                 return res.status(400).json({ message: error.message });
             }
-
+            console.error('[register error]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
