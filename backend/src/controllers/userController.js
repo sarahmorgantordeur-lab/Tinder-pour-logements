@@ -18,6 +18,8 @@ class UserController {
                     address: true,
                     agency: true,
                     tenant_profile: true,
+                    profile_photos: { orderBy: { uploaded_at: 'desc' } },
+                    documents: { orderBy: { uploaded_at: 'desc' } },
                     created_at: true,
                     updated_at: true
                 }
@@ -85,17 +87,77 @@ class UserController {
         }
     }
 
-    // Profil locataire — upsert (income non renvoyé au front)
+    // Photo de profil supplémentaire (galerie)
+    static async uploadProfilePhoto(req, res) {
+        try {
+            if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+
+            const url = `/uploads/avatars/${req.file.filename}`;
+            const photo = await prisma.profilePhoto.create({
+                data: { url, user_id: req.user.id }
+            });
+
+            res.status(201).json({ message: "Profile photo uploaded", photo });
+        } catch (error) {
+            console.error('[uploadProfilePhoto]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async deleteProfilePhoto(req, res) {
+        try {
+            const { id } = req.params;
+            const photo = await prisma.profilePhoto.findUnique({ where: { id } });
+
+            if (!photo) return res.status(404).json({ message: "Photo not found" });
+            if (photo.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+
+            await prisma.profilePhoto.delete({ where: { id } });
+            res.status(200).json({ message: "Photo deleted" });
+        } catch (error) {
+            console.error('[deleteProfilePhoto]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    // Documents locataire
+    static async uploadDocument(req, res) {
+        try {
+            if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+
+            const { label } = req.body;
+            const url = `/uploads/documents/${req.file.filename}`;
+            const document = await prisma.document.create({
+                data: { url, label: label || null, user_id: req.user.id }
+            });
+
+            res.status(201).json({ message: "Document uploaded", document });
+        } catch (error) {
+            console.error('[uploadDocument]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async deleteDocument(req, res) {
+        try {
+            const { id } = req.params;
+            const document = await prisma.document.findUnique({ where: { id } });
+
+            if (!document) return res.status(404).json({ message: "Document not found" });
+            if (document.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+
+            await prisma.document.delete({ where: { id } });
+            res.status(200).json({ message: "Document deleted" });
+        } catch (error) {
+            console.error('[deleteDocument]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    // Profil locataire
     static async updateTenantProfile(req, res) {
         try {
-            const {
-                household_size,
-                budget_max,
-                min_surface,
-                max_surface,
-                regions,
-                property_types
-            } = req.body;
+            const { household_size, budget_max, min_surface, max_surface, regions, property_types } = req.body;
 
             const data = {
                 household_size: household_size ? parseInt(household_size) : null,
@@ -119,25 +181,19 @@ class UserController {
         }
     }
 
-    // Profil agence — upsert
+    // Profil agence
     static async updateAgency(req, res) {
         try {
             const { nom_agence, numero_tva, numero_bce, site_web, address } = req.body;
 
             if (!nom_agence) return res.status(400).json({ message: "nom_agence is required" });
 
-            const existingAgency = await prisma.agency.findUnique({
-                where: { user_id: req.user.id }
-            });
+            const existingAgency = await prisma.agency.findUnique({ where: { user_id: req.user.id } });
 
             let agency;
             if (existingAgency) {
-                // Mise à jour adresse agence si fournie
                 if (address) {
-                    await prisma.address.update({
-                        where: { id: existingAgency.address_id },
-                        data: address
-                    });
+                    await prisma.address.update({ where: { id: existingAgency.address_id }, data: address });
                 }
                 agency = await prisma.agency.update({
                     where: { user_id: req.user.id },
@@ -147,10 +203,7 @@ class UserController {
                 if (!address?.street) return res.status(400).json({ message: "Agency address is required" });
                 agency = await prisma.agency.create({
                     data: {
-                        nom_agence,
-                        numero_tva,
-                        numero_bce,
-                        site_web,
+                        nom_agence, numero_tva, numero_bce, site_web,
                         address: {
                             create: {
                                 number: address.number || '',
