@@ -3,6 +3,7 @@ import Landing from "../pages/LandingPage";
 import Home from "../layouts/Home";
 import EditAnnouncement from "../pages/EditAnnouncement";
 import DiscussionPage from "../pages/DiscussionPage";
+import ProfilePage from "../pages/ProfilePage";
 import { useAuth } from "../hooks/useAuth";
 
 function PublicRoute({ children }) {
@@ -36,6 +37,11 @@ function AppRouter() {
       <Route path="/discussions" element={
         <PrivateRoute>
           <DiscussionPage />
+        </PrivateRoute>
+      } />
+      <Route path="/profile" element={
+        <PrivateRoute>
+          <ProfilePage />
         </PrivateRoute>
       } />
     </Routes>

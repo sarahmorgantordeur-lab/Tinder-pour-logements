@@ -25,7 +25,6 @@ const buildFormData = (user) => {
         password: "",
         nom_agence: user?.agency?.nom_agence || "",
         numero_tva: user?.agency?.numero_tva || "",
-        numero_bce: user?.agency?.numero_bce || "",
         site_web: user?.agency?.site_web || "",
         agency_address: {
             number: agencyAddress?.number || "",
@@ -217,16 +216,6 @@ export default function ProfilePage() {
                                     type="text"
                                     name="numero_tva"
                                     value={formData.numero_tva}
-                                    onChange={handleChange}
-                                />
-                            </label>
-
-                            <label className="profile-field">
-                                Numéro BCE
-                                <input
-                                    type="text"
-                                    name="numero_bce"
-                                    value={formData.numero_bce}
                                     onChange={handleChange}
                                 />
                             </label>

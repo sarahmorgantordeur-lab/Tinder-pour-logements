@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import AppartementOwnerCard from "../../components/cards/AppartementOwnerCard";
 import Headers from "../../layouts/components/Headers";
 import Footer from "../../layouts/components/Footer";
 import Button from "../../components/ui/Button";
-import useHome from "../../hooks/useHome";
+import { useHome } from "../../hooks/useHome";
 
 export default function AgencyHome() {
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const { properties } = useHome();
+    const { loading, error } = useHome();
+    const { appartmentById, fetchMyProperties } = useHome();
 
-    const count = properties.length;
+    useEffect(() => {
+        fetchMyProperties();
+    }, [fetchMyProperties]);
+
+    const count = appartmentById?.length;
     const label = count > 1 ? "annonces" : "annonce";
 
     return (
         <div className="agency-home">
-            <Headers/>
 
             {loading && (
                 <p className="agency-home-loading">
@@ -54,21 +56,21 @@ export default function AgencyHome() {
                     </Button>
                 
                 <div className="agency-home-grid">
-                    {properties.map((property) => {
-                        const formattedProperty = {
-                            ...property,
-                            city: property.address?.city,
-                            postal_code: property.address?.postal_code,
-                            image: property.photos?.[0]?.url ?? null,
+                    {appartmentById.map((apartment) => {
+                        const formattedApartment = {
+                            ...apartment,
+                            city: apartment.address?.city,
+                            postal_code: apartment.address?.postal_code,
+                            image: apartment.photos?.[0]?.url ?? null,
                         };
 
                         return (
                             <div
-                                key={property.id}
+                                key={apartment.id}
                                 className="agency-home-card-wrapper"
                             >
                                 <AppartementOwnerCard
-                                    appartement={formattedProperty}
+                                    appartement={formattedApartment}
                                 />
                             </div>
                         );
@@ -76,7 +78,6 @@ export default function AgencyHome() {
                 </div>
                 </div>
             )}
-            <Footer/>
         </div>
     );
 }
