@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "../pages/LandingPage";
 import Home from "../layouts/Home";
 import EditAnnouncement from "../pages/EditAnnouncement";
-import DiscussionPage from "../pages/discussionPage";
+import DiscussionPage from "../pages/DiscussionPage";
 import { useAuth } from "../hooks/useAuth";
 
 function PublicRoute({ children }) {
