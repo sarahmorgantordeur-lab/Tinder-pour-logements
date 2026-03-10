@@ -5,6 +5,7 @@ import { HomeContext } from "../hooks/useHome";
 
 export const HomeProvider = ({ children }) => {
     const [apartments, setApartments] = useState([]);
+    const [appartmentById, setAppartmentById] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,6 +15,22 @@ export const HomeProvider = ({ children }) => {
     const fetchApartments = useCallback(async (f = {}) => {
         setLoading(true);
         setError(null);
+        if (filters) {
+            const query = new URLSearchParams();
+            if (f.city) query.append("city", f.city);
+            if (f.minPrice) query.append("minPrice", f.minPrice);
+            if (f.maxPrice) query.append("maxPrice", f.maxPrice);
+            if (f.propertyType) query.append("propertyType", f.propertyType);
+            try {
+                const response = await api.get(`/properties?${query.toString()}`);
+                setApartments(Array.isArray(response.data) ? response.data : []);
+                setCurrentIndex(0);
+            } catch {
+                setError("Impossible de charger les logements");
+            } finally {
+                setLoading(false);
+            }
+        } else {    
         try {
             const response = await api.get("/properties");
             setApartments(Array.isArray(response.data) ? response.data : []);
@@ -21,6 +38,22 @@ export const HomeProvider = ({ children }) => {
             setCurrentIndex(0);
         } catch {
             setError("Impossible de charger les logements");
+        } finally {
+            setLoading(false);
+        }
+        }
+    }, []);
+
+    const fetchPropertiesById = useCallback(async (id) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await api.get(`/properties/${id}`);
+            setAppartmentById(response.data.properties);
+            return response.data;
+        } catch {
+            setError("Impossible de charger le logement");
+            return null;
         } finally {
             setLoading(false);
         }
@@ -39,7 +72,8 @@ export const HomeProvider = ({ children }) => {
 
     useEffect(() => {
         fetchApartments(filters);
-    }, [fetchApartments]);
+        fetchPropertiesById();
+    }, [fetchApartments, fetchPropertiesById, filters]);
 
     const swipe = async (direction) => {
         const current = apartments[currentIndex];
