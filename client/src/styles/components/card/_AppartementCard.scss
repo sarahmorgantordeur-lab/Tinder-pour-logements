@@ -1,0 +1,65 @@
+@use '../../variables' as *;
+
+.appartement-card {
+    background-color: $border-color;
+    border-radius: 8px;
+    box-shadow: 2px 2px 4px $border-color-muted;
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    
+        @media (max-width: 768px) {
+            width: 100%;
+        }
+
+    .appartement-card-header {
+        width: 100%;
+
+        .appartement-card-image {
+            border-start-start-radius: 8px;
+            border-start-end-radius: 8px;
+            width: 100%;
+            height: 65%;
+            object-fit: cover;
+        }
+
+        h3 {
+            padding: 8px 16px 4px 16px;
+            text-align: start;
+            font-size: 1.5em;
+            color: $main-text-color;
+        }
+    }
+
+    .appartement-card-body {
+        padding: 4px 16px 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .appartement-description {
+            font-size: 1em;
+            color: $text-muted;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .appartement-price {
+            font-size: 1.2em;
+            color: $main-text-color;
+            margin-bottom: 4px;
+        }
+
+        .appartement-city {
+            font-size: 1em;
+            color: $text-muted;
+        }
+        
+        .appartement-city-name {
+            font-size: 1.2em;
+            color: $text-muted;
+        }
+    }
+}

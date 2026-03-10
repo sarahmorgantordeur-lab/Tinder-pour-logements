@@ -1,27 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 
-export default function Login({ onLogin }) {
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const user = JSON.parse(localStorage.getItem('user') || 'null');
-            onLogin?.(user, token);
-        }
-    }, [onLogin]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
+        console.log('Attempting login with:', { email, password });
 
         try {
             const res = await login(email, password);

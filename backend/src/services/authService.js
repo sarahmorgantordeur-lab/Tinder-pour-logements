@@ -43,7 +43,8 @@ class AuthService {
         });
 
         const { password: _, ...userWithoutPassword } = newUser;
-        return userWithoutPassword;
+        const token = generateToken(newUser);
+        return { user: userWithoutPassword, token };
     }
 
     static async login(email, password) {

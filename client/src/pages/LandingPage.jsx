@@ -1,6 +1,10 @@
 import AuthLayoutForm from "../components/auth/AuthLayoutForm";
+import Button from "../components/ui/Button";
+import { useState } from "react";
 
 export default function Landing() {
+    const [isLogin, setIsLogin] = useState(true);
+    const [isRegister, setIsRegister] = useState(false);
     return (
     <main className="landing-page">
         <div className="landing-intro">
@@ -12,11 +16,11 @@ export default function Landing() {
 
                 If you’re interested to join the grand inovation join us either you want to find or to rent out a lodging.
                 </p>
-                <button className="landing-button">Join the movement</button>
+                <Button className="landing-button" onClick={() => { setIsLogin(false); setIsRegister(true); }}>Join the movement</Button>
             </div>
         </div>
         <div className="landing-forms">
-            <AuthLayoutForm />
+            <AuthLayoutForm isLogin={isLogin} isRegister={isRegister} setIsLogin={setIsLogin} setIsRegister={setIsRegister} />
         </div>
     </main>
     );

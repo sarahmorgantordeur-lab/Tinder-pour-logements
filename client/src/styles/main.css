@@ -1,0 +1,468 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+@font-face {
+  font-family: "BeVietnamPro";
+  src: url("../assets/fonts/BeVietnamPro-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Neco";
+  src: url("../assets/fonts/Neco-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+body {
+  background-color: #0A0201;
+  color: #FFF0EB;
+  font-family: "BeVietnamPro", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Neco", sans-serif;
+}
+
+input, button {
+  font-family: "BeVietnamPro", sans-serif;
+}
+
+.landing-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+.landing-page .landing-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  padding: 2rem;
+  color: #FFF0EB;
+  background-image: url("../../assets/images/LandingPictureBackground.jpg");
+  background-size: cover;
+  background-position: center center;
+  height: 100%;
+}
+.landing-page .landing-intro .intro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  backdrop-filter: blur(14px);
+  padding: 64px;
+  background-color: rgba(32, 19, 14, 0.6);
+  border-radius: 40px;
+  border-color: #604034;
+  border-width: 1px;
+}
+.landing-page .landing-intro .intro-container .landing-title {
+  font-size: 56px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.landing-description {
+  font-size: 20px;
+  margin-bottom: 2rem;
+  line-height: 150%;
+}
+
+.landing-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 20px;
+  background-color: #E89D82;
+  color: #FFF0EB;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.landing-forms {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #20130E;
+}
+
+.agency-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.owner-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.user-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+.user-home .appartement-card-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-home .swipe-buttons {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  width: 45%;
+  justify-content: center;
+}
+.user-home .swipe-buttons .swipe-button {
+  width: 100%;
+}
+
+.auth-layout-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 60%;
+  gap: 32px;
+}
+
+.switch-auth-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.switch-auth-container .switch-auth-content {
+  display: flex;
+  justify-content: center;
+  background-color: #150804;
+  gap: 16px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 16px;
+}
+.switch-auth-container .switch-auth-content button {
+  font-size: 18px;
+  cursor: pointer;
+  background-color: #E89D82;
+  color: #FFF0EB;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  width: 100%;
+}
+.switch-auth-container .switch-auth-content .Inactive-button {
+  background-color: #150804;
+  color: #CFA89B;
+}
+
+.form-main-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.form-main-container .form-wrapper {
+  width: 100%;
+  border-radius: 1rem;
+  box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
+}
+.form-main-container .form-wrapper .form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.form-main-container .form-wrapper .form-container .role-container {
+  display: flex;
+  gap: 38px;
+  justify-content: center;
+}
+.form-main-container .form-wrapper .form-container .role-container .icon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 33%;
+  aspect-ratio: 1/1;
+  gap: 10px;
+  border-radius: 8px;
+  background-color: #7D5A4F;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  transition: all 0.3s;
+}
+.form-main-container .form-wrapper .form-container .role-container .icon-card.icon-card-selected {
+  border: 2px solid #604034;
+  box-shadow: 0 0 12px rgba(96, 64, 52, 0.6);
+}
+.form-main-container .form-wrapper .form-container .role-container .icon-card:hover {
+  background-color: rgba(125, 90, 79, 0.9);
+}
+.form-main-container .form-wrapper .form-container .role-container .icon-card .role-text {
+  color: #CFA89B;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.form-main-container .form-wrapper .form-container .role-container .icon-card .text-selected {
+  color: #FFF0EB;
+}
+.form-main-container .form-wrapper .form-container .role-container .role-icon {
+  height: 50%;
+  color: #CFA89B;
+  transition: all 0.3s;
+}
+.form-main-container .form-wrapper .form-container .role-container .icon-selected {
+  color: #FFF0EB;
+}
+.form-main-container .form-wrapper .form-container .name-container-agency {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form-main-container .form-wrapper .form-container .name-container-agency input {
+  width: 100%;
+}
+.form-main-container .form-wrapper .form-container .name-container-rest {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+.form-main-container .form-wrapper .form-container .name-container-rest input {
+  flex: 1;
+}
+
+.appartement-card {
+  background-color: #604034;
+  border-radius: 8px;
+  box-shadow: 2px 2px 4px #42241A;
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+@media (max-width: 768px) {
+  .appartement-card {
+    width: 100%;
+  }
+}
+.appartement-card .appartement-card-header {
+  width: 100%;
+}
+.appartement-card .appartement-card-header .appartement-card-image {
+  border-start-start-radius: 8px;
+  border-start-end-radius: 8px;
+  width: 100%;
+  height: 65%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.appartement-card .appartement-card-header h3 {
+  padding: 8px 16px 4px 16px;
+  text-align: start;
+  font-size: 1.5em;
+  color: #FFF0EB;
+}
+.appartement-card .appartement-card-body {
+  padding: 4px 16px 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.appartement-card .appartement-card-body .appartement-description {
+  font-size: 1em;
+  color: #CFA89B;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.appartement-card .appartement-card-body .appartement-price {
+  font-size: 1.2em;
+  color: #FFF0EB;
+  margin-bottom: 4px;
+}
+.appartement-card .appartement-card-body .appartement-city {
+  font-size: 1em;
+  color: #CFA89B;
+}
+.appartement-card .appartement-card-body .appartement-city-name {
+  font-size: 1.2em;
+  color: #CFA89B;
+}
+
+button {
+  padding: 0.75rem;
+  background-color: #E89D82;
+  color: #FFF0EB;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: all 0.3s;
+}
+button:hover {
+  background-color: rgba(232, 157, 130, 0.9);
+}
+
+input {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #42241A;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #7D5A4F;
+  color: #FFF0EB;
+}
+input::-moz-placeholder {
+  color: #CFA89B;
+}
+input::placeholder {
+  color: #CFA89B;
+}
+input:focus {
+  border-color: #604034;
+  box-shadow: 0 0 0 2px rgba(96, 64, 52, 0.2);
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #20130E;
+  color: #FFF0EB;
+}
+.app-header .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.app-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.app-header .header-right .navigation {
+  display: flex;
+  gap: 1.5rem;
+}
+.app-header .header-right .navigation a {
+  color: #FFF0EB;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.app-header .header-right .navigation a:hover {
+  text-decoration: underline;
+}
+.app-header .header-right .navigation a .active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.app-footer {
+  background-color: #20130E;
+  color: #FFF0EB;
+  border-top: 1px solid #42241A;
+}
+.app-footer .footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2.5rem 2rem;
+  gap: 2rem;
+}
+.app-footer .footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 260px;
+}
+.app-footer .footer-brand .footer-logo svg {
+  height: 2rem;
+  width: auto;
+}
+.app-footer .footer-brand .footer-tagline {
+  font-size: 0.9rem;
+  color: #CFA89B;
+  line-height: 1.5;
+}
+.app-footer .footer-nav {
+  display: flex;
+  gap: 3rem;
+}
+.app-footer .footer-nav .footer-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.app-footer .footer-nav .footer-nav-group h4 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #E89D82;
+}
+.app-footer .footer-nav .footer-nav-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.app-footer .footer-nav .footer-nav-group a {
+  color: #CFA89B;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+.app-footer .footer-nav .footer-nav-group a:hover {
+  color: #FFF0EB;
+}
+.app-footer .footer-bottom {
+  border-top: 1px solid #42241A;
+  padding: 1rem 2rem;
+  text-align: center;
+}
+.app-footer .footer-bottom .footer-copy {
+  font-size: 0.8rem;
+  color: #CFA89B;
+}
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  background-color: #0A0201;
+  min-height: 100vh;
+  min-width: 100vw;
+}/*# sourceMappingURL=main.css.map */

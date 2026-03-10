@@ -6,6 +6,24 @@
     align-items: center;
     padding: 2rem;
     text-align: center;
-    //temp
-    min-height: 100vh;
+
+    .appartement-card-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .swipe-buttons {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        width: 45%;
+        justify-content: center;
+
+        .swipe-button {
+            width: 100%;
+        }
+    }
 }

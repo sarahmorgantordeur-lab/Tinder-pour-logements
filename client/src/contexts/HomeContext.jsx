@@ -15,15 +15,9 @@ export const HomeProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const params = new URLSearchParams();
-            if (f.city)         params.set("city", f.city);
-            if (f.minPrice)     params.set("minPrice", f.minPrice);
-            if (f.maxPrice)     params.set("maxPrice", f.maxPrice);
-            if (f.propertyType) params.set("propertyType", f.propertyType);
-            const query = params.toString() ? `?${params.toString()}` : "";
-            const response = await api.get(`/properties${query}`);
-            const list = response.data?.properties ?? (Array.isArray(response.data) ? response.data : []);
-            setApartments(list);
+            const response = await api.get("/properties");
+            setApartments(Array.isArray(response.data) ? response.data : []);
+            consoletable.log("Fetched apartments:", response);
             setCurrentIndex(0);
         } catch {
             setError("Impossible de charger les logements");
