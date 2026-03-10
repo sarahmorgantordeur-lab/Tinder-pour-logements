@@ -12,7 +12,6 @@ class UserController {
                     lastname: true,
                     role: true,
                     phone: true,
-                    avatar: true,
                     bio: true,
                     is_active: true,
                     address: true,
@@ -33,14 +32,13 @@ class UserController {
 
     static async updateProfile(req, res) {
         try {
-            const { firstname, lastname, phone, bio, avatar } = req.body;
+            const { firstname, lastname, phone, bio } = req.body;
 
             const prismaData = {};
             if (firstname !== undefined) prismaData.firstname = firstname;
             if (lastname !== undefined) prismaData.lastname = lastname;
             if (phone !== undefined) prismaData.phone = phone;
             if (bio !== undefined) prismaData.bio = bio;
-            if (avatar !== undefined) prismaData.avatar = avatar;
 
             const user = await prisma.user.update({
                 where: { id: req.user.id },
@@ -52,7 +50,6 @@ class UserController {
                     lastname: true,
                     role: true,
                     phone: true,
-                    avatar: true,
                     bio: true,
                     created_at: true,
                     updated_at: true
@@ -63,24 +60,6 @@ class UserController {
         } catch (error) {
             if (error.code === 'P2025') return res.status(404).json({ message: "User not found" });
             console.error('[updateProfile]', error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-
-    static async uploadAvatar(req, res) {
-        try {
-            if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-
-            const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-            const user = await prisma.user.update({
-                where: { id: req.user.id },
-                data: { avatar: avatarUrl },
-                select: { id: true, email: true, firstname: true, lastname: true, avatar: true }
-            });
-
-            res.status(200).json({ message: "Avatar uploaded successfully", user });
-        } catch (error) {
-            console.error('[uploadAvatar]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }

@@ -6,7 +6,6 @@ const ownerSelect = {
     lastname: true,
     email: true,
     phone: true,
-    avatar: true,
     agency: true
 };
 

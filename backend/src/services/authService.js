@@ -43,7 +43,8 @@ class AuthService {
         });
 
         const { password: _, ...userWithoutPassword } = newUser;
-        return userWithoutPassword;
+        const token = generateToken(newUser);
+        return { user: userWithoutPassword, token };
     }
 
     static async login(email, password) {
@@ -65,7 +66,6 @@ class AuthService {
                 lastname: user.lastname,
                 phone: user.phone,
                 role: user.role,
-                avatar: user.avatar,
                 tenant_profile: user.tenant_profile,
                 agency: user.agency
             },

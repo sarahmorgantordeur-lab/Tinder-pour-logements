@@ -7,15 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        let uploadPath = path.join(__dirname, '../../uploads');
-
-        if (file.fieldname === 'avatar') {
-            uploadPath = path.join(uploadPath, 'avatars');
-        } else if (file.fieldname === 'pictures') {
-            uploadPath = path.join(uploadPath, 'properties');
-        }
-
-        cb(null, uploadPath);
+        cb(null, path.join(__dirname, '../../uploads/properties'));
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
@@ -46,10 +38,6 @@ const handleUpload = (uploadFn) => {
         });
     };
 };
-
-export const uploadAvatarMiddleware = handleUpload(
-    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).single('avatar')
-);
 
 export const uploadPicturesMiddleware = handleUpload(
     multer({ storage, fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }).array('pictures', 10)

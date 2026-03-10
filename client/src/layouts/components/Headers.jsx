@@ -12,11 +12,10 @@ export default function Headers() {
             </div>
             <div className="header-right">
             <nav className="navigation">
-                <NavLink>Home</NavLink>
-                <NavLink>About</NavLink>
-                <NavLink>Contact</NavLink>
+                <NavLink to="/home">Home</NavLink>
+                <NavLink to="/profile">Profile</NavLink>
                 {user?.role === "user" && (
-                    <NavLink>Chats</NavLink>
+                    <NavLink to="/discussions">Discussions</NavLink>
                 )}
             </nav>
             <div>

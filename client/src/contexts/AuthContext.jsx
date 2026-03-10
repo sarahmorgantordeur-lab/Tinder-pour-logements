@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
             setUser(newUser);
             setToken(newToken);
 
-            // Créer le profil agence après inscription
+            // Si agence, créer le profil agence après l'inscription
             if (role === 'agency' && agencyName) {
                 await api.put("/users/agency", { nom_agence: agencyName });
             }

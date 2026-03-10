@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.3.0
- * Query Engine version: 9d6ad21cbbceab97458517b147a6a09ff43aa735
+ * Prisma Client JS version: 7.4.0
+ * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
  */
 Prisma.prismaVersion = {
-  client: "7.3.0",
-  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
+  client: "7.4.0",
+  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -124,123 +124,118 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
-  username: 'username',
-  role: 'role',
+  firstname: 'firstname',
+  lastname: 'lastname',
   phone: 'phone',
-  avatar: 'avatar',
-  email_notifications: 'email_notifications',
-  company_name: 'company_name',
-  siret: 'siret',
+  bio: 'bio',
+  role: 'role',
+  is_active: 'is_active',
+  address_id: 'address_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+};
+
+exports.Prisma.AgencyScalarFieldEnum = {
+  id: 'id',
+  nom_agence: 'nom_agence',
+  numero_tva: 'numero_tva',
+  numero_bce: 'numero_bce',
+  site_web: 'site_web',
+  address_id: 'address_id',
+  user_id: 'user_id',
+  created_at: 'created_at'
+};
+
+exports.Prisma.TenantProfileScalarFieldEnum = {
+  id: 'id',
+  household_size: 'household_size',
+  budget_max: 'budget_max',
+  min_surface: 'min_surface',
+  max_surface: 'max_surface',
+  regions: 'regions',
+  property_types: 'property_types',
+  user_id: 'user_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
 
-exports.Prisma.ProfileScalarFieldEnum = {
-  id: 'id',
-  bio: 'bio',
-  job: 'job',
-  income: 'income',
-  guarantors: 'guarantors',
-  user_id: 'user_id'
-};
-
-exports.Prisma.PictureScalarFieldEnum = {
-  id: 'id',
-  url: 'url',
-  type: 'type',
-  uploaded_at: 'uploaded_at',
-  user_id: 'user_id',
-  apartment_id: 'apartment_id'
-};
-
-exports.Prisma.FavoriteScalarFieldEnum = {
-  id: 'id',
-  user_id: 'user_id',
-  apartment_id: 'apartment_id'
-};
-
-exports.Prisma.ViewedApartmentScalarFieldEnum = {
-  id: 'id',
-  viewed_at: 'viewed_at',
-  user_id: 'user_id',
-  apartment_id: 'apartment_id'
-};
-
-exports.Prisma.PreferencesScalarFieldEnum = {
-  id: 'id',
-  property_type: 'property_type',
-  listing_type: 'listing_type',
-  min_price: 'min_price',
-  max_price: 'max_price',
-  min_surface: 'min_surface',
-  regions: 'regions',
-  tags: 'tags',
-  user_id: 'user_id'
-};
-
-exports.Prisma.ApartmentScalarFieldEnum = {
+exports.Prisma.PropertyScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  address: 'address',
-  region: 'region',
-  city: 'city',
-  postal_code: 'postal_code',
-  country: 'country',
-  latitude: 'latitude',
-  longitude: 'longitude',
   property_type: 'property_type',
-  listing_type: 'listing_type',
+  status: 'status',
+  address_id: 'address_id',
   price: 'price',
   surface: 'surface',
   rooms: 'rooms',
-  tags: 'tags',
-  availability: 'availability',
+  parking: 'parking',
   owner_id: 'owner_id',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
-exports.Prisma.RequestScalarFieldEnum = {
+exports.Prisma.AnnouncementPhotoScalarFieldEnum = {
   id: 'id',
-  apartment_id: 'apartment_id',
+  url: 'url',
+  order: 'order',
+  property_id: 'property_id',
+  uploaded_at: 'uploaded_at'
+};
+
+exports.Prisma.ProfilePhotoScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
   user_id: 'user_id',
-  status: 'status',
-  message: 'message',
-  visit_date: 'visit_date',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  uploaded_at: 'uploaded_at'
+};
+
+exports.Prisma.DocumentScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  label: 'label',
+  user_id: 'user_id',
+  uploaded_at: 'uploaded_at'
 };
 
 exports.Prisma.SwipeScalarFieldEnum = {
   id: 'id',
-  user_id: 'user_id',
-  apartment_id: 'apartment_id',
   direction: 'direction',
+  user_id: 'user_id',
+  property_id: 'property_id',
   created_at: 'created_at'
 };
 
-exports.Prisma.MatchScalarFieldEnum = {
+exports.Prisma.ConversationScalarFieldEnum = {
   id: 'id',
-  user_id: 'user_id',
-  apartment_id: 'apartment_id',
+  swipe_id: 'swipe_id',
+  property_id: 'property_id',
+  tenant_id: 'tenant_id',
+  owner_id: 'owner_id',
   created_at: 'created_at'
 };
 
 exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   content: 'content',
-  match_id: 'match_id',
+  read: 'read',
+  conversation_id: 'conversation_id',
   sender_id: 'sender_id',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  deleted_at: 'deleted_at'
 };
 
-exports.Prisma.RequestDocumentScalarFieldEnum = {
+exports.Prisma.AddressScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  url: 'url',
-  uploaded_at: 'uploaded_at',
-  request_id: 'request_id'
+  number: 'number',
+  box: 'box',
+  street: 'street',
+  city: 'city',
+  postal_code: 'postal_code',
+  country: 'country',
+  created_at: 'created_at'
 };
 
 exports.Prisma.SortOrder = {
@@ -263,52 +258,50 @@ exports.Role = exports.$Enums.Role = {
   agency: 'agency'
 };
 
-exports.PictureType = exports.$Enums.PictureType = {
-  profile: 'profile',
-  apartment: 'apartment'
-};
-
 exports.PropertyType = exports.$Enums.PropertyType = {
-  apartment: 'apartment',
-  house: 'house',
-  studio: 'studio',
-  villa: 'villa',
-  land: 'land',
-  commercial_space: 'commercial_space',
-  other: 'other'
+  Bungalow: 'Bungalow',
+  Chalet: 'Chalet',
+  Castel: 'Castel',
+  Farm: 'Farm',
+  CountryHouse: 'CountryHouse',
+  ApartmentBuilding: 'ApartmentBuilding',
+  MixedUseBuilding: 'MixedUseBuilding',
+  BelEtageHouse: 'BelEtageHouse',
+  Mansion: 'Mansion',
+  Villa: 'Villa',
+  ManorHouse: 'ManorHouse',
+  Pavilion: 'Pavilion',
+  GroundFloor: 'GroundFloor',
+  Duplex: 'Duplex',
+  Triplex: 'Triplex',
+  Studio: 'Studio',
+  Penthouse: 'Penthouse',
+  Loft: 'Loft',
+  StudentHousing: 'StudentHousing',
+  ServiceApartment: 'ServiceApartment',
+  Appartement: 'Appartement',
+  Other: 'Other'
 };
 
-exports.ListingType = exports.$Enums.ListingType = {
-  rent: 'rent',
-  sale: 'sale'
-};
-
-exports.RequestStatus = exports.$Enums.RequestStatus = {
-  waiting: 'waiting',
-  contacted: 'contacted',
-  visit_planned: 'visit_planned',
-  accepted: 'accepted',
-  refused: 'refused'
-};
-
-exports.SwipeDirection = exports.$Enums.SwipeDirection = {
-  like: 'like',
-  dislike: 'dislike'
+exports.PropertyStatus = exports.$Enums.PropertyStatus = {
+  draft: 'draft',
+  published: 'published',
+  rented: 'rented',
+  archived: 'archived'
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Profile: 'Profile',
-  Picture: 'Picture',
-  Favorite: 'Favorite',
-  ViewedApartment: 'ViewedApartment',
-  Preferences: 'Preferences',
-  Apartment: 'Apartment',
-  Request: 'Request',
+  Agency: 'Agency',
+  TenantProfile: 'TenantProfile',
+  Property: 'Property',
+  AnnouncementPhoto: 'AnnouncementPhoto',
+  ProfilePhoto: 'ProfilePhoto',
+  Document: 'Document',
   Swipe: 'Swipe',
-  Match: 'Match',
+  Conversation: 'Conversation',
   Message: 'Message',
-  RequestDocument: 'RequestDocument'
+  Address: 'Address'
 };
 
 /**

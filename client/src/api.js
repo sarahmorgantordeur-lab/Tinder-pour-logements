@@ -11,11 +11,6 @@ const getAuthHeaders = () => {
 const handleResponse = async (res) => {
     const data = await res.json();
     if (!res.ok) {
-        if (res.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/';
-        }
         const err = new Error(data.message || 'Request failed');
         err.response = { data };
         throw err;
