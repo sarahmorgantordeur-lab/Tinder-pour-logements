@@ -23,7 +23,7 @@ export const HomeProvider = ({ children }) => {
             if (f.propertyType) query.append("propertyType", f.propertyType);
             try {
                 const response = await api.get(`/properties?${query.toString()}`);
-                setApartments(Array.isArray(response.data) ? response.data : []);
+                setApartments(Array.isArray(response.data.properties) ? response.data.properties : []);
                 setCurrentIndex(0);
             } catch {
                 setError("Impossible de charger les logements");
@@ -49,10 +49,26 @@ export const HomeProvider = ({ children }) => {
         setError(null);
         try {
             const response = await api.get(`/properties/${id}`);
+            console.log("Fetched property by ID:", response);
             setAppartmentById(response.data.properties);
             return response.data;
         } catch {
             setError("Impossible de charger le logement");
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const fetchMyProperties = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await api.get("/properties/owner/my-properties");
+            setAppartmentById(Array.isArray(response.data.properties) ? response.data.properties : []);
+            return response.data;
+        } catch {
+            setError("Impossible de charger vos logements");
             return null;
         } finally {
             setLoading(false);
@@ -72,8 +88,7 @@ export const HomeProvider = ({ children }) => {
 
     useEffect(() => {
         fetchApartments(filters);
-        fetchPropertiesById();
-    }, [fetchApartments, fetchPropertiesById, filters]);
+    }, [fetchApartments, filters]);
 
     const swipe = async (direction) => {
         const current = apartments[currentIndex];
@@ -91,6 +106,7 @@ export const HomeProvider = ({ children }) => {
         apartments,
         currentApartment: apartments[currentIndex] ?? null,
         remaining: apartments.length - currentIndex,
+        appartmentById,
         loading,
         error,
         filters,
@@ -98,6 +114,8 @@ export const HomeProvider = ({ children }) => {
         swipe,
         fetchApartments,
         fetchAgencyNames,
+        fetchPropertiesById,
+        fetchMyProperties,
     };
 
     return <HomeContext.Provider value={value}>{children}</HomeContext.Provider>;
