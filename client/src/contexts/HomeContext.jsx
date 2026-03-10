@@ -9,7 +9,9 @@ export const HomeProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchApartments = useCallback(async () => {
+    const [filters, setFilters] = useState({ city: "", minPrice: "", maxPrice: "", propertyType: "" });
+
+    const fetchApartments = useCallback(async (f = {}) => {
         setLoading(true);
         setError(null);
         try {
@@ -36,7 +38,7 @@ export const HomeProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        fetchApartments();
+        fetchApartments(filters);
     }, [fetchApartments]);
 
     const swipe = async (direction) => {
@@ -57,6 +59,8 @@ export const HomeProvider = ({ children }) => {
         remaining: apartments.length - currentIndex,
         loading,
         error,
+        filters,
+        setFilters,
         swipe,
         fetchApartments,
         fetchAgencyNames,

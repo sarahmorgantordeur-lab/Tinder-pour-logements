@@ -125,11 +125,31 @@ class PropertyService {
             });
         }
 
-        return prisma.property.update({
+        const updated = await prisma.property.update({
             where: { id },
             data: prismaData,
             include: { address: true, photos: true }
         });
+
+        // Soft-delete de tous les messages des conversations liées quand loué
+        if (data.status === 'rented' && property.status !== 'rented') {
+            const conversations = await prisma.conversation.findMany({
+                where: { property_id: id },
+                select: { id: true }
+            });
+            const conversationIds = conversations.map(c => c.id);
+            if (conversationIds.length > 0) {
+                await prisma.message.updateMany({
+                    where: {
+                        conversation_id: { in: conversationIds },
+                        deleted_at: null
+                    },
+                    data: { deleted_at: new Date() }
+                });
+            }
+        }
+
+        return updated;
     }
 
     static async delete(id, ownerId) {

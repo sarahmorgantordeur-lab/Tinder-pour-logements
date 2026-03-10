@@ -3,6 +3,6 @@ describe('Page principale', () => {
     cy.visit('/')
 
     cy.get('.landing-page').should('exist')
-    cy.get('.landing-title').should('contain', 'Find My Roof')
+    cy.get('.landing-title').should('contain', 'Match Home')
   })
 })

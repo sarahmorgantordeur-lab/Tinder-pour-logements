@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import FMRIcon from "../../assets/icons/FMR.svg?react";
 
 export default function Headers() {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     return (
         <header className="app-header">
             <div className="logo">
@@ -15,6 +15,9 @@ export default function Headers() {
                 <NavLink>Home</NavLink>
                 <NavLink>About</NavLink>
                 <NavLink>Contact</NavLink>
+                {user?.role === "user" && (
+                    <NavLink>Chats</NavLink>
+                )}
             </nav>
             <div>
                 <Button onClick={logout}>Logout</Button>
