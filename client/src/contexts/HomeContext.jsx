@@ -9,13 +9,18 @@ export const HomeProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [cityFilter, setCityFilter] = useState("");
+    const [filters, setFilters] = useState({ city: "", minPrice: "", maxPrice: "", propertyType: "" });
 
-    const fetchApartments = useCallback(async (city = "") => {
+    const fetchApartments = useCallback(async (f = {}) => {
         setLoading(true);
         setError(null);
         try {
-            const query = city ? `?city=${encodeURIComponent(city)}` : "";
+            const params = new URLSearchParams();
+            if (f.city)         params.set("city", f.city);
+            if (f.minPrice)     params.set("minPrice", f.minPrice);
+            if (f.maxPrice)     params.set("maxPrice", f.maxPrice);
+            if (f.propertyType) params.set("propertyType", f.propertyType);
+            const query = params.toString() ? `?${params.toString()}` : "";
             const response = await api.get(`/properties${query}`);
             const list = response.data?.properties ?? (Array.isArray(response.data) ? response.data : []);
             setApartments(list);
@@ -39,7 +44,7 @@ export const HomeProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        fetchApartments(cityFilter);
+        fetchApartments(filters);
     }, [fetchApartments]);
 
     const swipe = async (direction) => {
@@ -60,8 +65,8 @@ export const HomeProvider = ({ children }) => {
         remaining: apartments.length - currentIndex,
         loading,
         error,
-        cityFilter,
-        setCityFilter,
+        filters,
+        setFilters,
         swipe,
         fetchApartments,
         fetchAgencyNames,

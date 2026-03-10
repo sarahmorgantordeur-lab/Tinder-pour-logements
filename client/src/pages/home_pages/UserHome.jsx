@@ -1,65 +1,126 @@
 import { useState } from "react";
 import { useHome } from "../../hooks/useHome";
 
+const PROPERTY_TYPES = [
+    "Bungalow", "Chalet", "Castel", "Farm", "CountryHouse",
+    "ApartmentBuilding", "MixedUseBuilding", "BelEtageHouse", "Mansion",
+    "Villa", "ManorHouse", "Pavilion", "GroundFloor", "Duplex", "Triplex",
+    "Studio", "Penthouse", "Loft", "StudentHousing", "ServiceApartment",
+    "Appartement", "Other",
+];
+
+const EMPTY_FILTERS = { city: "", minPrice: "", maxPrice: "", propertyType: "" };
+
+function hasActiveFilter(f) {
+    return f.city || f.minPrice || f.maxPrice || f.propertyType;
+}
+
 export default function UserHome() {
-    const { apartments, loading, error, cityFilter, setCityFilter, fetchApartments, swipe, remaining } = useHome();
-    const [inputValue, setInputValue] = useState(cityFilter);
+    const { apartments, loading, error, filters, setFilters, fetchApartments, swipe } = useHome();
+    const [form, setForm] = useState(filters);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
-        const trimmed = inputValue.trim();
-        setCityFilter(trimmed);
-        fetchApartments(trimmed);
+        const clean = {
+            city: form.city.trim(),
+            minPrice: form.minPrice,
+            maxPrice: form.maxPrice,
+            propertyType: form.propertyType,
+        };
+        setFilters(clean);
+        fetchApartments(clean);
     };
 
     const handleClear = () => {
-        setInputValue("");
-        setCityFilter("");
-        fetchApartments("");
+        setForm(EMPTY_FILTERS);
+        setFilters(EMPTY_FILTERS);
+        fetchApartments(EMPTY_FILTERS);
     };
+
+    const activeFilter = hasActiveFilter(filters);
 
     return (
         <div className="user-home">
-            {/* Filtre ville */}
+            {/* Filtres */}
             <form className="user-home-filter" onSubmit={handleSearch}>
                 <div className="user-home-filter-row">
                     <input
                         className="user-home-filter-input"
                         type="text"
-                        placeholder="Filtrer par ville..."
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
+                        name="city"
+                        placeholder="Ville"
+                        value={form.city}
+                        onChange={handleChange}
                     />
+
+                    <input
+                        className="user-home-filter-input user-home-filter-input--short"
+                        type="number"
+                        name="minPrice"
+                        placeholder="Prix min (€)"
+                        value={form.minPrice}
+                        min={0}
+                        onChange={handleChange}
+                    />
+
+                    <input
+                        className="user-home-filter-input user-home-filter-input--short"
+                        type="number"
+                        name="maxPrice"
+                        placeholder="Prix max (€)"
+                        value={form.maxPrice}
+                        min={0}
+                        onChange={handleChange}
+                    />
+
+                    <select
+                        className="user-home-filter-select"
+                        name="propertyType"
+                        value={form.propertyType}
+                        onChange={handleChange}
+                    >
+                        <option value="">Tous les types</option>
+                        {PROPERTY_TYPES.map((t) => (
+                            <option key={t} value={t}>{t}</option>
+                        ))}
+                    </select>
+
                     <button className="user-home-filter-btn" type="submit">
                         Rechercher
                     </button>
-                    {cityFilter && (
-                        <button
-                            className="user-home-filter-clear"
-                            type="button"
-                            onClick={handleClear}
-                        >
-                            ✕
+
+                    {activeFilter && (
+                        <button className="user-home-filter-clear" type="button" onClick={handleClear}>
+                            ✕ Effacer
                         </button>
                     )}
                 </div>
-                {cityFilter && (
+
+                {activeFilter && (
                     <p className="user-home-filter-active">
-                        Résultats pour <strong>{cityFilter}</strong> — {apartments.length} bien{apartments.length !== 1 ? "s" : ""}
+                        {apartments.length} bien{apartments.length !== 1 ? "s" : ""} trouvé{apartments.length !== 1 ? "s" : ""}
+                        {filters.city && <> à <strong>{filters.city}</strong></>}
+                        {filters.propertyType && <> · <strong>{filters.propertyType}</strong></>}
+                        {filters.minPrice && <> · min <strong>{filters.minPrice} €</strong></>}
+                        {filters.maxPrice && <> · max <strong>{filters.maxPrice} €</strong></>}
                     </p>
                 )}
             </form>
 
-            {/* Contenu */}
+            {/* États */}
             {loading && <p className="user-home-loading">Chargement des biens...</p>}
             {error && <p className="user-home-error">{error}</p>}
 
             {!loading && !error && apartments.length === 0 && (
-                <p className="user-home-empty">
-                    Aucun bien trouvé{cityFilter ? ` à ${cityFilter}` : ""}.
-                </p>
+                <p className="user-home-empty">Aucun bien trouvé pour ces critères.</p>
             )}
 
+            {/* Grille */}
             {!loading && apartments.length > 0 && (
                 <div className="user-home-grid">
                     {apartments.map((property) => (
@@ -79,6 +140,7 @@ export default function UserHome() {
                                     {property.address?.city}
                                     {property.address?.postal_code && ` (${property.address.postal_code})`}
                                 </p>
+                                <p className="user-home-card-type">{property.property_type}</p>
                                 <p className="user-home-card-price">{property.price} €/mois</p>
                                 <p className="user-home-card-details">
                                     {property.rooms} pièce{property.rooms !== 1 ? "s" : ""} · {property.surface} m²
