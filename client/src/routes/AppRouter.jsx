@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "../pages/LandingPage";
 import Home from "../layouts/Home";
 import EditAnnouncement from "../pages/EditAnnouncement";
+import DiscussionPage from "../pages/discussionPage";
 import { useAuth } from "../hooks/useAuth";
 
 function PublicRoute({ children }) {
@@ -30,6 +31,11 @@ function AppRouter() {
       <Route path="/properties/:id/edit" element={
         <PrivateRoute>
           <EditAnnouncement />
+        </PrivateRoute>
+      } />
+      <Route path="/discussions" element={
+        <PrivateRoute>
+          <DiscussionPage />
         </PrivateRoute>
       } />
     </Routes>
