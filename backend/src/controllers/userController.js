@@ -64,6 +64,112 @@ class UserController {
         }
     }
 
+    // Photos de profil
+    static async getProfilePhotos(req, res) {
+        try {
+            const photos = await prisma.profilePhoto.findMany({
+                where: { user_id: req.user.id },
+                orderBy: { uploaded_at: 'desc' }
+            });
+            res.status(200).json({ photos });
+        } catch (error) {
+            console.error('[getProfilePhotos]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async uploadProfilePhotos(req, res) {
+        try {
+            if (!req.files || req.files.length === 0) {
+                return res.status(400).json({ message: "No files uploaded" });
+            }
+
+            const photos = await Promise.all(
+                req.files.map(file =>
+                    prisma.profilePhoto.create({
+                        data: {
+                            url: `/uploads/profile_photos/${file.filename}`,
+                            user_id: req.user.id
+                        }
+                    })
+                )
+            );
+
+            res.status(201).json({ message: "Photos uploaded successfully", photos });
+        } catch (error) {
+            console.error('[uploadProfilePhotos]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async removeProfilePhoto(req, res) {
+        try {
+            const photo = await prisma.profilePhoto.findUnique({
+                where: { id: req.params.photoId }
+            });
+
+            if (!photo) return res.status(404).json({ message: "Photo not found" });
+            if (photo.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+
+            await prisma.profilePhoto.delete({ where: { id: req.params.photoId } });
+            res.status(200).json({ message: "Photo deleted successfully" });
+        } catch (error) {
+            console.error('[removeProfilePhoto]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    // Documents
+    static async getDocuments(req, res) {
+        try {
+            const documents = await prisma.document.findMany({
+                where: { user_id: req.user.id },
+                orderBy: { uploaded_at: 'desc' }
+            });
+            res.status(200).json({ documents });
+        } catch (error) {
+            console.error('[getDocuments]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async uploadDocument(req, res) {
+        try {
+            if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+
+            const { label } = req.body;
+            const document = await prisma.document.create({
+                data: {
+                    url: `/uploads/documents/${req.file.filename}`,
+                    label: label || null,
+                    user_id: req.user.id
+                }
+            });
+
+            res.status(201).json({ message: "Document uploaded successfully", document });
+        } catch (error) {
+            console.error('[uploadDocument]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async removeDocument(req, res) {
+        try {
+            const document = await prisma.document.findUnique({
+                where: { id: req.params.docId }
+            });
+
+            if (!document) return res.status(404).json({ message: "Document not found" });
+            if (document.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+
+            await prisma.document.delete({ where: { id: req.params.docId } });
+            res.status(200).json({ message: "Document deleted successfully" });
+        } catch (error) {
+            console.error('[removeDocument]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
     // Profil locataire
     static async updateTenantProfile(req, res) {
         try {
