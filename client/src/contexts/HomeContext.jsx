@@ -9,12 +9,16 @@ export const HomeProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchApartments = useCallback(async () => {
+    const [cityFilter, setCityFilter] = useState("");
+
+    const fetchApartments = useCallback(async (city = "") => {
         setLoading(true);
         setError(null);
         try {
-            const response = await api.get("/properties");
-            setApartments(Array.isArray(response.data) ? response.data : []);
+            const query = city ? `?city=${encodeURIComponent(city)}` : "";
+            const response = await api.get(`/properties${query}`);
+            const list = response.data?.properties ?? (Array.isArray(response.data) ? response.data : []);
+            setApartments(list);
             setCurrentIndex(0);
         } catch {
             setError("Impossible de charger les logements");
@@ -35,7 +39,7 @@ export const HomeProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        fetchApartments();
+        fetchApartments(cityFilter);
     }, [fetchApartments]);
 
     const swipe = async (direction) => {
@@ -56,6 +60,8 @@ export const HomeProvider = ({ children }) => {
         remaining: apartments.length - currentIndex,
         loading,
         error,
+        cityFilter,
+        setCityFilter,
         swipe,
         fetchApartments,
         fetchAgencyNames,
