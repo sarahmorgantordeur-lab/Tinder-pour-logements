@@ -10,7 +10,7 @@ const router = express.Router();
 // Routes publiques
 router.get('/', PropertyController.getAll);
 
-// Routes protégées — propriétaires et agences (AVANT /:id)
+// Routes protégées — propriétaires et agences
 router.get('/owner/my-properties', authenticate, isOwnerOrAgency, PropertyController.getMyProperties);
 
 // Route par ID

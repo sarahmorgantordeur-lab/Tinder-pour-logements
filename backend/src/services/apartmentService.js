@@ -24,7 +24,7 @@ class PropertyService {
                 title,
                 description,
                 property_type,
-                status: 'published',
+                status: data.status || 'published',
                 price: parseInt(price),
                 surface: parseInt(surface),
                 rooms: parseInt(rooms),
@@ -49,29 +49,35 @@ class PropertyService {
         });
     }
 
-    static async getAll(filters = {}) {
-        const where = { status: { not: 'archived' } };
+    static async getAll(filters = {}, pagination = { skip: 0, take: 20 }) {
+    const where = { status: { not: 'archived' } };
 
-        if (filters.propertyType) where.property_type = filters.propertyType;
-        if (filters.city) where.address = { city: { contains: filters.city, mode: 'insensitive' } };
-        if (filters.minPrice || filters.maxPrice) {
-            where.price = {};
-            if (filters.minPrice) where.price.gte = parseInt(filters.minPrice);
-            if (filters.maxPrice) where.price.lte = parseInt(filters.maxPrice);
-        }
-        if (filters.minSurface) where.surface = { gte: parseInt(filters.minSurface) };
-        if (filters.minRooms) where.rooms = { gte: parseInt(filters.minRooms) };
-
-        return prisma.property.findMany({
-            where,
-            include: {
-                address: true,
-                owner: { select: ownerSelect },
-                photos: true
-            },
-            orderBy: { created_at: 'desc' }
-        });
+    if (filters.propertyType) where.property_type = filters.propertyType;
+    if (filters.city) where.address = { city: { contains: filters.city, mode: 'insensitive' } };
+    if (filters.minPrice || filters.maxPrice) {
+        where.price = {};
+        if (filters.minPrice) where.price.gte = parseInt(filters.minPrice);
+        if (filters.maxPrice) where.price.lte = parseInt(filters.maxPrice);
     }
+    if (filters.minSurface) where.surface = { gte: parseInt(filters.minSurface) };
+    if (filters.minRooms) where.rooms = { gte: parseInt(filters.minRooms) };
+
+    const properties = await prisma.property.findMany({
+        where,
+        include: {
+            address: true,
+            owner: { select: ownerSelect },
+            photos: true
+        },
+        orderBy: { created_at: 'desc' },
+        skip: pagination.skip,
+        take: pagination.take
+    });
+
+    const total = await prisma.property.count({ where });
+
+    return { total, properties };
+}
 
     static async getById(id) {
         const property = await prisma.property.findUnique({

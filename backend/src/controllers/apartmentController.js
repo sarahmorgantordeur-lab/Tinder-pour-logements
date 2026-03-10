@@ -16,16 +16,19 @@ class PropertyController {
 
     static async getAll(req, res) {
         try {
-            const filters = {
-                propertyType: req.query.propertyType,
-                city: req.query.city,
-                minPrice: req.query.minPrice,
-                maxPrice: req.query.maxPrice,
-                minSurface: req.query.minSurface,
-                minRooms: req.query.minRooms
-            };
-            const properties = await PropertyService.getAll(filters);
-            res.status(200).json({ properties });
+            const { propertyType, city, minPrice, maxPrice, minSurface, minRooms, page = 1, limit = 20 } = req.query;
+
+            const filters = { propertyType, city, minPrice, maxPrice, minSurface, minRooms };
+            const skip = (Number(page) - 1) * Number(limit);
+
+            const { total, properties } = await PropertyService.getAll(filters, { skip, take: Number(limit) });
+
+            res.status(200).json({
+                page: Number(page),
+                limit: Number(limit),
+                total,
+                properties
+            });
         } catch (error) {
             console.error('[property getAll]', error);
             res.status(500).json({ message: "Internal server error" });
