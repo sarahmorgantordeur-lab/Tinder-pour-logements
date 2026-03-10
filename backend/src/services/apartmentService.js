@@ -1,5 +1,12 @@
 import prisma from '../config/db.js';
 
+const ALLOWED_TRANSITIONS = {
+    draft:     ['published', 'archived'],
+    published: ['draft', 'rented', 'archived'],
+    rented:    ['published', 'archived'],
+    archived:  ['draft']
+};
+
 const ownerSelect = {
     id: true,
     firstname: true,
@@ -110,7 +117,6 @@ class PropertyService {
         if (data.title !== undefined) prismaData.title = data.title;
         if (data.description !== undefined) prismaData.description = data.description;
         if (data.property_type !== undefined) prismaData.property_type = data.property_type;
-        if (data.status !== undefined) prismaData.status = data.status;
         if (data.price !== undefined) prismaData.price = parseInt(data.price);
         if (data.surface !== undefined) prismaData.surface = parseInt(data.surface);
         if (data.rooms !== undefined) prismaData.rooms = parseInt(data.rooms);
@@ -130,28 +136,49 @@ class PropertyService {
             });
         }
 
-        const updated = await prisma.property.update({
+        return prisma.property.update({
             where: { id },
             data: prismaData,
             include: { address: true, photos: true }
         });
+    }
 
-        // Soft-delete de tous les messages des conversations liées quand loué
-        if (data.status === 'rented' && property.status !== 'rented') {
+    static async changeStatus(id, newStatus, ownerId) {
+        const property = await prisma.property.findUnique({ where: { id } });
+
+        if (!property) throw new Error("Property not found");
+        if (property.owner_id !== ownerId) throw new Error("Unauthorized to update this property");
+
+        const allowed = ALLOWED_TRANSITIONS[property.status];
+        if (!allowed?.includes(newStatus)) {
+            throw new Error(`Transition invalide : ${property.status} → ${newStatus}`);
+        }
+
+        const updated = await prisma.property.update({
+            where: { id },
+            data: { status: newStatus },
+            include: { address: true, photos: true }
+        });
+
+        // Effets de bord sur les conversations
+        if (newStatus === 'rented' || newStatus === 'archived') {
             const conversations = await prisma.conversation.findMany({
                 where: { property_id: id },
                 select: { id: true }
             });
             const conversationIds = conversations.map(c => c.id);
+
             if (conversationIds.length > 0) {
                 await prisma.message.updateMany({
-                    where: {
-                        conversation_id: { in: conversationIds },
-                        deleted_at: null
-                    },
+                    where: { conversation_id: { in: conversationIds }, deleted_at: null },
                     data: { deleted_at: new Date() }
                 });
             }
+        }
+
+        // Archivé : supprimer les swipes (le bien ne réapparaîtra plus dans le feed)
+        if (newStatus === 'archived') {
+            await prisma.swipe.deleteMany({ where: { property_id: id } });
         }
 
         return updated;

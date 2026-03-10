@@ -19,6 +19,7 @@ router.get('/:id', uuidParamValidation('id'), PropertyController.getById);
 // CRUD protégé
 router.post('/', authenticate, isOwnerOrAgency, PropertyController.create);
 router.put('/:id', authenticate, isOwnerOrAgency, uuidParamValidation('id'), PropertyController.update);
+router.patch('/:id/status', authenticate, isOwnerOrAgency, uuidParamValidation('id'), PropertyController.changeStatus);
 router.delete('/:id', authenticate, isOwnerOrAgency, uuidParamValidation('id'), PropertyController.delete);
 
 // Photos

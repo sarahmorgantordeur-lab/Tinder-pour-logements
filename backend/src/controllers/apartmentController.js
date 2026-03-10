@@ -81,6 +81,22 @@ class PropertyController {
         }
     }
 
+    static async changeStatus(req, res) {
+        try {
+            const { status } = req.body;
+            if (!status) return res.status(400).json({ message: "status is required" });
+
+            const property = await PropertyService.changeStatus(req.params.id, status, req.user.id);
+            res.status(200).json({ message: "Status updated successfully", property });
+        } catch (error) {
+            if (error.message === "Property not found") return res.status(404).json({ message: error.message });
+            if (error.message === "Unauthorized to update this property") return res.status(403).json({ message: error.message });
+            if (error.message.startsWith("Transition invalide")) return res.status(400).json({ message: error.message });
+            console.error('[property changeStatus]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
     static async uploadPhotos(req, res) {
         try {
             if (!req.files || req.files.length === 0) {
