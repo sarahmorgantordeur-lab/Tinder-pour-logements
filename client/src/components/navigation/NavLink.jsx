@@ -1,8 +1,10 @@
-export default function NavLink({ children, onClick, className }) {
+import { Link } from "react-router-dom";
+
+export default function NavLink({ children, to, className }) {
 
     return (
-        <a onClick={onClick} className={`nav-link ${className}`}>
+        <Link to={to} className={`nav-link ${className}`}>
             {children}
-        </a>
+        </Link>
     );
 }

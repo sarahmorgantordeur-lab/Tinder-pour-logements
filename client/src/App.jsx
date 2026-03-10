@@ -5,11 +5,11 @@ import { HomeProvider } from "./contexts/HomeContext";
 function App() {
   return (
     <>
-      <HomeProvider>
       <AuthProvider>
+      <HomeProvider>
         <AppRouter />
-      </AuthProvider>
       </HomeProvider>
+      </AuthProvider>
     </>
   );
 }

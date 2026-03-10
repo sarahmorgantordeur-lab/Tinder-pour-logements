@@ -15,7 +15,6 @@ export const generateToken = (user) => {
   const payload = {
     id: user.id,
     email: user.email,
-    username: user.username,
     role: user.role || 'user'
   };
 
@@ -69,19 +68,18 @@ export const authenticate = async (req, res, next) => {
       select: {
         id: true,
         email: true,
-        username: true,
+        firstname: true,
+        lastname: true,
         role: true,
         phone: true,
         avatar: true,
-        company_name: true,
-        siret: true,
-        is_banned: true
+        is_active: true
       }
     });
     if (!user) {
       return res.status(401).json({ message: 'Utilisateur non trouvé.' });
     }
-    if (user.is_banned) {
+    if (!user.is_active) {
       return res.status(403).json({ message: 'Compte suspendu.' });
     }
     req.user = user;

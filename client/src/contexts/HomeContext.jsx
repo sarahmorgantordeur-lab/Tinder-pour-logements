@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../api";
 import { HomeContext } from "../hooks/useHome";
 
@@ -16,8 +16,8 @@ export const HomeProvider = ({ children }) => {
         setError(null);
         try {
             const response = await api.get("/properties");
-            setApartments(Array.isArray(response.data) ? response.data : []);
-            consoletable.log("Fetched apartments:", response);
+            setApartments(Array.isArray(response.data.properties) ? response.data.properties : []);
+            console.log("Fetched apartments:", response);
             setCurrentIndex(0);
         } catch {
             setError("Impossible de charger les logements");
@@ -39,13 +39,13 @@ export const HomeProvider = ({ children }) => {
 
     useEffect(() => {
         fetchApartments(filters);
-    }, [fetchApartments]);
+    }, [fetchApartments, filters]);
 
     const swipe = async (direction) => {
         const current = apartments[currentIndex];
         if (!current) return;
         try {
-            await api.post("/swipes", { propertyId: current.id, direction });
+            await api.post("/swipes", { propertyId: current.id, direction: direction === 'like' });
         } catch {
             // swipe enregistré localement même si l'API échoue
         } finally {

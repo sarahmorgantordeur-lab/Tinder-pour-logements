@@ -5,7 +5,7 @@ import AgencyIcon from '../../assets/icons/Agency.svg?react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
-import useAuth from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 
 
 export default function Register({ onLogin }) {

@@ -224,7 +224,8 @@ exports.Prisma.MessageScalarFieldEnum = {
   read: 'read',
   conversation_id: 'conversation_id',
   sender_id: 'sender_id',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.AddressScalarFieldEnum = {
