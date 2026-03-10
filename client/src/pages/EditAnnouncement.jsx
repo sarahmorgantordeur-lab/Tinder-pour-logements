@@ -46,7 +46,7 @@ export default function EditAnnouncement() {
     useEffect(() => {
         api.get(`/properties/${id}`)
             .then(({ data }) => {
-                setFormData(buildForm(data));
+                setFormData(buildForm(data.property));
             })
             .catch(() => setError("Impossible de charger l'annonce."))
             .finally(() => setLoading(false));

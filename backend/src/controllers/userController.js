@@ -16,7 +16,7 @@ class UserController {
                     bio: true,
                     is_active: true,
                     address: true,
-                    agency: true,
+                    agency: { include: { address: true } },
                     tenant_profile: true,
                     created_at: true,
                     updated_at: true
