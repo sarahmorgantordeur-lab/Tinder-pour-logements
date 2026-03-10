@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useState, useEffect } from 'react';
 import TenantIcon from '../../assets/icons/Tenant.svg?react';
 import LandlordIcon from '../../assets/icons/Landlord.svg?react';
 import AgencyIcon from '../../assets/icons/Agency.svg?react';
@@ -7,11 +6,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import useAuth from '../../hooks/useAuth';
-import useAuth from '../../hooks/useAuth';
 
 
 export default function Register({ onLogin }) {
-    const { register } = useAuth();
     const { register } = useAuth();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
@@ -60,9 +57,6 @@ export default function Register({ onLogin }) {
                 setError(result.error || 'Erreur lors de l\'inscription');
                 return;
             }
-            const user = JSON.parse(localStorage.getItem('user') || 'null');
-            const token = localStorage.getItem('token');
-            onLogin?.(user, token);
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             const token = localStorage.getItem('token');
             onLogin?.(user, token);
@@ -166,7 +160,6 @@ export default function Register({ onLogin }) {
                             value={password}
                             aria-label='password'
                             onChange={(e) => setPassword(e.target.value)}
-                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
                         />
                     </div>
@@ -178,7 +171,6 @@ export default function Register({ onLogin }) {
                             required
                             value={confirmPassword}
                             aria-label='confirm password'
-                            onChange={(e) => setConfirmPassword(e.target.value)}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="Confirm Password"
                         />

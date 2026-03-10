@@ -15,6 +15,7 @@ export const HomeProvider = ({ children }) => {
         try {
             const response = await api.get("/properties");
             setApartments(Array.isArray(response.data) ? response.data : []);
+            consoletable.log("Fetched apartments:", response);
             setCurrentIndex(0);
         } catch {
             setError("Impossible de charger les logements");
