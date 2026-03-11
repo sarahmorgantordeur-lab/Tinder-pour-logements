@@ -16,7 +16,7 @@ const buildForm = (agency) => ({
     },
 });
 
-export default function CreateAgency() {
+export default function CreateAgency({ onClose } = {}) {
     const [formData, setFormData] = useState(buildForm(null));
     const [loading, setLoading]   = useState(true);
     const [saving, setSaving]     = useState(false);
@@ -53,6 +53,7 @@ export default function CreateAgency() {
         try {
             await api.put("/users/agency", formData);
             setSuccess(true);
+            if (onClose) setTimeout(onClose, 1000);
         } catch (err) {
             setError(err.response?.data?.message || "Erreur lors de la sauvegarde.");
         } finally {
@@ -78,16 +79,6 @@ export default function CreateAgency() {
                         value={formData.nom_agence}
                         onChange={handleChange}
                         required
-                    />
-                </label>
-
-                <label className="create-agency-field">
-                    Numéro TVA
-                    <input
-                        type="text"
-                        name="numero_tva"
-                        value={formData.numero_tva}
-                        onChange={handleChange}
                     />
                 </label>
 
@@ -181,6 +172,11 @@ export default function CreateAgency() {
             </fieldset>
 
             <div className="create-agency-actions">
+                {onClose && (
+                    <button type="button" className="create-agency-cancel" onClick={onClose}>
+                        Annuler
+                    </button>
+                )}
                 <button type="submit" className="create-agency-submit" disabled={saving}>
                     {saving ? "Enregistrement..." : "Enregistrer"}
                 </button>

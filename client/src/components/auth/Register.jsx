@@ -7,6 +7,7 @@ import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { useAuth } from '../../hooks/useAuth';
 import CreateAgency from '../create/CreateAgency';
+import api from '../../api';
 
 
 export default function Register({ onLogin }) {
@@ -24,6 +25,8 @@ export default function Register({ onLogin }) {
     const [step, setStep] = useState('form'); // 'form' | 'agency-profile'
     const [registeredUser, setRegisteredUser] = useState(null);
     const [registeredToken, setRegisteredToken] = useState(null);
+    const [agencies, setAgencies] = useState([]);
+    const [agencyModalOpen, setAgencyModalOpen] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -36,6 +39,7 @@ export default function Register({ onLogin }) {
     useEffect(() => {
         if (role === 'agency') {
             setSurname('');
+            api.get('/users/agencies').then(({ data }) => setAgencies(data.agencies || [])).catch(() => {});
         }
     }, [role]);
 
@@ -142,19 +146,41 @@ export default function Register({ onLogin }) {
                                 style={{ overflow: 'hidden' }}
                             >
                                 <div className="name-container-agency">
-                                    <input
+                                    <select
                                         id="agencyName"
-                                        type="text"
                                         required
                                         value={agencyName}
                                         aria-label='Agency Name'
                                         onChange={(e) => setAgencyName(e.target.value)}
-                                        placeholder="Agency Name"
-                                    />
+                                    >
+                                        <option value="">-- Select an agency --</option>
+                                        {agencies.map((a) => (
+                                            <option key={a.id} value={a.nom_agence}>{a.nom_agence}</option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        type="button"
+                                        className="agency-announcement-modal-btn"
+                                        onClick={() => setAgencyModalOpen(true)}
+                                        title="Créer une agence"
+                                    >
+                                        +
+                                    </button>
                                 </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
+
+                    {agencyModalOpen && (
+                        <div className="announcement-modal-overlay" onClick={() => setAgencyModalOpen(false)}>
+                            <div className="announcement-modal-content" onClick={(e) => e.stopPropagation()}>
+                                <CreateAgency onClose={() => {
+                                    setAgencyModalOpen(false);
+                                    api.get('/users/agencies').then(({ data }) => setAgencies(data.agencies || [])).catch(() => {});
+                                }} />
+                            </div>
+                        </div>
+                    )}
                     <div className="">
                         <input
                             id="phone"

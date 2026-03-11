@@ -197,6 +197,19 @@ class UserController {
         }
     }
 
+    // Liste des agences (public)
+    static async getAgencies(_req, res) {
+        try {
+            const agencies = await prisma.agency.findMany({
+                select: { id: true, nom_agence: true }
+            });
+            res.status(200).json({ agencies });
+        } catch (error) {
+            console.error('[getAgencies]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
     // Profil agence
     static async updateAgency(req, res) {
         try {

@@ -44,10 +44,11 @@ const buildForm = (property) => ({
     },
 });
 
-export default function CreateAnnouncementPage() {
+export default function CreateAnnouncementPage({ onClose } = {}) {
     const { id } = useParams();
     const navigate = useNavigate();
     const isEdit = Boolean(id);
+    const handleClose = onClose ?? (() => navigate(-1));
 
     const [formData, setFormData]       = useState(buildForm(null));
     const [currentStatus, setCurrentStatus] = useState("draft");
@@ -100,7 +101,7 @@ export default function CreateAnnouncementPage() {
                 await api.post("/properties", payload);
             }
             setSuccess(true);
-            setTimeout(() => navigate(-1), 1500);
+            setTimeout(() => handleClose(), 1500);
         } catch (err) {
             setError(err.response?.data?.message || "Erreur lors de la sauvegarde.");
         } finally {
@@ -130,7 +131,7 @@ export default function CreateAnnouncementPage() {
 
     return (
         <div className="edit-announcement-page">
-            <Headers />
+            {!onClose && <Headers />}
             <main className="edit-announcement-content">
                 <header className="edit-announcement-header">
                     <p className="edit-announcement-kicker">Gestion des annonces</p>
@@ -227,7 +228,7 @@ export default function CreateAnnouncementPage() {
                     </fieldset>
 
                     <div className="edit-announcement-actions">
-                        <button type="button" className="edit-announcement-cancel" onClick={() => navigate(-1)}>
+                        <button type="button" className="edit-announcement-cancel" onClick={handleClose}>
                             Annuler
                         </button>
                         <button type="submit" className="edit-announcement-submit" disabled={saving}>
@@ -265,7 +266,7 @@ export default function CreateAnnouncementPage() {
                     </section>
                 )}
             </main>
-            <Footer />
+            {!onClose && <Footer />}
         </div>
     );
 }
