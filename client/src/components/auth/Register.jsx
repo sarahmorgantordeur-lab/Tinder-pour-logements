@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { useAuth } from '../../hooks/useAuth';
+import CreateAgency from '../create/CreateAgency';
 
 
 export default function Register({ onLogin }) {
