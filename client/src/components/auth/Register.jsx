@@ -19,7 +19,7 @@ export default function Register({ onLogin }) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState('user');
 
     useEffect(() => {
         const token = localStorage.getItem('token');

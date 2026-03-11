@@ -14,9 +14,7 @@ export default function Headers() {
             <nav className="navigation">
                 <NavLink to="/home">Home</NavLink>
                 <NavLink to="/profile">Profile</NavLink>
-                {user?.role === "user" && (
-                    <NavLink to="/discussions">Discussions</NavLink>
-                )}
+                <NavLink to="/discussions">Discussions</NavLink>
             </nav>
             <div>
                 <Button onClick={logout}>Logout</Button>

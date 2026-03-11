@@ -7,13 +7,20 @@
     padding: 2rem;
     text-align: center;
 
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 1rem;
+    }
+
     .appartement-card-container {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
 
     .swipe-buttons {
         margin-top: 8px;
@@ -22,8 +29,129 @@
         width: 45%;
         justify-content: center;
 
+        @media (max-width: 768px) {
+            width: 70%;
+        }
+
+        @media (max-width: 480px) {
+            width: 100%;
+        }
+
         .swipe-button {
             width: 100%;
         }
     }
+}
+
+// Barre de filtres
+.user-home-filter {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 1.5rem;
+}
+
+.user-home-filter-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        gap: 0.5rem;
+    }
+}
+
+.user-home-filter-input {
+    flex: 1;
+    min-width: 120px;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid $border-color-muted;
+    outline: none;
+    background-color: $input-bg;
+    color: $main-text-color;
+    transition: border-color 0.3s;
+
+    &::placeholder {
+        color: $text-muted;
+    }
+
+    &:focus {
+        border-color: $border-color;
+    }
+
+    &--short {
+        max-width: 140px;
+
+        @media (max-width: 480px) {
+            max-width: 100%;
+            flex: 1;
+        }
+    }
+}
+
+.user-home-filter-select {
+    flex: 1;
+    min-width: 150px;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid $border-color-muted;
+    outline: none;
+    background-color: $input-bg;
+    color: $main-text-color;
+}
+
+.user-home-filter-btn {
+    padding: 0.6rem 1.25rem;
+    background-color: $button-bg;
+    color: $main-text-color;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: rgba($color: $button-bg, $alpha: 0.9);
+    }
+}
+
+.user-home-filter-clear {
+    padding: 0.6rem 1rem;
+    background-color: transparent;
+    color: $text-muted;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+        color: $main-text-color;
+        border-color: $border-color;
+    }
+}
+
+.user-home-filter-active {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: $text-muted;
+    text-align: left;
+}
+
+.user-home-loading,
+.user-home-empty {
+    font-size: 1rem;
+    color: $text-muted;
+    margin: 2rem 0;
+}
+
+.user-home-error {
+    font-size: 1rem;
+    color: #e57373;
+    margin: 2rem 0;
 }
