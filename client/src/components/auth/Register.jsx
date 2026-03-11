@@ -21,6 +21,9 @@ export default function Register({ onLogin }) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState('');
+    const [step, setStep] = useState('form'); // 'form' | 'agency-profile'
+    const [registeredUser, setRegisteredUser] = useState(null);
+    const [registeredToken, setRegisteredToken] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -60,13 +63,36 @@ export default function Register({ onLogin }) {
             }
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             const token = localStorage.getItem('token');
-            onLogin?.(user, token);
+            if (role === 'agency') {
+                setRegisteredUser(user);
+                setRegisteredToken(token);
+                setStep('agency-profile');
+            } else {
+                onLogin?.(user, token);
+            }
         } catch {
             setError('Impossible de contacter le serveur');
         } finally {
             setLoading(false);
         }
     };
+
+    if (step === 'agency-profile') {
+        return (
+            <div className="form-main-container">
+                <div className="form-wrapper">
+                    <h2 className="form-agency-title">Complétez votre profil agence</h2>
+                    <CreateAgency />
+                    <Button
+                        type="button"
+                        onClick={() => onLogin?.(registeredUser, registeredToken)}
+                    >
+                        Terminer
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="form-main-container">
