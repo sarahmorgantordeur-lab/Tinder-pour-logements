@@ -154,16 +154,6 @@ export default function ProfilePage() {
                         </label>
 
                         <label className="profile-field">
-                            Avatar (URL)
-                            <input
-                                type="url"
-                                name="avatar"
-                                value={formData.avatar}
-                                onChange={handleChange}
-                            />
-                        </label>
-
-                        <label className="profile-field">
                             Bio
                             <textarea
                                 name="bio"
@@ -171,15 +161,6 @@ export default function ProfilePage() {
                                 onChange={handleChange}
                                 rows={4}
                             />
-                        </label>
-
-                        <label className="profile-field">
-                            Rôle (verrouillé)
-                            <select name="role" value={formData.role} onChange={handleChange} disabled>
-                                <option value="user">user</option>
-                                <option value="owner">owner</option>
-                                <option value="agency">agency</option>
-                            </select>
                         </label>
                     </fieldset>
 

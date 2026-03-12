@@ -21,7 +21,7 @@ export default function Register({ onLogin }) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState('user');
     const [step, setStep] = useState('form'); // 'form' | 'agency-profile'
     const [registeredUser, setRegisteredUser] = useState(null);
     const [registeredToken, setRegisteredToken] = useState(null);

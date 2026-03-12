@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import Headers from "../layouts/components/Headers";
-import Footer from "../layouts/components/Footer";
+import { useAuth } from "../../hooks/useAuth";
+import Headers from "../../layouts/components/Headers";
+import Footer from "../../layouts/components/Footer";
 
 const emptyAddress = {
     number: "",

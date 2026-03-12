@@ -5,6 +5,8 @@
 @use "./pages/LandingPage";
 @use "./pages/AgendaPage";
 @use "./pages/ProfilePage";
+@use "./pages/DiscussionPage";
+@use "./pages/EditAnnouncement";
 @use "./pages/home_pages/AgencyHome";
 @use "./pages/home_pages/OwnerHome";
 @use "./pages/home_pages/UserHome";
@@ -14,6 +16,9 @@
 @use "./components/auth/Auth";
 
 @use "./components/card/AppartementCard";
+@use "./components/card/AppartementOwnerCard";
+
+@use "./components/navigation/NavLink";
 
 @use "./components/ui/Button";
 @use "./components/ui/TextInput";

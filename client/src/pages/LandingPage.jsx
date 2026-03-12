@@ -9,9 +9,9 @@ export default function Landing() {
     <main className="landing-page">
         <div className="landing-intro">
             <div className="intro-container">
-                <h1 className="landing-title">Match Home</h1>
+                <h1 className="landing-title">Find My Roof</h1>
                 <p className="landing-description">
-                Match Home is an application that helps people to find the perfect lodging.<br />
+                Find My Roof is an application that help people to find the perfect lodging.<br />
                 It’s easy to use with it’s principle of matching with the good landlord and lodging.<br />
 
                 If you’re interested to join the grand inovation join us either you want to find or to rent out a lodging.

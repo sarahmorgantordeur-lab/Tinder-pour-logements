@@ -1,6 +1,6 @@
 @use '../variables' as *;
 
-.profile-loading {
+.edit-announcement-loading {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,14 +9,14 @@
     font-size: 1rem;
 }
 
-.profile-page {
+.edit-announcement-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     background-color: $main-bg;
 }
 
-.profile-content {
+.edit-announcement-content {
     flex: 1;
     max-width: 720px;
     width: 100%;
@@ -36,20 +36,20 @@
     }
 }
 
-.profile-header {
+.edit-announcement-header {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.profile-kicker {
+.edit-announcement-kicker {
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: $button-bg;
 }
 
-.profile-title {
+.edit-announcement-title {
     font-size: 1.75rem;
     font-weight: 700;
     color: $main-text-color;
@@ -59,7 +59,7 @@
     }
 }
 
-.profile-error {
+.edit-announcement-error {
     color: #e57373;
     font-size: 0.9rem;
     padding: 0.75rem 1rem;
@@ -68,7 +68,7 @@
     border: 1px solid rgba(229, 115, 115, 0.3);
 }
 
-.profile-success {
+.edit-announcement-success {
     color: #81c784;
     font-size: 0.9rem;
     padding: 0.75rem 1rem;
@@ -77,13 +77,13 @@
     border: 1px solid rgba(129, 199, 132, 0.3);
 }
 
-.profile-form {
+.edit-announcement-form {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-.profile-section {
+.edit-announcement-section {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -98,7 +98,7 @@
     }
 }
 
-.profile-section-title {
+.edit-announcement-section-title {
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -107,7 +107,7 @@
     margin-bottom: 0.25rem;
 }
 
-.profile-field {
+.edit-announcement-field {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
@@ -116,7 +116,7 @@
 
     textarea {
         resize: vertical;
-        min-height: 80px;
+        min-height: 100px;
         font-size: 1rem;
         padding: 0.75rem;
         border-radius: 0.5rem;
@@ -145,24 +145,54 @@
         outline: none;
         background-color: $input-bg;
         color: $main-text-color;
+    }
 
-        &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+    &--checkbox {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+            accent-color: $button-bg;
         }
     }
 }
 
-.profile-actions {
+.edit-announcement-actions {
     display: flex;
+    gap: 1rem;
     justify-content: flex-end;
 
     @media (max-width: 480px) {
-        justify-content: stretch;
+        flex-direction: column-reverse;
     }
 }
 
-.profile-submit {
+.edit-announcement-cancel {
+    padding: 0.75rem 2rem;
+    background-color: transparent;
+    color: $text-muted;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        border-color: $border-color;
+        color: $main-text-color;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.edit-announcement-submit {
     padding: 0.75rem 2rem;
     background-color: $button-bg;
     color: $main-text-color;
