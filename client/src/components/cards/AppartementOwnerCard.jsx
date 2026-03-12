@@ -40,7 +40,9 @@ export default function AppartementCard ({ appartement }) {
                 </div>
             )}
             <div className="appartement-card-footer">
-                <button className="appartement-card-button">Messages</button>
+                <Link to={`/discussions?property=${appartement.id}`}>
+                    <button className="appartement-card-button">Messages</button>
+                </Link>
                 <Link to={`/properties/${appartement.id}/edit`}>
                     <button className="appartement-card-button">Modifier</button>
                 </Link>

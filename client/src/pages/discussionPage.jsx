@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
@@ -98,6 +98,8 @@ function MessageBubble({ msg, isOwn }) {
 export default function DiscussionPage() {
     const { user } = useAuth();
     const isOwnerOrAgency = user?.role === "owner" || user?.role === "agency";
+    const [searchParams] = useSearchParams();
+    const filterPropertyId = searchParams.get("property");
 
     const [conversations, setConversations] = useState([]);
     const [activeId, setActiveId] = useState(null);
@@ -113,7 +115,15 @@ export default function DiscussionPage() {
     useEffect(() => {
         const endpoint = isOwnerOrAgency ? "/conversations/owner" : "/conversations";
         api.get(endpoint)
-            .then(({ data }) => setConversations(data.conversations))
+            .then(({ data }) => {
+                setConversations(data.conversations);
+                if (filterPropertyId) {
+                    const first = data.conversations.find(
+                        (c) => c.property_id === filterPropertyId
+                    );
+                    if (first) setActiveId(first.id);
+                }
+            })
             .catch(() => setError("Impossible de charger les conversations."))
             .finally(() => setLoadingConvs(false));
     }, [isOwnerOrAgency]);
