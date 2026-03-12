@@ -47,6 +47,7 @@ export default function AgencyHome() {
             )}
 
             {!loading && !error && count > 0 && (
+                <div className="agency-home-content">
                 <div className="agency-home-header">
                     <Link to="/properties/new">
                         <Button>
@@ -58,6 +59,7 @@ export default function AgencyHome() {
                             Mon agenda
                         </Button>
                     </Link>
+                </div>
 
                     <div className="agency-home-grid">
                         {appartmentById.map((apartment) => {
@@ -79,8 +81,8 @@ export default function AgencyHome() {
                             </div>
                         );
                     })}
-                </div>
-                </div>
+                    </div>
+                    </div>
             )}
         </div>
     );

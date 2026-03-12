@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import AppartementOwnerCard from "../../components/cards/AppartementOwnerCard";
-import Headers from "../../layouts/components/Headers";
-import Footer from "../../layouts/components/Footer";
 import Button from "../../components/ui/Button";
 import { useHome } from "../../hooks/useHome";
 
@@ -47,39 +45,41 @@ export default function OwnerHome() {
             )}
 
             {!loading && !error && count > 0 && (
-                <div className="agency-home-header">
-                    <Link to="/properties/new">
-                        <Button>
-                            Créer une annonce
-                        </Button>
-                    </Link>
-                    <Link to="/agenda">
-                        <Button>
-                            Mon agenda
-                        </Button>
-                    </Link>
+                <div className="agency-home-content">
+                    <div className="agency-home-header">
+                        <Link to="/properties/new">
+                            <Button>
+                                Créer une annonce
+                            </Button>
+                        </Link>
+                        <Link to="/agenda">
+                            <Button>
+                                Mon agenda
+                            </Button>
+                        </Link>
+                    </div>
 
                     <div className="agency-home-grid">
                         {appartmentById.map((apartment) => {
-                        const formattedApartment = {
-                            ...apartment,
-                            city: apartment.address?.city,
-                            postal_code: apartment.address?.postal_code,
-                            image: apartment.photos?.[0]?.url ?? null,
-                        };
+                            const formattedApartment = {
+                                ...apartment,
+                                city: apartment.address?.city,
+                                postal_code: apartment.address?.postal_code,
+                                image: apartment.photos?.[0]?.url ?? null,
+                            };
 
-                        return (
-                            <div
-                                key={apartment.id}
-                                className="agency-home-card-wrapper"
-                            >
-                                <AppartementOwnerCard
-                                    appartement={formattedApartment}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
+                            return (
+                                <div
+                                    key={apartment.id}
+                                    className="agency-home-card-wrapper"
+                                >
+                                    <AppartementOwnerCard
+                                        appartement={formattedApartment}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
         </div>
