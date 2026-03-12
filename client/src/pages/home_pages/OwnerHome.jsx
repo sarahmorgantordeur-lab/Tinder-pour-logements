@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api";
 import AppartementOwnerCard from "../../components/cards/AppartementOwnerCard";
 import Headers from "../../layouts/components/Headers";
 import Footer from "../../layouts/components/Footer";
@@ -10,13 +9,13 @@ import { useHome } from "../../hooks/useHome";
 export default function OwnerHome() {
     const { loading, error } = useHome();
     const { appartmentById, fetchMyProperties } = useHome();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchMyProperties();
     }, [fetchMyProperties]);
 
     const count = appartmentById?.length;
-    const label = count > 1 ? "annonces" : "annonce";
 
     return (
         <div className="agency-home">

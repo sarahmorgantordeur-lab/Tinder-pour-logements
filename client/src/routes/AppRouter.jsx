@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "../pages/LandingPage";
 import Home from "../layouts/Home";
-import EditAnnouncement from "../pages/EditAnnouncement";
+import CreateAnnouncementPage from "../pages/CreateAnnouncementPage";
 import DiscussionPage from "../pages/DiscussionPage";
 import ProfilePage from "../pages/ProfilePage";
 import { useAuth } from "../hooks/useAuth";
@@ -29,9 +29,14 @@ function AppRouter() {
           <Home />
         </PrivateRoute>
       } />
+      <Route path="/properties/new" element={
+        <PrivateRoute>
+          <CreateAnnouncementPage />
+        </PrivateRoute>
+      } />
       <Route path="/properties/:id/edit" element={
         <PrivateRoute>
-          <EditAnnouncement />
+          <CreateAnnouncementPage />
         </PrivateRoute>
       } />
       <Route path="/discussions" element={
