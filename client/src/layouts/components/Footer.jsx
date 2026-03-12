@@ -1,4 +1,5 @@
 import FMRIcon from "../../assets/icons/FMR.svg?react";
+import NavLink from "../../components/navigation/NavLink";
 
 export default function Footer() {
     return (
@@ -15,16 +16,9 @@ export default function Footer() {
                     <div className="footer-nav-group">
                         <h4>Navigation</h4>
                         <ul>
-                            <li><a href="/">Accueil</a></li>
-                            <li><a href="/about">À propos</a></li>
-                            <li><a href="/contact">Contact</a></li>
-                        </ul>
-                    </div>
-                    <div className="footer-nav-group">
-                        <h4>Compte</h4>
-                        <ul>
-                            <li><a href="/login">Connexion</a></li>
-                            <li><a href="/register">Inscription</a></li>
+                            <li><NavLink to="/home">Accueil</NavLink></li>
+                            <li><NavLink to="/profile">Profil</NavLink></li>
+                            <li><NavLink to="/discussions">Discussions</NavLink></li>
                         </ul>
                     </div>
                 </nav>

@@ -6,6 +6,12 @@
     align-items: center;
     padding: 2rem;
     text-align: center;
-    //temp
-    min-height: 100vh;
+
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 1rem;
+    }
 }
