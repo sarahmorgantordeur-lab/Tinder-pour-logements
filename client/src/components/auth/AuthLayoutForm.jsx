@@ -1,7 +1,6 @@
 import SwitchAuth from "./SwitchAuth";
 import Login from "./Login";
 import Register from "./Register";
-import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const fadeVariants = {
@@ -12,14 +11,9 @@ const fadeVariants = {
 
 export default function AuthLayoutForm({ isLogin, isRegister, setIsLogin, setIsRegister }) {
 
-    const toggleAuthMode = () => {
-        setIsLogin((prev) => !prev);
-        setIsRegister((prev) => !prev);
-    };
-
     return (
         <div className="auth-layout-form">
-            <SwitchAuth isLogin={isLogin} isRegister={isRegister} setIsLogin={setIsLogin} setIsRegister={setIsRegister} toggleAuthMode={toggleAuthMode} />
+            <SwitchAuth isLogin={isLogin} isRegister={isRegister} setIsLogin={setIsLogin} setIsRegister={setIsRegister} />
             <AnimatePresence mode="wait">
                 <motion.div
                     key={isLogin ? "login" : "register"}

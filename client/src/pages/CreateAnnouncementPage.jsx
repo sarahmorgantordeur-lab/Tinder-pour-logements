@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
 import Footer from "../layouts/components/Footer";
+import Select from "../components/ui/Select";
+import Button from "../components/ui/Button";
+import TextInput from "../components/ui/TextInput";
 
 const PROPERTY_TYPES = [
     "Bungalow", "Chalet", "Castel", "Farm", "CountryHouse",
@@ -151,7 +154,7 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
 
                         <label className="edit-announcement-field">
                             Titre
-                            <input type="text" name="title" value={formData.title} onChange={handleChange} required />
+                            <TextInput type="text" name="title" value={formData.title} onChange={handleChange} required />
                         </label>
 
                         <label className="edit-announcement-field">
@@ -161,11 +164,11 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
 
                         <label className="edit-announcement-field">
                             Type de bien
-                            <select name="property_type" value={formData.property_type} onChange={handleChange}>
+                            <Select name="property_type" value={formData.property_type} onChange={handleChange}>
                                 {PROPERTY_TYPES.map((type) => (
                                     <option key={type} value={type}>{type}</option>
                                 ))}
-                            </select>
+                            </Select>
                         </label>
                     </fieldset>
 
@@ -174,17 +177,17 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
 
                         <label className="edit-announcement-field">
                             Loyer (€/mois)
-                            <input type="number" name="price" value={formData.price} onChange={handleChange} min={0} required />
+                            <TextInput type="number" name="price" value={formData.price} onChange={handleChange} min={0} required />
                         </label>
 
                         <label className="edit-announcement-field">
                             Surface (m²)
-                            <input type="number" name="surface" value={formData.surface} onChange={handleChange} min={0} required />
+                            <TextInput type="number" name="surface" value={formData.surface} onChange={handleChange} min={0} required />
                         </label>
 
                         <label className="edit-announcement-field">
                             Nombre de pièces
-                            <input type="number" name="rooms" value={formData.rooms} onChange={handleChange} min={1} required />
+                            <TextInput type="number" name="rooms" value={formData.rooms} onChange={handleChange} min={1} required />
                         </label>
 
                         <label className="edit-announcement-field edit-announcement-field--checkbox">
@@ -198,42 +201,42 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
 
                         <label className="edit-announcement-field">
                             Numéro
-                            <input type="text" name="address.number" value={formData.address.number} onChange={handleChange} required />
+                            <TextInput type="text" name="address.number" value={formData.address.number} onChange={handleChange} required />
                         </label>
 
                         <label className="edit-announcement-field">
                             Boîte
-                            <input type="text" name="address.box" value={formData.address.box} onChange={handleChange} />
+                            <TextInput type="text" name="address.box" value={formData.address.box} onChange={handleChange} />
                         </label>
 
                         <label className="edit-announcement-field">
                             Rue
-                            <input type="text" name="address.street" value={formData.address.street} onChange={handleChange} required />
+                            <TextInput type="text" name="address.street" value={formData.address.street} onChange={handleChange} required />
                         </label>
 
                         <label className="edit-announcement-field">
                             Ville
-                            <input type="text" name="address.city" value={formData.address.city} onChange={handleChange} required />
+                            <TextInput type="text" name="address.city" value={formData.address.city} onChange={handleChange} required />
                         </label>
 
                         <label className="edit-announcement-field">
                             Code postal
-                            <input type="text" name="address.postal_code" value={formData.address.postal_code} onChange={handleChange} required />
+                            <TextInput type="text" name="address.postal_code" value={formData.address.postal_code} onChange={handleChange} required />
                         </label>
 
                         <label className="edit-announcement-field">
                             Pays
-                            <input type="text" name="address.country" value={formData.address.country} onChange={handleChange} required />
+                            <TextInput type="text" name="address.country" value={formData.address.country} onChange={handleChange} required />
                         </label>
                     </fieldset>
 
                     <div className="edit-announcement-actions">
-                        <button type="button" className="edit-announcement-cancel" onClick={handleClose}>
+                        <Button type="button" className="edit-announcement-cancel" onClick={handleClose}>
                             Annuler
-                        </button>
-                        <button type="submit" className="edit-announcement-submit" disabled={saving}>
+                        </Button>
+                        <Button type="submit" className="edit-announcement-submit" disabled={saving}>
                             {saving ? "Enregistrement..." : isEdit ? "Enregistrer" : "Créer l'annonce"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
 
@@ -249,7 +252,7 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
 
                         <div className="edit-announcement-status-actions">
                             {availableTransitions.map((s) => (
-                                <button
+                                <Button
                                     key={s}
                                     type="button"
                                     className={`edit-announcement-status-btn edit-announcement-status-btn--${s}`}
@@ -257,7 +260,7 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
                                     disabled={statusSaving}
                                 >
                                     {statusSaving ? "..." : `→ ${STATUS_LABELS[s]}`}
-                                </button>
+                                </Button>
                             ))}
                             {availableTransitions.length === 0 && (
                                 <p className="edit-announcement-status-none">Aucune transition disponible.</p>

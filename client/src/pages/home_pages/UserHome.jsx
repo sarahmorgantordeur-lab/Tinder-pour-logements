@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import AppartementCard from "../../components/cards/AppartementCard";
 import {useHome} from "../../hooks/useHome";
 import Button from "../../components/ui/Button";
+import Select from "../../components/ui/Select";
+import TextInput from "../../components/ui/TextInput";
 import { motion, AnimatePresence } from 'framer-motion';
 
 
@@ -77,7 +79,7 @@ function hasActiveFilter(f) {
             {/* Filtres */}
             <form className="user-home-filter" onSubmit={handleSearch}>
                 <div className="user-home-filter-row">
-                    <input
+                    <TextInput
                         className="user-home-filter-input"
                         type="text"
                         name="city"
@@ -86,7 +88,7 @@ function hasActiveFilter(f) {
                         onChange={handleChange}
                     />
 
-                    <input
+                    <TextInput
                         className="user-home-filter-input user-home-filter-input--short"
                         type="number"
                         name="minPrice"
@@ -96,7 +98,7 @@ function hasActiveFilter(f) {
                         onChange={handleChange}
                     />
 
-                    <input
+                    <TextInput
                         className="user-home-filter-input user-home-filter-input--short"
                         type="number"
                         name="maxPrice"
@@ -106,7 +108,7 @@ function hasActiveFilter(f) {
                         onChange={handleChange}
                     />
 
-                    <select
+                    <Select
                         className="user-home-filter-select"
                         name="propertyType"
                         value={form.propertyType}
@@ -116,16 +118,16 @@ function hasActiveFilter(f) {
                         {PROPERTY_TYPES.map((t) => (
                             <option key={t} value={t}>{t}</option>
                         ))}
-                    </select>
+                    </Select>
 
-                    <button className="user-home-filter-btn" type="submit">
+                    <Button className="user-home-filter-btn" type="submit">
                         Rechercher
-                    </button>
+                    </Button>
 
                     {activeFilter && (
-                        <button className="user-home-filter-clear" type="button" onClick={handleClear}>
+                        <Button className="user-home-filter-clear" type="button" onClick={handleClear}>
                             ✕ Effacer
-                        </button>
+                        </Button>
                     )}
                 </div>
 

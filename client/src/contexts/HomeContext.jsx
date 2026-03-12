@@ -86,6 +86,15 @@ export const HomeProvider = ({ children }) => {
         }
     }, []);
 
+    const updateStatus = useCallback(async (propertyId, status) => {
+        try {
+            await api.patch(`/properties/${propertyId}/status`, { status });
+            setAppartmentById((prev) => prev.map((p) => p.id === propertyId ? { ...p, status } : p));
+        } catch {
+                setError("Impossible de mettre à jour le statut du logement");
+        }
+    }, []);
+
     useEffect(() => {
         fetchApartments(filters);
     }, [fetchApartments, filters]);
@@ -116,6 +125,7 @@ export const HomeProvider = ({ children }) => {
         fetchAgencyNames,
         fetchPropertiesById,
         fetchMyProperties,
+        updateStatus,
     };
 
     return <HomeContext.Provider value={value}>{children}</HomeContext.Provider>;

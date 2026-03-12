@@ -4,6 +4,9 @@ import { useAuth } from "../hooks/useAuth";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
 import Footer from "../layouts/components/Footer";
+import Select from "../components/ui/Select";
+import Button from "../components/ui/Button";
+import TextInput from "../components/ui/TextInput";
 
 function formatTime(dateStr) {
     const date = new Date(dateStr);
@@ -24,8 +27,7 @@ function ConversationItem({ conv, isActive, currentUserId, onClick }) {
     const unread = conv._count?.messages ?? 0;
     const photo = conv.property?.photos?.[0]?.url;
     const city = conv.property?.address?.city;
-    const otherUser =
-        conv.tenant_id === currentUserId ? conv.owner : conv.tenant;
+    const otherUser = conv.tenant_id === currentUserId ? conv.owner : conv.tenant;
 
     return (
         <button
@@ -109,6 +111,7 @@ export default function DiscussionPage() {
     const [loadingMsgs, setLoadingMsgs] = useState(false);
     const [sending, setSending] = useState(false);
     const [error, setError] = useState(null);
+    const [activeProperty, setActiveProperty] = useState(null);
 
     const messagesEndRef = useRef(null);
 
@@ -171,7 +174,7 @@ export default function DiscussionPage() {
                 prev.map((c) =>
                     c.id === activeId
                         ? {
-                              ...c,
+                            ...c,
                               messages: [
                                   {
                                       ...data.data,
@@ -195,12 +198,30 @@ export default function DiscussionPage() {
 
     const activeConv = conversations.find((c) => c.id === activeId);
 
+    const properties = isOwnerOrAgency
+        ? [...new Map(conversations.filter(c => c.property_id).map(c => [c.property_id, c.property])).values()]
+        : [];
+
+
     return (
         <div className="discussion-page">
             <Headers />
             <main className="discussion-main">
                 <aside className="discussion-sidebar">
                     <h2 className="discussion-sidebar-title">Messages</h2>
+
+                    {isOwnerOrAgency && properties.length > 1 && (
+                        <div className="discussion-filter">
+                            <Select
+                                options={[
+                                    { value: "", label: "Tous les logements" },
+                                    ...properties.map((p) => ({ value: p.id, label: p.title })),
+                                ]}
+                                value={activeProperty ?? ""}
+                                onChange={(e) => setActiveProperty(e.target.value || null)}
+                            />
+                        </div>
+                    )}
 
                     {loadingConvs && (
                         <p className="discussion-loading">Chargement...</p>
@@ -219,7 +240,8 @@ export default function DiscussionPage() {
                                     groups[key].convs.push(conv);
                                     return groups;
                                 }, {})
-                            ).map(([propertyId, { property, convs }]) => (
+                            ).filter(([propertyId]) => !activeProperty || propertyId === activeProperty)
+                            .map(([propertyId, { property, convs }]) => (
                                 <div key={propertyId} className="discussion-property-group">
                                     <p className="discussion-property-group-title">
                                         {property?.title ?? propertyId}
@@ -302,7 +324,7 @@ export default function DiscussionPage() {
                                     <p className="discussion-error">{error}</p>
                                 )}
                                 <div className="discussion-send-row">
-                                    <input
+                                    <TextInput
                                         className="discussion-send-input"
                                         type="text"
                                         placeholder="Ecrivez un message..."
@@ -310,13 +332,13 @@ export default function DiscussionPage() {
                                         onChange={(e) => setDraft(e.target.value)}
                                         disabled={sending}
                                     />
-                                    <button
+                                    <Button
                                         className="discussion-send-btn"
                                         type="submit"
                                         disabled={sending || !draft.trim()}
                                     >
                                         {sending ? "..." : "Envoyer"}
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </>
