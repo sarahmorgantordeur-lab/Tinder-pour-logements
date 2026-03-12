@@ -2066,7 +2066,6 @@ export namespace Prisma {
     firstname: string | null
     lastname: string | null
     phone: string | null
-    avatar: string | null
     bio: string | null
     role: $Enums.Role | null
     is_active: boolean | null
@@ -2083,7 +2082,6 @@ export namespace Prisma {
     firstname: string | null
     lastname: string | null
     phone: string | null
-    avatar: string | null
     bio: string | null
     role: $Enums.Role | null
     is_active: boolean | null
@@ -2100,7 +2098,6 @@ export namespace Prisma {
     firstname: number
     lastname: number
     phone: number
-    avatar: number
     bio: number
     role: number
     is_active: number
@@ -2119,7 +2116,6 @@ export namespace Prisma {
     firstname?: true
     lastname?: true
     phone?: true
-    avatar?: true
     bio?: true
     role?: true
     is_active?: true
@@ -2136,7 +2132,6 @@ export namespace Prisma {
     firstname?: true
     lastname?: true
     phone?: true
-    avatar?: true
     bio?: true
     role?: true
     is_active?: true
@@ -2153,7 +2148,6 @@ export namespace Prisma {
     firstname?: true
     lastname?: true
     phone?: true
-    avatar?: true
     bio?: true
     role?: true
     is_active?: true
@@ -2243,7 +2237,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone: string | null
-    avatar: string | null
     bio: string | null
     role: $Enums.Role
     is_active: boolean
@@ -2277,7 +2270,6 @@ export namespace Prisma {
     firstname?: boolean
     lastname?: boolean
     phone?: boolean
-    avatar?: boolean
     bio?: boolean
     role?: boolean
     is_active?: boolean
@@ -2305,7 +2297,6 @@ export namespace Prisma {
     firstname?: boolean
     lastname?: boolean
     phone?: boolean
-    avatar?: boolean
     bio?: boolean
     role?: boolean
     is_active?: boolean
@@ -2323,7 +2314,6 @@ export namespace Prisma {
     firstname?: boolean
     lastname?: boolean
     phone?: boolean
-    avatar?: boolean
     bio?: boolean
     role?: boolean
     is_active?: boolean
@@ -2341,7 +2331,6 @@ export namespace Prisma {
     firstname?: boolean
     lastname?: boolean
     phone?: boolean
-    avatar?: boolean
     bio?: boolean
     role?: boolean
     is_active?: boolean
@@ -2351,7 +2340,7 @@ export namespace Prisma {
     deleted_at?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstname" | "lastname" | "phone" | "avatar" | "bio" | "role" | "is_active" | "address_id" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstname" | "lastname" | "phone" | "bio" | "role" | "is_active" | "address_id" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | User$agencyArgs<ExtArgs>
     tenant_profile?: boolean | User$tenant_profileArgs<ExtArgs>
@@ -2393,7 +2382,6 @@ export namespace Prisma {
       firstname: string
       lastname: string
       phone: string | null
-      avatar: string | null
       bio: string | null
       role: $Enums.Role
       is_active: boolean
@@ -2840,7 +2828,6 @@ export namespace Prisma {
     readonly firstname: FieldRef<"User", 'String'>
     readonly lastname: FieldRef<"User", 'String'>
     readonly phone: FieldRef<"User", 'String'>
-    readonly avatar: FieldRef<"User", 'String'>
     readonly bio: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly is_active: FieldRef<"User", 'Boolean'>
@@ -14732,7 +14719,6 @@ export namespace Prisma {
     firstname: 'firstname',
     lastname: 'lastname',
     phone: 'phone',
-    avatar: 'avatar',
     bio: 'bio',
     role: 'role',
     is_active: 'is_active',
@@ -15024,7 +15010,6 @@ export namespace Prisma {
     firstname?: StringFilter<"User"> | string
     lastname?: StringFilter<"User"> | string
     phone?: StringNullableFilter<"User"> | string | null
-    avatar?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     is_active?: BoolFilter<"User"> | boolean
@@ -15051,7 +15036,6 @@ export namespace Prisma {
     firstname?: SortOrder
     lastname?: SortOrder
     phone?: SortOrderInput | SortOrder
-    avatar?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
     role?: SortOrder
     is_active?: SortOrder
@@ -15081,7 +15065,6 @@ export namespace Prisma {
     firstname?: StringFilter<"User"> | string
     lastname?: StringFilter<"User"> | string
     phone?: StringNullableFilter<"User"> | string | null
-    avatar?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     is_active?: BoolFilter<"User"> | boolean
@@ -15108,7 +15091,6 @@ export namespace Prisma {
     firstname?: SortOrder
     lastname?: SortOrder
     phone?: SortOrderInput | SortOrder
-    avatar?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
     role?: SortOrder
     is_active?: SortOrder
@@ -15131,7 +15113,6 @@ export namespace Prisma {
     firstname?: StringWithAggregatesFilter<"User"> | string
     lastname?: StringWithAggregatesFilter<"User"> | string
     phone?: StringNullableWithAggregatesFilter<"User"> | string | null
-    avatar?: StringNullableWithAggregatesFilter<"User"> | string | null
     bio?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     is_active?: BoolWithAggregatesFilter<"User"> | boolean
@@ -15857,7 +15838,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -15883,7 +15863,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -15909,7 +15888,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -15935,7 +15913,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -15961,7 +15938,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -15978,7 +15954,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -15994,7 +15969,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -16885,7 +16859,6 @@ export namespace Prisma {
     firstname?: SortOrder
     lastname?: SortOrder
     phone?: SortOrder
-    avatar?: SortOrder
     bio?: SortOrder
     role?: SortOrder
     is_active?: SortOrder
@@ -16902,7 +16875,6 @@ export namespace Prisma {
     firstname?: SortOrder
     lastname?: SortOrder
     phone?: SortOrder
-    avatar?: SortOrder
     bio?: SortOrder
     role?: SortOrder
     is_active?: SortOrder
@@ -16919,7 +16891,6 @@ export namespace Prisma {
     firstname?: SortOrder
     lastname?: SortOrder
     phone?: SortOrder
-    avatar?: SortOrder
     bio?: SortOrder
     role?: SortOrder
     is_active?: SortOrder
@@ -19421,7 +19392,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -19446,7 +19416,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -19524,7 +19493,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -19549,7 +19517,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -19574,7 +19541,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -19599,7 +19565,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -19640,7 +19605,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -19665,7 +19629,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -19721,7 +19684,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -19746,7 +19708,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -19902,7 +19863,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -19927,7 +19887,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20103,7 +20062,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20128,7 +20086,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20169,7 +20126,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20194,7 +20150,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20219,7 +20174,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20244,7 +20198,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20285,7 +20238,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20310,7 +20262,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20335,7 +20286,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20360,7 +20310,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20467,7 +20416,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20492,7 +20440,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20659,7 +20606,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20684,7 +20630,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20714,7 +20659,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20739,7 +20683,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -20884,7 +20827,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20909,7 +20851,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20945,7 +20886,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -20970,7 +20910,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -21034,7 +20973,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -21059,7 +20997,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -21129,7 +21066,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -21154,7 +21090,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -21179,7 +21114,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -21204,7 +21138,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -21336,7 +21269,6 @@ export namespace Prisma {
     firstname?: StringFilter<"User"> | string
     lastname?: StringFilter<"User"> | string
     phone?: StringNullableFilter<"User"> | string | null
-    avatar?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     is_active?: BoolFilter<"User"> | boolean
@@ -21783,7 +21715,6 @@ export namespace Prisma {
     firstname: string
     lastname: string
     phone?: string | null
-    avatar?: string | null
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
@@ -21825,7 +21756,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -21850,7 +21780,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -21875,7 +21804,6 @@ export namespace Prisma {
     firstname?: StringFieldUpdateOperationsInput | string
     lastname?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean

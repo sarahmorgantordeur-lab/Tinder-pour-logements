@@ -4,6 +4,7 @@ import apartmentRoutes from './apartmentRoutes.js';
 import swipeRoutes from './swipeRoutes.js';
 import matchRoutes from './matchRoutes.js';
 import adminRoutes from './adminRoutes.js';
+import appointmentRoutes from './appointmentRoutes.js';
 
 const setupRoutes = (app) => {
     app.use('/api/auth', authRoutes);
@@ -12,6 +13,7 @@ const setupRoutes = (app) => {
     app.use('/api/swipes', swipeRoutes);
     app.use('/api/conversations', matchRoutes);
     app.use('/api/admin', adminRoutes);
+    app.use('/api/appointments', appointmentRoutes);
 };
 
 export default setupRoutes;

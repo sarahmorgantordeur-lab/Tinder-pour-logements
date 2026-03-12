@@ -16,7 +16,7 @@ const conversationInclude = {
             lastname: true,
             email: true,
             phone: true,
-            avatar: true,
+
             tenant_profile: true
         }
     },
@@ -27,7 +27,7 @@ const conversationInclude = {
             lastname: true,
             email: true,
             phone: true,
-            avatar: true,
+
             agency: true
         }
     }
@@ -90,7 +90,7 @@ class ConversationService {
         return prisma.conversation.findMany({
             where: { owner_id: ownerId },
             include: listInclude(ownerId),
-            orderBy: { created_at: 'desc' }
+            orderBy: [{ property_id: 'asc' }, { created_at: 'desc' }]
         });
     }
 
@@ -136,7 +136,7 @@ class ConversationService {
                 sender_id: senderId
             },
             include: {
-                sender: { select: { id: true, firstname: true, lastname: true, avatar: true } }
+                sender: { select: { id: true, firstname: true, lastname: true } }
             }
         });
     }
@@ -165,7 +165,7 @@ class ConversationService {
         return prisma.message.findMany({
             where: { conversation_id: conversationId, deleted_at: null },
             include: {
-                sender: { select: { id: true, firstname: true, lastname: true, avatar: true } }
+                sender: { select: { id: true, firstname: true, lastname: true } }
             },
             orderBy: { created_at: 'asc' },
             take: limit,

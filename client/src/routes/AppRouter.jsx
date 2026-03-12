@@ -1,9 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "../pages/LandingPage";
 import Home from "../layouts/Home";
-import EditAnnouncement from "../pages/EditAnnouncement";
+import CreateAnnouncementPage from "../pages/CreateAnnouncementPage";
+import EditAnnouncement from "../pages/editAnnouncement";
+import UserPublicProfilePage from "../pages/UserPublicProfilePage";
 import DiscussionPage from "../pages/DiscussionPage";
 import ProfilePage from "../pages/ProfilePage";
+import AgendaPage from "../pages/AgendaPage";
 import { useAuth } from "../hooks/useAuth";
 
 function PublicRoute({ children }) {
@@ -29,6 +32,11 @@ function AppRouter() {
           <Home />
         </PrivateRoute>
       } />
+      <Route path="/properties/new" element={
+        <PrivateRoute>
+          <CreateAnnouncementPage />
+        </PrivateRoute>
+      } />
       <Route path="/properties/:id/edit" element={
         <PrivateRoute>
           <EditAnnouncement />
@@ -42,6 +50,16 @@ function AppRouter() {
       <Route path="/profile" element={
         <PrivateRoute>
           <ProfilePage />
+        </PrivateRoute>
+      } />
+      <Route path="/users/:id" element={
+        <PrivateRoute>
+          <UserPublicProfilePage />
+        </PrivateRoute>
+      } />
+      <Route path="/agenda" element={
+        <PrivateRoute>
+          <AgendaPage />
         </PrivateRoute>
       } />
     </Routes>

@@ -5,17 +5,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const storage = multer.diskStorage({
+const makeStorage = (folder) => multer.diskStorage({
     destination: (req, file, cb) => {
-        let uploadPath = path.join(__dirname, '../../uploads');
-
-        if (file.fieldname === 'avatar') {
-            uploadPath = path.join(uploadPath, 'avatars');
-        } else if (file.fieldname === 'pictures') {
-            uploadPath = path.join(uploadPath, 'properties');
-        }
-
-        cb(null, uploadPath);
+        cb(null, path.join(__dirname, `../../uploads/${folder}`));
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
@@ -33,6 +25,15 @@ const imageFilter = (req, file, cb) => {
     }
 };
 
+const documentFilter = (_req, file, cb) => {
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Type de fichier non autorisé. Utilisez PDF, JPG ou PNG.'), false);
+    }
+};
+
 const handleUpload = (uploadFn) => {
     return (req, res, next) => {
         uploadFn(req, res, (err) => {
@@ -47,10 +48,14 @@ const handleUpload = (uploadFn) => {
     };
 };
 
-export const uploadAvatarMiddleware = handleUpload(
-    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).single('avatar')
+export const uploadPicturesMiddleware = handleUpload(
+    multer({ storage: makeStorage('properties'), fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }).array('pictures', 10)
 );
 
-export const uploadPicturesMiddleware = handleUpload(
-    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }).array('pictures', 10)
+export const uploadProfilePhotosMiddleware = handleUpload(
+    multer({ storage: makeStorage('profile_photos'), fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).array('photos', 5)
+);
+
+export const uploadDocumentMiddleware = handleUpload(
+    multer({ storage: makeStorage('documents'), fileFilter: documentFilter, limits: { fileSize: 10 * 1024 * 1024 } }).single('document')
 );

@@ -10,7 +10,7 @@ const router = express.Router();
 // Routes publiques
 router.get('/', PropertyController.getAll);
 
-// Routes protégées — propriétaires et agences (AVANT /:id)
+// Routes protégées — propriétaires et agences
 router.get('/owner/my-properties', authenticate, isOwnerOrAgency, PropertyController.getMyProperties);
 
 // Route par ID
@@ -19,6 +19,7 @@ router.get('/:id', uuidParamValidation('id'), PropertyController.getById);
 // CRUD protégé
 router.post('/', authenticate, isOwnerOrAgency, PropertyController.create);
 router.put('/:id', authenticate, isOwnerOrAgency, uuidParamValidation('id'), PropertyController.update);
+router.patch('/:id/status', authenticate, isOwnerOrAgency, uuidParamValidation('id'), PropertyController.changeStatus);
 router.delete('/:id', authenticate, isOwnerOrAgency, uuidParamValidation('id'), PropertyController.delete);
 
 // Photos

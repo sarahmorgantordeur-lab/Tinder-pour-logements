@@ -12,7 +12,6 @@ class UserController {
                     lastname: true,
                     role: true,
                     phone: true,
-                    avatar: true,
                     bio: true,
                     is_active: true,
                     address: true,
@@ -33,14 +32,13 @@ class UserController {
 
     static async updateProfile(req, res) {
         try {
-            const { firstname, lastname, phone, bio, avatar } = req.body;
+            const { firstname, lastname, phone, bio } = req.body;
 
             const prismaData = {};
             if (firstname !== undefined) prismaData.firstname = firstname;
             if (lastname !== undefined) prismaData.lastname = lastname;
             if (phone !== undefined) prismaData.phone = phone;
             if (bio !== undefined) prismaData.bio = bio;
-            if (avatar !== undefined) prismaData.avatar = avatar;
 
             const user = await prisma.user.update({
                 where: { id: req.user.id },
@@ -52,7 +50,6 @@ class UserController {
                     lastname: true,
                     role: true,
                     phone: true,
-                    avatar: true,
                     bio: true,
                     created_at: true,
                     updated_at: true
@@ -67,20 +64,108 @@ class UserController {
         }
     }
 
-    static async uploadAvatar(req, res) {
+    // Photos de profil
+    static async getProfilePhotos(req, res) {
+        try {
+            const photos = await prisma.profilePhoto.findMany({
+                where: { user_id: req.user.id },
+                orderBy: { uploaded_at: 'desc' }
+            });
+            res.status(200).json({ photos });
+        } catch (error) {
+            console.error('[getProfilePhotos]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async uploadProfilePhotos(req, res) {
+        try {
+            if (!req.files || req.files.length === 0) {
+                return res.status(400).json({ message: "No files uploaded" });
+            }
+
+            const photos = await Promise.all(
+                req.files.map(file =>
+                    prisma.profilePhoto.create({
+                        data: {
+                            url: `/uploads/profile_photos/${file.filename}`,
+                            user_id: req.user.id
+                        }
+                    })
+                )
+            );
+
+            res.status(201).json({ message: "Photos uploaded successfully", photos });
+        } catch (error) {
+            console.error('[uploadProfilePhotos]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async removeProfilePhoto(req, res) {
+        try {
+            const photo = await prisma.profilePhoto.findUnique({
+                where: { id: req.params.photoId }
+            });
+
+            if (!photo) return res.status(404).json({ message: "Photo not found" });
+            if (photo.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+
+            await prisma.profilePhoto.delete({ where: { id: req.params.photoId } });
+            res.status(200).json({ message: "Photo deleted successfully" });
+        } catch (error) {
+            console.error('[removeProfilePhoto]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    // Documents
+    static async getDocuments(req, res) {
+        try {
+            const documents = await prisma.document.findMany({
+                where: { user_id: req.user.id },
+                orderBy: { uploaded_at: 'desc' }
+            });
+            res.status(200).json({ documents });
+        } catch (error) {
+            console.error('[getDocuments]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async uploadDocument(req, res) {
         try {
             if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
-            const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-            const user = await prisma.user.update({
-                where: { id: req.user.id },
-                data: { avatar: avatarUrl },
-                select: { id: true, email: true, firstname: true, lastname: true, avatar: true }
+            const { label } = req.body;
+            const document = await prisma.document.create({
+                data: {
+                    url: `/uploads/documents/${req.file.filename}`,
+                    label: label || null,
+                    user_id: req.user.id
+                }
             });
 
-            res.status(200).json({ message: "Avatar uploaded successfully", user });
+            res.status(201).json({ message: "Document uploaded successfully", document });
         } catch (error) {
-            console.error('[uploadAvatar]', error);
+            console.error('[uploadDocument]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    static async removeDocument(req, res) {
+        try {
+            const document = await prisma.document.findUnique({
+                where: { id: req.params.docId }
+            });
+
+            if (!document) return res.status(404).json({ message: "Document not found" });
+            if (document.user_id !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+
+            await prisma.document.delete({ where: { id: req.params.docId } });
+            res.status(200).json({ message: "Document deleted successfully" });
+        } catch (error) {
+            console.error('[removeDocument]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
@@ -108,6 +193,51 @@ class UserController {
             res.status(200).json({ message: "Tenant profile updated successfully", profile });
         } catch (error) {
             console.error('[updateTenantProfile]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    // Profil public d'un utilisateur
+    static async getPublicProfile(req, res) {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: req.params.id },
+                select: {
+                    id: true,
+                    firstname: true,
+                    lastname: true,
+                    bio: true,
+                    role: true,
+                    profile_photos: { select: { id: true, url: true } },
+                    tenant_profile: {
+                        select: {
+                            household_size: true,
+                            budget_max: true,
+                            min_surface: true,
+                            max_surface: true,
+                            regions: true,
+                            property_types: true,
+                        }
+                    },
+                }
+            });
+            if (!user) return res.status(404).json({ message: "User not found" });
+            res.status(200).json({ user });
+        } catch (error) {
+            console.error('[getPublicProfile]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    // Liste des agences (public)
+    static async getAgencies(_req, res) {
+        try {
+            const agencies = await prisma.agency.findMany({
+                select: { id: true, nom_agence: true }
+            });
+            res.status(200).json({ agencies });
+        } catch (error) {
+            console.error('[getAgencies]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }
