@@ -95,7 +95,7 @@ class SwipeService {
                         id: true,
                         firstname: true,
                         lastname: true,
-                        avatar: true,
+
                         agency: true
                     }
                 },
@@ -145,7 +145,7 @@ class SwipeService {
                 property: {
                     include: {
                         address: true,
-                        owner: { select: { id: true, firstname: true, lastname: true, avatar: true } },
+                        owner: { select: { id: true, firstname: true, lastname: true } },
                         photos: { orderBy: { order: 'asc' } }
                     }
                 }
@@ -171,7 +171,7 @@ class SwipeService {
                         lastname: true,
                         email: true,
                         phone: true,
-                        avatar: true,
+
                         tenant_profile: true
                     }
                 },
@@ -202,7 +202,7 @@ class SwipeService {
                         lastname: true,
                         email: true,
                         phone: true,
-                        avatar: true,
+
                         tenant_profile: true
                     }
                 }

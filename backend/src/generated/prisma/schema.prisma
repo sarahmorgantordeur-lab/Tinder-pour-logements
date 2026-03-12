@@ -21,7 +21,6 @@ model User {
   firstname String
   lastname  String
   phone     String?
-  avatar    String?
   bio       String?
   role      Role    @default(user)
   is_active Boolean @default(true)
