@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AppartementOwnerCard from "../../components/cards/AppartementOwnerCard";
 import Headers from "../../layouts/components/Headers";
 import Footer from "../../layouts/components/Footer";
@@ -9,7 +9,6 @@ import { useHome } from "../../hooks/useHome";
 export default function OwnerHome() {
     const { loading, error } = useHome();
     const { appartmentById, fetchMyProperties } = useHome();
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchMyProperties();
@@ -39,23 +38,24 @@ export default function OwnerHome() {
                     Créez votre première !
                 </p>
 
-                <Button
-                    className="agency-home-create-button"
-                    onClick={() => navigate("/properties/new")}
-                >
-                    Créer une annonce
-                </Button>
+                <Link to="/properties/new">
+                    <Button className="agency-home-create-button">
+                        Créer une annonce
+                    </Button>
+                </Link>
                 </div>
             )}
 
             {!loading && !error && count > 0 && (
                 <div className="agency-home-header">
-                    <Button onClick={() => navigate("/properties/new")}>
-                        Créer une annonce
-                    </Button>
-                
-                <div className="agency-home-grid">
-                    {appartmentById.map((apartment) => {
+                    <Link to="/properties/new">
+                        <Button>
+                            Créer une annonce
+                        </Button>
+                    </Link>
+
+                    <div className="agency-home-grid">
+                        {appartmentById.map((apartment) => {
                         const formattedApartment = {
                             ...apartment,
                             city: apartment.address?.city,

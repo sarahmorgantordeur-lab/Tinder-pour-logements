@@ -1,5 +1,6 @@
 import landingImg from '../../assets/images/LandingPictureBackground.jpg';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export default function AppartementCard ({ appartement }) {
     const imageSrc = appartement.image || landingImg;
@@ -26,7 +27,9 @@ export default function AppartementCard ({ appartement }) {
             </div>
             <div className="appartement-card-footer">
                 <button className="appartement-card-button">Messages</button>
-                <button className="appartement-card-button">Modifier</button>
+                <Link to={`/properties/${appartement.id}/edit`}>
+                    <button className="appartement-card-button">Modifier</button>
+                </Link>
             </div>
         </motion.div>
     )
