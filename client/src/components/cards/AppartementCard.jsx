@@ -5,7 +5,7 @@ export default function AppartementCard ({ appartement }) {
     const imageSrc = appartement.image || landingImg;
 
     return (
-        <div className="appartement-card">
+        <motion.div className="appartement-card">
             <div className="appartement-card-header">
             <img className="appartement-card-image" src={imageSrc} alt={appartement.title} />
             <h3>{appartement.title}</h3>
@@ -14,6 +14,6 @@ export default function AppartementCard ({ appartement }) {
                 <p className="appartement-city">{appartement.postal_code}, {appartement.city}</p>
                 <p className="appartement-price">{appartement.price} €</p>
             </div>
-        </div>
+        </motion.div>
     )
 }

@@ -90,7 +90,7 @@ class ConversationService {
         return prisma.conversation.findMany({
             where: { owner_id: ownerId },
             include: listInclude(ownerId),
-            orderBy: { created_at: 'desc' }
+            orderBy: [{ property_id: 'asc' }, { created_at: 'desc' }]
         });
     }
 

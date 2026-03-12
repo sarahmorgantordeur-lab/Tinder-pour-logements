@@ -35,6 +35,8 @@ model User {
   messages                Message[]
   profile_photos          ProfilePhoto[]
   documents               Document[]
+  appointments_as_owner   Appointment[]     @relation("OwnerAppointments")
+  appointments_as_tenant  Appointment[]     @relation("TenantAppointments")
   address                 Address           @relation(fields: [address_id], references: [id], onDelete: Cascade)
   address_id              String
 
@@ -114,6 +116,7 @@ model Property {
   photos         AnnouncementPhoto[]
   swipes         Swipe[]
   conversations  Conversation[]
+  appointments   Appointment[]
 
   created_at     DateTime       @default(now())
   updated_at     DateTime       @updatedAt
@@ -257,6 +260,31 @@ model Message {
 
   @@index([conversation_id])
   @@index([deleted_at])
+}
+
+// ─────────────────────────────────────────────
+// RENDEZ-VOUS
+// ─────────────────────────────────────────────
+
+model Appointment {
+  id          String   @id @default(uuid())
+  title       String
+  date        DateTime
+  notes       String?
+
+  owner       User     @relation(fields: [owner_id], references: [id], onDelete: Cascade, name: "OwnerAppointments")
+  owner_id    String
+
+  tenant      User     @relation(fields: [tenant_id], references: [id], onDelete: Cascade, name: "TenantAppointments")
+  tenant_id   String
+
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  created_at  DateTime @default(now())
+
+  @@index([owner_id])
+  @@index([date])
 }
 
 // ─────────────────────────────────────────────
