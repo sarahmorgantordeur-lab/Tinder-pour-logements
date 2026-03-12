@@ -1,5 +1,22 @@
 import prisma from '../config/db.js';
 
+const SLOT_DURATION_MS = 60 * 60 * 1000; // 1 heure par visite
+
+async function hasConflict(ownerId, date, excludeId = null) {
+    const from = new Date(date.getTime() - SLOT_DURATION_MS);
+    const to   = new Date(date.getTime() + SLOT_DURATION_MS);
+
+    const conflict = await prisma.appointment.findFirst({
+        where: {
+            owner_id: ownerId,
+            id:       excludeId ? { not: excludeId } : undefined,
+            date:     { gte: from, lt: to },
+        },
+        select: { id: true, date: true, title: true },
+    });
+    return conflict;
+}
+
 const appointmentSelect = {
     id: true,
     title: true,
@@ -39,6 +56,13 @@ class AppointmentController {
             if (!property) return res.status(404).json({ message: 'Bien introuvable.' });
             if (property.owner_id !== req.user.id) return res.status(403).json({ message: 'Non autorisé.' });
 
+            const apptDate = new Date(date);
+            const conflict = await hasConflict(req.user.id, apptDate);
+            if (conflict) {
+                const conflictTime = new Date(conflict.date).toLocaleString('fr-BE', { dateStyle: 'medium', timeStyle: 'short' });
+                return res.status(409).json({ message: `Créneau indisponible : vous avez déjà "${conflict.title}" à ${conflictTime}.` });
+            }
+
             const appointment = await prisma.appointment.create({
                 data: {
                     title,
@@ -65,6 +89,16 @@ class AppointmentController {
             if (existing.owner_id !== req.user.id) return res.status(403).json({ message: 'Non autorisé.' });
 
             const { title, date, notes } = req.body;
+
+            if (date) {
+                const apptDate = new Date(date);
+                const conflict = await hasConflict(existing.owner_id, apptDate, req.params.id);
+                if (conflict) {
+                    const conflictTime = new Date(conflict.date).toLocaleString('fr-BE', { dateStyle: 'medium', timeStyle: 'short' });
+                    return res.status(409).json({ message: `Créneau indisponible : vous avez déjà "${conflict.title}" à ${conflictTime}.` });
+                }
+            }
+
             const appointment = await prisma.appointment.update({
                 where: { id: req.params.id },
                 data: {
