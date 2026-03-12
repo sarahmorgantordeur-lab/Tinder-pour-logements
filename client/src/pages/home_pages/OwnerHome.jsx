@@ -53,6 +53,11 @@ export default function OwnerHome() {
                             Créer une annonce
                         </Button>
                     </Link>
+                    <Link to="/agenda">
+                        <Button>
+                            Mon agenda
+                        </Button>
+                    </Link>
 
                     <div className="agency-home-grid">
                         {appartmentById.map((apartment) => {
