@@ -2,13 +2,16 @@ import Button from "../../components/ui/Button";
 import  NavLink  from "../../components/navigation/NavLink";
 import { useAuth } from "../../hooks/useAuth";
 import FMRIcon from "../../assets/icons/FMR.svg?react";
+import { Link } from "react-router-dom";
 
 export default function Headers() {
     const { user, logout } = useAuth();
     return (
         <header className="app-header">
             <div className="logo">
-                <FMRIcon />
+                <Link to="/home">
+                    <FMRIcon />
+                </Link>
             </div>
             <div className="header-right">
             <nav className="navigation">
