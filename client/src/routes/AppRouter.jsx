@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "../pages/LandingPage";
 import Home from "../layouts/Home";
 import CreateAnnouncementPage from "../pages/CreateAnnouncementPage";
+import UserPublicProfilePage from "../pages/UserPublicProfilePage";
 import DiscussionPage from "../pages/DiscussionPage";
 import ProfilePage from "../pages/ProfilePage";
 import { useAuth } from "../hooks/useAuth";
@@ -47,6 +48,11 @@ function AppRouter() {
       <Route path="/profile" element={
         <PrivateRoute>
           <ProfilePage />
+        </PrivateRoute>
+      } />
+      <Route path="/users/:id" element={
+        <PrivateRoute>
+          <UserPublicProfilePage />
         </PrivateRoute>
       } />
     </Routes>

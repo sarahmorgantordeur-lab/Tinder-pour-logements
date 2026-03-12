@@ -197,6 +197,38 @@ class UserController {
         }
     }
 
+    // Profil public d'un utilisateur
+    static async getPublicProfile(req, res) {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: req.params.id },
+                select: {
+                    id: true,
+                    firstname: true,
+                    lastname: true,
+                    bio: true,
+                    role: true,
+                    profile_photos: { select: { id: true, url: true } },
+                    tenant_profile: {
+                        select: {
+                            household_size: true,
+                            budget_max: true,
+                            min_surface: true,
+                            max_surface: true,
+                            regions: true,
+                            property_types: true,
+                        }
+                    },
+                }
+            });
+            if (!user) return res.status(404).json({ message: "User not found" });
+            res.status(200).json({ user });
+        } catch (error) {
+            console.error('[getPublicProfile]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
     // Liste des agences (public)
     static async getAgencies(_req, res) {
         try {

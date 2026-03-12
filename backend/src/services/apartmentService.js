@@ -102,7 +102,18 @@ class PropertyService {
     static async getByOwner(ownerId) {
         return prisma.property.findMany({
             where: { owner_id: ownerId },
-            include: { address: true, photos: true },
+            include: {
+                address: true,
+                photos: true,
+                swipes: {
+                    where: { direction: true },
+                    include: {
+                        user: {
+                            select: { id: true, firstname: true, lastname: true, bio: true }
+                        }
+                    }
+                }
+            },
             orderBy: { created_at: 'desc' }
         });
     }

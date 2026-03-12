@@ -25,6 +25,20 @@ export default function AppartementCard ({ appartement }) {
                     <option value="archived">Archivé</option>
                 </select>
             </div>
+            {appartement.swipes?.length > 0 && (
+                <div className="appartement-card-interested">
+                    <p className="appartement-interested-title">Intéressés ({appartement.swipes.length})</p>
+                    <ul className="appartement-interested-list">
+                        {appartement.swipes.map(({ user }) => (
+                            <li key={user.id}>
+                                <Link to={`/users/${user.id}`} className="appartement-interested-link">
+                                    {user.firstname} {user.lastname}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
             <div className="appartement-card-footer">
                 <button className="appartement-card-button">Messages</button>
                 <Link to={`/properties/${appartement.id}/edit`}>

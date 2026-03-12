@@ -6,6 +6,7 @@ import { uploadProfilePhotosMiddleware, uploadDocumentMiddleware } from '../midd
 const router = express.Router();
 
 router.get('/agencies', UserController.getAgencies);
+router.get('/:id', authenticate, UserController.getPublicProfile);
 router.get('/profile', authenticate, UserController.getProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
 
