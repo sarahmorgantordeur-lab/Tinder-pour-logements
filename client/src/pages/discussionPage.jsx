@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
@@ -200,15 +201,44 @@ export default function DiscussionPage() {
                     )}
 
                     <div className="discussion-conv-list">
-                        {conversations.map((conv) => (
-                            <ConversationItem
-                                key={conv.id}
-                                conv={conv}
-                                isActive={conv.id === activeId}
-                                currentUserId={user?.id}
-                                onClick={() => handleSelectConv(conv.id)}
-                            />
-                        ))}
+                        {isOwnerOrAgency ? (
+                            Object.entries(
+                                conversations.reduce((groups, conv) => {
+                                    const key = conv.property_id;
+                                    if (!groups[key]) groups[key] = { property: conv.property, convs: [] };
+                                    groups[key].convs.push(conv);
+                                    return groups;
+                                }, {})
+                            ).map(([propertyId, { property, convs }]) => (
+                                <div key={propertyId} className="discussion-property-group">
+                                    <p className="discussion-property-group-title">
+                                        {property?.title ?? propertyId}
+                                        <span className="discussion-property-group-city">
+                                            {property?.address?.city ? ` · ${property.address.city}` : ""}
+                                        </span>
+                                    </p>
+                                    {convs.map((conv) => (
+                                        <ConversationItem
+                                            key={conv.id}
+                                            conv={conv}
+                                            isActive={conv.id === activeId}
+                                            currentUserId={user?.id}
+                                            onClick={() => handleSelectConv(conv.id)}
+                                        />
+                                    ))}
+                                </div>
+                            ))
+                        ) : (
+                            conversations.map((conv) => (
+                                <ConversationItem
+                                    key={conv.id}
+                                    conv={conv}
+                                    isActive={conv.id === activeId}
+                                    currentUserId={user?.id}
+                                    onClick={() => handleSelectConv(conv.id)}
+                                />
+                            ))
+                        )}
                     </div>
                 </aside>
 
@@ -226,6 +256,14 @@ export default function DiscussionPage() {
                                 <p className="discussion-thread-city">
                                     {activeConv?.property?.address?.city}
                                 </p>
+                                {isOwnerOrAgency && activeConv?.tenant?.id && (
+                                    <Link
+                                        to={`/users/${activeConv.tenant.id}`}
+                                        className="discussion-view-profile-btn"
+                                    >
+                                        Voir le profil de {activeConv.tenant.firstname} {activeConv.tenant.lastname}
+                                    </Link>
+                                )}
                             </header>
 
                             <div className="discussion-messages">
