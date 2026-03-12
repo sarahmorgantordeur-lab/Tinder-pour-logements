@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import Button from "../ui/Button";
+import TextInput from "../ui/TextInput";
 
 const buildForm = (agency) => ({
     nom_agence:  agency?.nom_agence  || "",
@@ -68,12 +70,13 @@ export default function CreateAgency({ onClose } = {}) {
             {error   && <p className="create-agency-error">{error}</p>}
             {success && <p className="create-agency-success">Profil agence mis à jour.</p>}
 
+            <div className="create-agency-sections">
             <fieldset className="create-agency-section">
                 <legend className="create-agency-section-title">Informations agence</legend>
 
                 <label className="create-agency-field">
                     Nom de l&apos;agence *
-                    <input
+                    <TextInput
                         type="text"
                         name="nom_agence"
                         value={formData.nom_agence}
@@ -84,7 +87,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Numéro BCE
-                    <input
+                    <TextInput
                         type="text"
                         name="numero_bce"
                         value={formData.numero_bce}
@@ -94,7 +97,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Site web
-                    <input
+                    <TextInput
                         type="url"
                         name="site_web"
                         value={formData.site_web}
@@ -109,7 +112,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Numéro
-                    <input
+                    <TextInput
                         type="text"
                         name="address.number"
                         value={formData.address.number}
@@ -119,7 +122,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Boîte
-                    <input
+                    <TextInput
                         type="text"
                         name="address.box"
                         value={formData.address.box}
@@ -129,7 +132,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Rue *
-                    <input
+                    <TextInput
                         type="text"
                         name="address.street"
                         value={formData.address.street}
@@ -140,7 +143,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Ville *
-                    <input
+                    <TextInput
                         type="text"
                         name="address.city"
                         value={formData.address.city}
@@ -151,7 +154,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Code postal *
-                    <input
+                    <TextInput
                         type="text"
                         name="address.postal_code"
                         value={formData.address.postal_code}
@@ -162,7 +165,7 @@ export default function CreateAgency({ onClose } = {}) {
 
                 <label className="create-agency-field">
                     Pays
-                    <input
+                    <TextInput
                         type="text"
                         name="address.country"
                         value={formData.address.country}
@@ -170,16 +173,17 @@ export default function CreateAgency({ onClose } = {}) {
                     />
                 </label>
             </fieldset>
+            </div>
 
             <div className="create-agency-actions">
                 {onClose && (
-                    <button type="button" className="create-agency-cancel" onClick={onClose}>
+                    <Button type="button" className="create-agency-cancel" onClick={onClose}>
                         Annuler
-                    </button>
+                    </Button>
                 )}
-                <button type="submit" className="create-agency-submit" disabled={saving}>
+                <Button type="submit" className="create-agency-submit" disabled={saving}>
                     {saving ? "Enregistrement..." : "Enregistrer"}
-                </button>
+                </Button>
             </div>
         </form>
     );

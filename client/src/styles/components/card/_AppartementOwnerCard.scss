@@ -57,6 +57,18 @@ $card-padding-x-mobile: 0.75rem;
                 padding: 8px $card-padding-x-mobile 4px $card-padding-x-mobile;
             }
 
+            .appartement-owner-status {
+                font-size: 14px;
+                width: 30%;
+                color: $text-muted;
+                font-weight: 600;
+                margin-bottom: 4px;
+
+                @media (max-width: 480px) {
+                    font-size: 12px;
+                }
+            }
+
             h3 {
                 flex: 1;
                 text-align: start;
@@ -71,41 +83,7 @@ $card-padding-x-mobile: 0.75rem;
                     font-size: 20px;
                 }
             }
-
-            .appartement-owner-status {
-                flex-shrink: 0;
-                font-size: 20px;
-                color: $main-text-color;
-                background-color: $button-bg;
-                border-radius: 8px;
-                border-color: $border-color-muted;
-                margin-left: 12px;
-                padding: 4px 12px;
-                height: fit-content;
-                box-shadow: 4px 4px 8px $border-color-muted;
-                cursor: pointer;
-                appearance: none;
-                -webkit-appearance: none;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FFF0EB' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-                background-repeat: no-repeat;
-                background-position: right 12px center;
-                padding-right: 30px;
-                transition: all 0.3s;
-
-                &:hover {
-                    background-color: rgba($color: $button-bg, $alpha: 0.9);
-                }
-
-                @media (max-width: 768px) {
-                    font-size: 16px;
-                }
-
-                @media (max-width: 480px) {
-                    font-size: 14px;
-                    margin-left: 0;
-                    width: 100%;
-                }
-            }
+            
         }
     }
 

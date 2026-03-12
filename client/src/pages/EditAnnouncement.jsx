@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
 import Footer from "../layouts/components/Footer";
+import Select from "../components/ui/Select";
+import Button from "../components/ui/Button";
+import TextInput from "../components/ui/TextInput";
 
 const PROPERTY_TYPES = [
     "Bungalow", "Chalet", "Castel", "Farm", "CountryHouse",
@@ -114,7 +117,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Titre
-                            <input
+                            <TextInput
                                 type="text"
                                 name="title"
                                 value={formData.title}
@@ -135,20 +138,20 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Type de bien
-                            <select name="property_type" value={formData.property_type} onChange={handleChange}>
+                            <Select name="property_type" value={formData.property_type} onChange={handleChange}>
                                 {PROPERTY_TYPES.map((type) => (
                                     <option key={type} value={type}>{type}</option>
                                 ))}
-                            </select>
+                            </Select>
                         </label>
 
                         <label className="edit-announcement-field">
                             Statut
-                            <select name="status" value={formData.status} onChange={handleChange}>
+                            <Select name="status" value={formData.status} onChange={handleChange}>
                                 {STATUSES.map((s) => (
                                     <option key={s} value={s}>{s}</option>
                                 ))}
-                            </select>
+                            </Select>
                         </label>
                     </fieldset>
 
@@ -157,7 +160,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Loyer (€/mois)
-                            <input
+                            <TextInput
                                 type="number"
                                 name="price"
                                 value={formData.price}
@@ -169,7 +172,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Surface (m²)
-                            <input
+                            <TextInput
                                 type="number"
                                 name="surface"
                                 value={formData.surface}
@@ -181,7 +184,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Nombre de pièces
-                            <input
+                            <TextInput
                                 type="number"
                                 name="rooms"
                                 value={formData.rooms}
@@ -207,7 +210,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Numéro
-                            <input
+                            <TextInput
                                 type="text"
                                 name="address.number"
                                 value={formData.address.number}
@@ -218,7 +221,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Boîte
-                            <input
+                            <TextInput
                                 type="text"
                                 name="address.box"
                                 value={formData.address.box}
@@ -228,7 +231,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Rue
-                            <input
+                            <TextInput
                                 type="text"
                                 name="address.street"
                                 value={formData.address.street}
@@ -239,7 +242,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Ville
-                            <input
+                            <TextInput
                                 type="text"
                                 name="address.city"
                                 value={formData.address.city}
@@ -250,7 +253,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Code postal
-                            <input
+                            <TextInput
                                 type="text"
                                 name="address.postal_code"
                                 value={formData.address.postal_code}
@@ -261,7 +264,7 @@ export default function EditAnnouncement() {
 
                         <label className="edit-announcement-field">
                             Pays
-                            <input
+                            <TextInput
                                 type="text"
                                 name="address.country"
                                 value={formData.address.country}
@@ -272,12 +275,12 @@ export default function EditAnnouncement() {
                     </fieldset>
 
                     <div className="edit-announcement-actions">
-                        <button type="button" className="edit-announcement-cancel" onClick={() => navigate(-1)}>
+                        <Button type="button" className="edit-announcement-cancel" onClick={() => navigate(-1)}>
                             Annuler
-                        </button>
-                        <button type="submit" className="edit-announcement-submit" disabled={saving}>
+                        </Button>
+                        <Button type="submit" className="edit-announcement-submit" disabled={saving}>
                             {saving ? "Enregistrement..." : "Enregistrer"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </main>

@@ -46,7 +46,7 @@ export default function Login() {
                     </div>
 
                     <div className="">
-                        <input
+                        <TextInput
                             id="password"
                             type="password"
                             required

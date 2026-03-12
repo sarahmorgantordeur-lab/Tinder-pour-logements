@@ -1,9 +1,15 @@
 import landingImg from '../../assets/images/LandingPictureBackground.jpg';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import Select from '../ui/Select';
+import Button from '../ui/Button';
+import { useHome } from '../../hooks/useHome';
 
-export default function AppartementCard({ appartement }) {
+export default function AppartementOwnerCard({ appartement }) {
   const imageSrc = appartement.image || landingImg;
+
+const {updateStatus} = useHome();
+
 
     return (
         <motion.div className="appartement-owner-card">
@@ -11,16 +17,17 @@ export default function AppartementCard({ appartement }) {
                 <img className="appartement-owner-card-image" src={imageSrc} alt={appartement.title} />
                 <div className="appartement-owner-card-header-content">
                     <h3>{appartement.title}</h3>
-                    <select
+                    <Select
                         className="appartement-owner-status"
                         value={appartement.status}
-                        onChange={(e) => console.log(e.target.value)}
-                    >
-                        <option value="draft">Brouillon</option>
-                        <option value="published">Publié</option>
-                        <option value="rented">Loué</option>
-                        <option value="archived">Archivé</option>
-                    </select>
+                        onChange={(e) => updateStatus(appartement.id, e.target.value)}
+                        options={[
+                            { value: "draft", label: "Brouillon" },
+                            { value: "published", label: "Publié" },
+                            { value: "rented", label: "Loué" },
+                            { value: "archived", label: "Archivé" },
+                        ]}
+                    />
                 </div>
             </div>
             <div className="appartement-owner-card-body">
@@ -29,10 +36,10 @@ export default function AppartementCard({ appartement }) {
             </div>
             <div className="appartement-owner-card-footer">
                 <Link className='crud-link' to={`/discussions?property=${appartement.id}`}>
-                    <button className="appartement-owner-card-button">Messages</button>
+                    <Button className="appartement-owner-card-button">Messages</Button>
                 </Link>
                 <Link className='crud-link' to={`/properties/${appartement.id}/edit`}>
-                    <button className="appartement-owner-card-button">Modifier</button>
+                    <Button className="appartement-owner-card-button">Modifier</Button>
                 </Link>
             </div>
             {appartement.swipes?.length > 0 && (

@@ -3,8 +3,10 @@ import TenantIcon from '../../assets/icons/Tenant.svg?react';
 import LandlordIcon from '../../assets/icons/Landlord.svg?react';
 import AgencyIcon from '../../assets/icons/Agency.svg?react';
 import { AnimatePresence, motion } from 'framer-motion';
+import Select from '../ui/Select';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
+import Modal from '../ui/Modal';
 import { useAuth } from '../../hooks/useAuth';
 import CreateAgency from '../create/CreateAgency';
 import api from '../../api';
@@ -117,7 +119,7 @@ export default function Register({ onLogin }) {
                         </div>
                     </div>
                     <div className="name-container-rest">
-                        <input
+                        <TextInput
                             id="name"
                             type="text"
                             required
@@ -126,7 +128,7 @@ export default function Register({ onLogin }) {
                             onChange={(e) => setName(e.target.value)}
                             placeholder="First Name"
                         />
-                        <input
+                        <TextInput
                             id="surname"
                             type="text"
                             required
@@ -146,43 +148,41 @@ export default function Register({ onLogin }) {
                                 style={{ overflow: 'hidden' }}
                             >
                                 <div className="name-container-agency">
-                                    <select
+                                    <Select
                                         id="agencyName"
                                         required
                                         value={agencyName}
                                         aria-label='Agency Name'
                                         onChange={(e) => setAgencyName(e.target.value)}
                                     >
-                                        <option value="">-- Select an agency --</option>
+                                        <option value="">Select an agency</option>
                                         {agencies.map((a) => (
                                             <option key={a.id} value={a.nom_agence}>{a.nom_agence}</option>
                                         ))}
-                                    </select>
-                                    <button
+                                    </Select>
+                                    <Button
                                         type="button"
                                         className="agency-announcement-modal-btn"
                                         onClick={() => setAgencyModalOpen(true)}
                                         title="Créer une agence"
                                     >
                                         +
-                                    </button>
+                                    </Button>
                                 </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
 
                     {agencyModalOpen && (
-                        <div className="announcement-modal-overlay" onClick={() => setAgencyModalOpen(false)}>
-                            <div className="announcement-modal-content" onClick={(e) => e.stopPropagation()}>
-                                <CreateAgency onClose={() => {
-                                    setAgencyModalOpen(false);
-                                    api.get('/users/agencies').then(({ data }) => setAgencies(data.agencies || [])).catch(() => {});
-                                }} />
-                            </div>
-                        </div>
+                        <Modal onClose={() => setAgencyModalOpen(false)} className="modal-content--fit">
+                            <CreateAgency onClose={() => {
+                                setAgencyModalOpen(false);
+                                api.get('/users/agencies').then(({ data }) => setAgencies(data.agencies || [])).catch(() => {});
+                            }} />
+                        </Modal>
                     )}
                     <div className="">
-                        <input
+                        <TextInput
                             id="phone"
                             type="tel"
                             required
@@ -194,7 +194,7 @@ export default function Register({ onLogin }) {
                     </div>
 
                     <div className="">
-                        <input
+                        <TextInput
                             id="email"
                             type="email"
                             required
@@ -206,7 +206,7 @@ export default function Register({ onLogin }) {
                     </div>
 
                     <div className="">
-                        <input
+                        <TextInput
                             id="password"
                             type="password"
                             required
