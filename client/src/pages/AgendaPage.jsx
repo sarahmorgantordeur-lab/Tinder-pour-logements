@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
 import Footer from "../layouts/components/Footer";
@@ -13,7 +12,6 @@ function formatDate(iso) {
 }
 
 export default function AgendaPage() {
-    const { user } = useAuth();
 
     const [appointments, setAppointments] = useState([]);
     const [properties, setProperties]     = useState([]);
@@ -29,24 +27,29 @@ export default function AgendaPage() {
 
     // Charger rdv + biens + tenants (via conversations)
     useEffect(() => {
-        Promise.all([
+        Promise.allSettled([
             api.get("/appointments"),
-            api.get("/properties/my"),
-            api.get("/conversations"),
+            api.get("/properties/owner/my-properties"),
+            api.get("/conversations/owner"),
         ])
             .then(([apptRes, propRes, convRes]) => {
-                setAppointments(apptRes.data.appointments || []);
-                setProperties(propRes.data.properties || propRes.data.apartments || []);
-
-                // Extraire les tenants uniques depuis les conversations
-                const convs = convRes.data.conversations || [];
-                const seen = new Map();
-                convs.forEach((c) => {
-                    if (c.tenant && !seen.has(c.tenant.id)) seen.set(c.tenant.id, c.tenant);
-                });
-                setTenants(Array.from(seen.values()));
+                if (apptRes.status === "fulfilled") {
+                    setAppointments(apptRes.value.data.appointments || []);
+                }
+                if (propRes.status === "fulfilled") {
+                    setProperties(propRes.value.data.properties || propRes.value.data.apartments || []);
+                } else {
+                    setError("Impossible de charger les biens.");
+                }
+                if (convRes.status === "fulfilled") {
+                    const convs = convRes.value.data.conversations || [];
+                    const seen = new Map();
+                    convs.forEach((c) => {
+                        if (c.tenant && !seen.has(c.tenant.id)) seen.set(c.tenant.id, c.tenant);
+                    });
+                    setTenants(Array.from(seen.values()));
+                }
             })
-            .catch(() => setError("Impossible de charger les données."))
             .finally(() => setLoading(false));
     }, []);
 
