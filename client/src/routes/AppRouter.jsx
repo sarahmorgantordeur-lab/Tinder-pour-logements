@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "../pages/LandingPage";
 import Home from "../layouts/Home";
 import CreateAnnouncementPage from "../pages/CreateAnnouncementPage";
+import EditAnnouncement from "../pages/editAnnouncement";
 import UserPublicProfilePage from "../pages/UserPublicProfilePage";
 import DiscussionPage from "../pages/DiscussionPage";
 import ProfilePage from "../pages/ProfilePage";
@@ -37,7 +38,7 @@ function AppRouter() {
       } />
       <Route path="/properties/:id/edit" element={
         <PrivateRoute>
-          <CreateAnnouncementPage />
+          <EditAnnouncement />
         </PrivateRoute>
       } />
       <Route path="/discussions" element={
