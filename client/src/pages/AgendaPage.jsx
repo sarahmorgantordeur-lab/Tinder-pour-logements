@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
 import Footer from "../layouts/components/Footer";
+import Select from "../components/ui/Select";
+import Button from "../components/ui/Button";
+import TextInput from "../components/ui/TextInput";
+import Modal from "../components/ui/Modal";
 
 const EMPTY_FORM = { title: "", date: "", notes: "", tenant_id: "", property_id: "" };
 
@@ -124,9 +128,9 @@ export default function AgendaPage() {
                         <p className="agenda-kicker">Gestion</p>
                         <h1 className="agenda-title">Mon agenda</h1>
                     </div>
-                    <button className="agenda-create-btn" onClick={openCreate}>
+                    <Button className="agenda-create-btn" onClick={openCreate}>
                         + Nouveau rendez-vous
-                    </button>
+                    </Button>
                 </header>
 
                 {loading && <p className="agenda-loading">Chargement...</p>}
@@ -134,8 +138,7 @@ export default function AgendaPage() {
 
                 {/* Formulaire */}
                 {showForm && (
-                    <div className="agenda-modal-overlay" onClick={() => setShowForm(false)}>
-                        <div className="agenda-modal" onClick={(e) => e.stopPropagation()}>
+                    <Modal onClose={() => setShowForm(false)}>
                             <h2 className="agenda-modal-title">
                                 {editId ? "Modifier le rendez-vous" : "Nouveau rendez-vous"}
                             </h2>
@@ -145,7 +148,7 @@ export default function AgendaPage() {
                             <form className="agenda-form" onSubmit={handleSubmit}>
                                 <label className="agenda-field">
                                     Titre
-                                    <input
+                                    <TextInput
                                         type="text"
                                         required
                                         value={form.title}
@@ -155,7 +158,7 @@ export default function AgendaPage() {
 
                                 <label className="agenda-field">
                                     Date & heure
-                                    <input
+                                    <TextInput
                                         type="datetime-local"
                                         required
                                         value={form.date}
@@ -167,7 +170,7 @@ export default function AgendaPage() {
                                     <>
                                         <label className="agenda-field">
                                             Bien immobilier
-                                            <select
+                                            <Select
                                                 required
                                                 value={form.property_id}
                                                 onChange={(e) => setForm((p) => ({ ...p, property_id: e.target.value }))}
@@ -178,12 +181,12 @@ export default function AgendaPage() {
                                                         {p.title} {p.address?.city ? `(${p.address.city})` : ""}
                                                     </option>
                                                 ))}
-                                            </select>
+                                            </Select>
                                         </label>
 
                                         <label className="agenda-field">
                                             Locataire
-                                            <select
+                                            <Select
                                                 required
                                                 value={form.tenant_id}
                                                 onChange={(e) => setForm((p) => ({ ...p, tenant_id: e.target.value }))}
@@ -194,7 +197,7 @@ export default function AgendaPage() {
                                                         {t.firstname} {t.lastname}
                                                     </option>
                                                 ))}
-                                            </select>
+                                            </Select>
                                         </label>
                                     </>
                                 )}
@@ -209,20 +212,19 @@ export default function AgendaPage() {
                                 </label>
 
                                 <div className="agenda-form-actions">
-                                    <button
+                                    <Button
                                         type="button"
                                         className="agenda-cancel-btn"
                                         onClick={() => setShowForm(false)}
                                     >
                                         Annuler
-                                    </button>
-                                    <button type="submit" className="agenda-submit-btn" disabled={saving}>
+                                    </Button>
+                                    <Button type="submit" className="agenda-submit-btn" disabled={saving}>
                                         {saving ? "Enregistrement..." : editId ? "Enregistrer" : "Créer"}
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
+                    </Modal>
                 )}
 
                 {/* Liste groupée par bien */}
@@ -253,18 +255,18 @@ export default function AgendaPage() {
                                         )}
                                     </div>
                                     <div className="agenda-item-actions">
-                                        <button
+                                        <Button
                                             className="agenda-edit-btn"
                                             onClick={() => openEdit(appt)}
                                         >
                                             Modifier
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
                                             className="agenda-delete-btn"
                                             onClick={() => handleDelete(appt.id)}
                                         >
                                             Supprimer
-                                        </button>
+                                        </Button>
                                     </div>
                                 </li>
                             ))}

@@ -18,10 +18,14 @@
 @use "./components/card/AppartementCard";
 @use "./components/card/AppartementOwnerCard";
 
+@use "./components/create/CreateAgency";
+
 @use "./components/navigation/NavLink";
 
 @use "./components/ui/Button";
 @use "./components/ui/TextInput";
+@use "./components/ui/Select";
+@use "./components/ui/Modal";
 
 @use "./layouts/components/Headers";
 @use "./layouts/components/Footer";
