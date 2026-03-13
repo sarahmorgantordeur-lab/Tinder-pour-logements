@@ -210,6 +210,28 @@
     gap: 0.2rem;
 }
 
+.discussion-view-profile-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    background-color: transparent;
+    color: $button-bg;
+    border: 1px solid $button-bg;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    width: fit-content;
+    transition: background-color 0.2s, color 0.2s;
+
+    &:hover {
+        background-color: $button-bg;
+        color: $main-bg;
+    }
+}
+
 .discussion-thread-property {
     font-size: 1rem;
     font-weight: 600;
