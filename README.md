@@ -258,4 +258,4 @@ Compétences démontrées :
 
 # 👨‍💻 Auteur
 
-Projet réalisé par **Amélien Sampaix**Sarah Tordeur**Charles-Edouard Robin.**
+Projet réalisé par **Amélien Sampaix*  ** *Sarah Tordeur* ** ** *Charles-Edouard Robin.****
