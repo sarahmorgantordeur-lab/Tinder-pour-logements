@@ -256,6 +256,6 @@ Compétences démontrées :
 
 ------------------------------------------------------------------------
 
-# 👨‍💻 Auteur
+# 👨‍💻 Auteurs
 
 Projet réalisé par **Amélien Sampaix*  ** *Sarah Tordeur* ** ** *Charles-Edouard Robin.****
