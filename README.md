@@ -233,7 +233,6 @@ Exemple :
 
 # 📈 Améliorations possibles
 
--   messagerie temps réel complète
 -   système de recommandation de logements
 -   notifications
 -   géolocalisation
