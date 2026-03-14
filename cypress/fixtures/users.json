@@ -1,0 +1,35 @@
+{
+  "owner": {
+    "email": "thomas.dupont@immobe.be",
+    "password": "Password123!",
+    "firstname": "Thomas",
+    "lastname": "Dupont",
+    "role": "owner"
+  },
+  "agency": {
+    "email": "contact@remax-brussels.be",
+    "password": "Password123!",
+    "firstname": "RE/MAX",
+    "lastname": "Brussels",
+    "role": "agency"
+  },
+  "tenant": {
+    "email": "alice.martin@gmail.com",
+    "password": "Password123!",
+    "firstname": "Alice",
+    "lastname": "Martin",
+    "role": "user"
+  },
+  "validUser": {
+    "name": "Sarah",
+    "surname": "Tordeur",
+    "phone": "0612345678",
+    "email": "test@example.com",
+    "password": "motdepasse123",
+    "confirmPassword": "motdepasse123"
+  },
+  "invalidUser": {
+    "email": "mauvais@example.com",
+    "password": "mauvaismdp"
+  }
+}
