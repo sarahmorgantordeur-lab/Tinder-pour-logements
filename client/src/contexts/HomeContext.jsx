@@ -67,7 +67,8 @@ export const HomeProvider = ({ children }) => {
             const response = await api.get("/properties/owner/my-properties");
             setAppartmentById(Array.isArray(response.data.properties) ? response.data.properties : []);
             return response.data;
-        } catch {
+        } catch (err) {
+            console.error('[fetchMyProperties]', err);
             setError("Impossible de charger vos logements");
             return null;
         } finally {
