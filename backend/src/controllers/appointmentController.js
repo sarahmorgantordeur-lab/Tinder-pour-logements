@@ -140,12 +140,14 @@ class AppointmentController {
         }
     }
 
-    // DELETE /appointments/:id
+    // DELETE /appointments/:id — owner/agency ou tenant concerné
     static async remove(req, res) {
         try {
             const existing = await prisma.appointment.findUnique({ where: { id: req.params.id } });
             if (!existing) return res.status(404).json({ message: 'Rendez-vous introuvable.' });
-            if (existing.owner_id !== req.user.id) return res.status(403).json({ message: 'Non autorisé.' });
+            const isOwner  = existing.owner_id  === req.user.id;
+            const isTenant = existing.tenant_id === req.user.id;
+            if (!isOwner && !isTenant) return res.status(403).json({ message: 'Non autorisé.' });
 
             await prisma.appointment.delete({ where: { id: req.params.id } });
             res.status(200).json({ message: 'Rendez-vous supprimé.' });

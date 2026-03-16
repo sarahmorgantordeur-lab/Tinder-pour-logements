@@ -330,6 +330,49 @@ async function main() {
     }
 
     console.log(`\n🎉 Done! ${created} properties created.`);
+
+    // --- Rendez-vous pour Alice (locataire) ---
+    // Récupérer les biens d'owner1 et de l'agence pour les lier
+    const [prop1, prop2, prop3] = await Promise.all([
+        prisma.property.findFirst({ where: { owner_id: owner1.id,    title: { contains: 'Ixelles'    } } }),
+        prisma.property.findFirst({ where: { owner_id: owner1.id,    title: { contains: 'Schaerbeek' } } }),
+        prisma.property.findFirst({ where: { owner_id: agencyUser.id, title: { contains: 'Bruges'     } } }),
+    ]);
+
+    await prisma.appointment.deleteMany({ where: { tenant_id: tenant.id } });
+
+    const now = new Date();
+    const appts = [
+        prop1 && {
+            title:       'Visite — Appartement lumineux Ixelles',
+            date:        new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000), // +3 jours
+            notes:       'Rendez-vous à 14h devant l\'immeuble. Prévoir une pièce d\'identité.',
+            owner_id:    owner1.id,
+            tenant_id:   tenant.id,
+            property_id: prop1.id,
+        },
+        prop2 && {
+            title:       'Visite — Duplex Schaerbeek',
+            date:        new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // +7 jours
+            notes:       'Code interphone : 1234.',
+            owner_id:    owner1.id,
+            tenant_id:   tenant.id,
+            property_id: prop2.id,
+        },
+        prop3 && {
+            title:       'Visite — Maison de ville Bruges',
+            date:        new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000), // +14 jours
+            owner_id:    agencyUser.id,
+            tenant_id:   tenant.id,
+            property_id: prop3.id,
+        },
+    ].filter(Boolean);
+
+    for (const appt of appts) {
+        await prisma.appointment.create({ data: appt });
+        console.log(`  📅 Rdv seedé : ${appt.title}`);
+    }
+    console.log(`\n🎉 Done! ${appts.length} rendez-vous créés pour Alice.`);
 }
 
 main()

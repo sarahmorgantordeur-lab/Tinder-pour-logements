@@ -64,6 +64,11 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 /**
+ * Model Appointment
+ * 
+ */
+export type Appointment = $Result.DefaultSelection<Prisma.$AppointmentPayload>
+/**
  * Model Address
  * 
  */
@@ -349,6 +354,16 @@ export class PrismaClient<
     * ```
     */
   get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.appointment`: Exposes CRUD operations for the **Appointment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Appointments
+    * const appointments = await prisma.appointment.findMany()
+    * ```
+    */
+  get appointment(): Prisma.AppointmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.address`: Exposes CRUD operations for the **Address** model.
@@ -803,6 +818,7 @@ export namespace Prisma {
     Swipe: 'Swipe',
     Conversation: 'Conversation',
     Message: 'Message',
+    Appointment: 'Appointment',
     Address: 'Address'
   };
 
@@ -819,7 +835,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "agency" | "tenantProfile" | "property" | "announcementPhoto" | "profilePhoto" | "document" | "swipe" | "conversation" | "message" | "address"
+      modelProps: "user" | "agency" | "tenantProfile" | "property" | "announcementPhoto" | "profilePhoto" | "document" | "swipe" | "conversation" | "message" | "appointment" | "address"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1563,6 +1579,80 @@ export namespace Prisma {
           }
         }
       }
+      Appointment: {
+        payload: Prisma.$AppointmentPayload<ExtArgs>
+        fields: Prisma.AppointmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AppointmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AppointmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          findFirst: {
+            args: Prisma.AppointmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AppointmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          findMany: {
+            args: Prisma.AppointmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>[]
+          }
+          create: {
+            args: Prisma.AppointmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          createMany: {
+            args: Prisma.AppointmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AppointmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>[]
+          }
+          delete: {
+            args: Prisma.AppointmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          update: {
+            args: Prisma.AppointmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.AppointmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AppointmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AppointmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.AppointmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          aggregate: {
+            args: Prisma.AppointmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAppointment>
+          }
+          groupBy: {
+            args: Prisma.AppointmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AppointmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AppointmentCountArgs<ExtArgs>
+            result: $Utils.Optional<AppointmentCountAggregateOutputType> | number
+          }
+        }
+      }
       Address: {
         payload: Prisma.$AddressPayload<ExtArgs>
         fields: Prisma.AddressFieldRefs
@@ -1755,6 +1845,7 @@ export namespace Prisma {
     swipe?: SwipeOmit
     conversation?: ConversationOmit
     message?: MessageOmit
+    appointment?: AppointmentOmit
     address?: AddressOmit
   }
 
@@ -1843,6 +1934,8 @@ export namespace Prisma {
     messages: number
     profile_photos: number
     documents: number
+    appointments_as_owner: number
+    appointments_as_tenant: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1853,6 +1946,8 @@ export namespace Prisma {
     messages?: boolean | UserCountOutputTypeCountMessagesArgs
     profile_photos?: boolean | UserCountOutputTypeCountProfile_photosArgs
     documents?: boolean | UserCountOutputTypeCountDocumentsArgs
+    appointments_as_owner?: boolean | UserCountOutputTypeCountAppointments_as_ownerArgs
+    appointments_as_tenant?: boolean | UserCountOutputTypeCountAppointments_as_tenantArgs
   }
 
   // Custom InputTypes
@@ -1915,6 +2010,20 @@ export namespace Prisma {
     where?: DocumentWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAppointments_as_ownerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAppointments_as_tenantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput
+  }
+
 
   /**
    * Count Type PropertyCountOutputType
@@ -1924,12 +2033,14 @@ export namespace Prisma {
     photos: number
     swipes: number
     conversations: number
+    appointments: number
   }
 
   export type PropertyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     photos?: boolean | PropertyCountOutputTypeCountPhotosArgs
     swipes?: boolean | PropertyCountOutputTypeCountSwipesArgs
     conversations?: boolean | PropertyCountOutputTypeCountConversationsArgs
+    appointments?: boolean | PropertyCountOutputTypeCountAppointmentsArgs
   }
 
   // Custom InputTypes
@@ -1962,6 +2073,13 @@ export namespace Prisma {
    */
   export type PropertyCountOutputTypeCountConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ConversationWhereInput
+  }
+
+  /**
+   * PropertyCountOutputType without action
+   */
+  export type PropertyCountOutputTypeCountAppointmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput
   }
 
 
@@ -2286,6 +2404,8 @@ export namespace Prisma {
     messages?: boolean | User$messagesArgs<ExtArgs>
     profile_photos?: boolean | User$profile_photosArgs<ExtArgs>
     documents?: boolean | User$documentsArgs<ExtArgs>
+    appointments_as_owner?: boolean | User$appointments_as_ownerArgs<ExtArgs>
+    appointments_as_tenant?: boolean | User$appointments_as_tenantArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2351,6 +2471,8 @@ export namespace Prisma {
     messages?: boolean | User$messagesArgs<ExtArgs>
     profile_photos?: boolean | User$profile_photosArgs<ExtArgs>
     documents?: boolean | User$documentsArgs<ExtArgs>
+    appointments_as_owner?: boolean | User$appointments_as_ownerArgs<ExtArgs>
+    appointments_as_tenant?: boolean | User$appointments_as_tenantArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2373,6 +2495,8 @@ export namespace Prisma {
       messages: Prisma.$MessagePayload<ExtArgs>[]
       profile_photos: Prisma.$ProfilePhotoPayload<ExtArgs>[]
       documents: Prisma.$DocumentPayload<ExtArgs>[]
+      appointments_as_owner: Prisma.$AppointmentPayload<ExtArgs>[]
+      appointments_as_tenant: Prisma.$AppointmentPayload<ExtArgs>[]
       address: Prisma.$AddressPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -2792,6 +2916,8 @@ export namespace Prisma {
     messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     profile_photos<T extends User$profile_photosArgs<ExtArgs> = {}>(args?: Subset<T, User$profile_photosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfilePhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     documents<T extends User$documentsArgs<ExtArgs> = {}>(args?: Subset<T, User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    appointments_as_owner<T extends User$appointments_as_ownerArgs<ExtArgs> = {}>(args?: Subset<T, User$appointments_as_ownerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    appointments_as_tenant<T extends User$appointments_as_tenantArgs<ExtArgs> = {}>(args?: Subset<T, User$appointments_as_tenantArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     address<T extends AddressDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AddressDefaultArgs<ExtArgs>>): Prisma__AddressClient<$Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3434,6 +3560,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
+   * User.appointments_as_owner
+   */
+  export type User$appointments_as_ownerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[]
+    cursor?: AppointmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
+  }
+
+  /**
+   * User.appointments_as_tenant
+   */
+  export type User$appointments_as_tenantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[]
+    cursor?: AppointmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
   }
 
   /**
@@ -6004,6 +6178,7 @@ export namespace Prisma {
     photos?: boolean | Property$photosArgs<ExtArgs>
     swipes?: boolean | Property$swipesArgs<ExtArgs>
     conversations?: boolean | Property$conversationsArgs<ExtArgs>
+    appointments?: boolean | Property$appointmentsArgs<ExtArgs>
     _count?: boolean | PropertyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["property"]>
 
@@ -6069,6 +6244,7 @@ export namespace Prisma {
     photos?: boolean | Property$photosArgs<ExtArgs>
     swipes?: boolean | Property$swipesArgs<ExtArgs>
     conversations?: boolean | Property$conversationsArgs<ExtArgs>
+    appointments?: boolean | Property$appointmentsArgs<ExtArgs>
     _count?: boolean | PropertyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PropertyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6088,6 +6264,7 @@ export namespace Prisma {
       photos: Prisma.$AnnouncementPhotoPayload<ExtArgs>[]
       swipes: Prisma.$SwipePayload<ExtArgs>[]
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
+      appointments: Prisma.$AppointmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6503,6 +6680,7 @@ export namespace Prisma {
     photos<T extends Property$photosArgs<ExtArgs> = {}>(args?: Subset<T, Property$photosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     swipes<T extends Property$swipesArgs<ExtArgs> = {}>(args?: Subset<T, Property$swipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SwipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversations<T extends Property$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Property$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    appointments<T extends Property$appointmentsArgs<ExtArgs> = {}>(args?: Subset<T, Property$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7011,6 +7189,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ConversationScalarFieldEnum | ConversationScalarFieldEnum[]
+  }
+
+  /**
+   * Property.appointments
+   */
+  export type Property$appointmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[]
+    cursor?: AppointmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
   }
 
   /**
@@ -13534,6 +13736,1119 @@ export namespace Prisma {
 
 
   /**
+   * Model Appointment
+   */
+
+  export type AggregateAppointment = {
+    _count: AppointmentCountAggregateOutputType | null
+    _min: AppointmentMinAggregateOutputType | null
+    _max: AppointmentMaxAggregateOutputType | null
+  }
+
+  export type AppointmentMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    date: Date | null
+    notes: string | null
+    owner_id: string | null
+    tenant_id: string | null
+    property_id: string | null
+    created_at: Date | null
+  }
+
+  export type AppointmentMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    date: Date | null
+    notes: string | null
+    owner_id: string | null
+    tenant_id: string | null
+    property_id: string | null
+    created_at: Date | null
+  }
+
+  export type AppointmentCountAggregateOutputType = {
+    id: number
+    title: number
+    date: number
+    notes: number
+    owner_id: number
+    tenant_id: number
+    property_id: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type AppointmentMinAggregateInputType = {
+    id?: true
+    title?: true
+    date?: true
+    notes?: true
+    owner_id?: true
+    tenant_id?: true
+    property_id?: true
+    created_at?: true
+  }
+
+  export type AppointmentMaxAggregateInputType = {
+    id?: true
+    title?: true
+    date?: true
+    notes?: true
+    owner_id?: true
+    tenant_id?: true
+    property_id?: true
+    created_at?: true
+  }
+
+  export type AppointmentCountAggregateInputType = {
+    id?: true
+    title?: true
+    date?: true
+    notes?: true
+    owner_id?: true
+    tenant_id?: true
+    property_id?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type AppointmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Appointment to aggregate.
+     */
+    where?: AppointmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AppointmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Appointments
+    **/
+    _count?: true | AppointmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AppointmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AppointmentMaxAggregateInputType
+  }
+
+  export type GetAppointmentAggregateType<T extends AppointmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateAppointment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAppointment[P]>
+      : GetScalarType<T[P], AggregateAppointment[P]>
+  }
+
+
+
+
+  export type AppointmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput
+    orderBy?: AppointmentOrderByWithAggregationInput | AppointmentOrderByWithAggregationInput[]
+    by: AppointmentScalarFieldEnum[] | AppointmentScalarFieldEnum
+    having?: AppointmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AppointmentCountAggregateInputType | true
+    _min?: AppointmentMinAggregateInputType
+    _max?: AppointmentMaxAggregateInputType
+  }
+
+  export type AppointmentGroupByOutputType = {
+    id: string
+    title: string
+    date: Date
+    notes: string | null
+    owner_id: string
+    tenant_id: string
+    property_id: string
+    created_at: Date
+    _count: AppointmentCountAggregateOutputType | null
+    _min: AppointmentMinAggregateOutputType | null
+    _max: AppointmentMaxAggregateOutputType | null
+  }
+
+  type GetAppointmentGroupByPayload<T extends AppointmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AppointmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AppointmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AppointmentGroupByOutputType[P]>
+            : GetScalarType<T[P], AppointmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AppointmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    date?: boolean
+    notes?: boolean
+    owner_id?: boolean
+    tenant_id?: boolean
+    property_id?: boolean
+    created_at?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    tenant?: boolean | UserDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["appointment"]>
+
+  export type AppointmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    date?: boolean
+    notes?: boolean
+    owner_id?: boolean
+    tenant_id?: boolean
+    property_id?: boolean
+    created_at?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    tenant?: boolean | UserDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["appointment"]>
+
+  export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    date?: boolean
+    notes?: boolean
+    owner_id?: boolean
+    tenant_id?: boolean
+    property_id?: boolean
+    created_at?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    tenant?: boolean | UserDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["appointment"]>
+
+  export type AppointmentSelectScalar = {
+    id?: boolean
+    title?: boolean
+    date?: boolean
+    notes?: boolean
+    owner_id?: boolean
+    tenant_id?: boolean
+    property_id?: boolean
+    created_at?: boolean
+  }
+
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "date" | "notes" | "owner_id" | "tenant_id" | "property_id" | "created_at", ExtArgs["result"]["appointment"]>
+  export type AppointmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    tenant?: boolean | UserDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }
+  export type AppointmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    tenant?: boolean | UserDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }
+  export type AppointmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    tenant?: boolean | UserDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }
+
+  export type $AppointmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Appointment"
+    objects: {
+      owner: Prisma.$UserPayload<ExtArgs>
+      tenant: Prisma.$UserPayload<ExtArgs>
+      property: Prisma.$PropertyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      date: Date
+      notes: string | null
+      owner_id: string
+      tenant_id: string
+      property_id: string
+      created_at: Date
+    }, ExtArgs["result"]["appointment"]>
+    composites: {}
+  }
+
+  type AppointmentGetPayload<S extends boolean | null | undefined | AppointmentDefaultArgs> = $Result.GetResult<Prisma.$AppointmentPayload, S>
+
+  type AppointmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AppointmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AppointmentCountAggregateInputType | true
+    }
+
+  export interface AppointmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Appointment'], meta: { name: 'Appointment' } }
+    /**
+     * Find zero or one Appointment that matches the filter.
+     * @param {AppointmentFindUniqueArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AppointmentFindUniqueArgs>(args: SelectSubset<T, AppointmentFindUniqueArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Appointment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AppointmentFindUniqueOrThrowArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AppointmentFindUniqueOrThrowArgs>(args: SelectSubset<T, AppointmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Appointment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentFindFirstArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AppointmentFindFirstArgs>(args?: SelectSubset<T, AppointmentFindFirstArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Appointment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentFindFirstOrThrowArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AppointmentFindFirstOrThrowArgs>(args?: SelectSubset<T, AppointmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Appointments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Appointments
+     * const appointments = await prisma.appointment.findMany()
+     * 
+     * // Get first 10 Appointments
+     * const appointments = await prisma.appointment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const appointmentWithIdOnly = await prisma.appointment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AppointmentFindManyArgs>(args?: SelectSubset<T, AppointmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Appointment.
+     * @param {AppointmentCreateArgs} args - Arguments to create a Appointment.
+     * @example
+     * // Create one Appointment
+     * const Appointment = await prisma.appointment.create({
+     *   data: {
+     *     // ... data to create a Appointment
+     *   }
+     * })
+     * 
+     */
+    create<T extends AppointmentCreateArgs>(args: SelectSubset<T, AppointmentCreateArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Appointments.
+     * @param {AppointmentCreateManyArgs} args - Arguments to create many Appointments.
+     * @example
+     * // Create many Appointments
+     * const appointment = await prisma.appointment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AppointmentCreateManyArgs>(args?: SelectSubset<T, AppointmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Appointments and returns the data saved in the database.
+     * @param {AppointmentCreateManyAndReturnArgs} args - Arguments to create many Appointments.
+     * @example
+     * // Create many Appointments
+     * const appointment = await prisma.appointment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Appointments and only return the `id`
+     * const appointmentWithIdOnly = await prisma.appointment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AppointmentCreateManyAndReturnArgs>(args?: SelectSubset<T, AppointmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Appointment.
+     * @param {AppointmentDeleteArgs} args - Arguments to delete one Appointment.
+     * @example
+     * // Delete one Appointment
+     * const Appointment = await prisma.appointment.delete({
+     *   where: {
+     *     // ... filter to delete one Appointment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AppointmentDeleteArgs>(args: SelectSubset<T, AppointmentDeleteArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Appointment.
+     * @param {AppointmentUpdateArgs} args - Arguments to update one Appointment.
+     * @example
+     * // Update one Appointment
+     * const appointment = await prisma.appointment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AppointmentUpdateArgs>(args: SelectSubset<T, AppointmentUpdateArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Appointments.
+     * @param {AppointmentDeleteManyArgs} args - Arguments to filter Appointments to delete.
+     * @example
+     * // Delete a few Appointments
+     * const { count } = await prisma.appointment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AppointmentDeleteManyArgs>(args?: SelectSubset<T, AppointmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Appointments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Appointments
+     * const appointment = await prisma.appointment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AppointmentUpdateManyArgs>(args: SelectSubset<T, AppointmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Appointments and returns the data updated in the database.
+     * @param {AppointmentUpdateManyAndReturnArgs} args - Arguments to update many Appointments.
+     * @example
+     * // Update many Appointments
+     * const appointment = await prisma.appointment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Appointments and only return the `id`
+     * const appointmentWithIdOnly = await prisma.appointment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AppointmentUpdateManyAndReturnArgs>(args: SelectSubset<T, AppointmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Appointment.
+     * @param {AppointmentUpsertArgs} args - Arguments to update or create a Appointment.
+     * @example
+     * // Update or create a Appointment
+     * const appointment = await prisma.appointment.upsert({
+     *   create: {
+     *     // ... data to create a Appointment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Appointment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AppointmentUpsertArgs>(args: SelectSubset<T, AppointmentUpsertArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Appointments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentCountArgs} args - Arguments to filter Appointments to count.
+     * @example
+     * // Count the number of Appointments
+     * const count = await prisma.appointment.count({
+     *   where: {
+     *     // ... the filter for the Appointments we want to count
+     *   }
+     * })
+    **/
+    count<T extends AppointmentCountArgs>(
+      args?: Subset<T, AppointmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AppointmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Appointment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AppointmentAggregateArgs>(args: Subset<T, AppointmentAggregateArgs>): Prisma.PrismaPromise<GetAppointmentAggregateType<T>>
+
+    /**
+     * Group by Appointment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AppointmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AppointmentGroupByArgs['orderBy'] }
+        : { orderBy?: AppointmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AppointmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAppointmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Appointment model
+   */
+  readonly fields: AppointmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Appointment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AppointmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tenant<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    property<T extends PropertyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PropertyDefaultArgs<ExtArgs>>): Prisma__PropertyClient<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Appointment model
+   */
+  interface AppointmentFieldRefs {
+    readonly id: FieldRef<"Appointment", 'String'>
+    readonly title: FieldRef<"Appointment", 'String'>
+    readonly date: FieldRef<"Appointment", 'DateTime'>
+    readonly notes: FieldRef<"Appointment", 'String'>
+    readonly owner_id: FieldRef<"Appointment", 'String'>
+    readonly tenant_id: FieldRef<"Appointment", 'String'>
+    readonly property_id: FieldRef<"Appointment", 'String'>
+    readonly created_at: FieldRef<"Appointment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Appointment findUnique
+   */
+  export type AppointmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment findUniqueOrThrow
+   */
+  export type AppointmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment findFirst
+   */
+  export type AppointmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where?: AppointmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Appointments.
+     */
+    cursor?: AppointmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Appointments.
+     */
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
+  }
+
+  /**
+   * Appointment findFirstOrThrow
+   */
+  export type AppointmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where?: AppointmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Appointments.
+     */
+    cursor?: AppointmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Appointments.
+     */
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
+  }
+
+  /**
+   * Appointment findMany
+   */
+  export type AppointmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointments to fetch.
+     */
+    where?: AppointmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Appointments.
+     */
+    cursor?: AppointmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
+  }
+
+  /**
+   * Appointment create
+   */
+  export type AppointmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Appointment.
+     */
+    data: XOR<AppointmentCreateInput, AppointmentUncheckedCreateInput>
+  }
+
+  /**
+   * Appointment createMany
+   */
+  export type AppointmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Appointments.
+     */
+    data: AppointmentCreateManyInput | AppointmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Appointment createManyAndReturn
+   */
+  export type AppointmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many Appointments.
+     */
+    data: AppointmentCreateManyInput | AppointmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Appointment update
+   */
+  export type AppointmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Appointment.
+     */
+    data: XOR<AppointmentUpdateInput, AppointmentUncheckedUpdateInput>
+    /**
+     * Choose, which Appointment to update.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment updateMany
+   */
+  export type AppointmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Appointments.
+     */
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyInput>
+    /**
+     * Filter which Appointments to update
+     */
+    where?: AppointmentWhereInput
+    /**
+     * Limit how many Appointments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Appointment updateManyAndReturn
+   */
+  export type AppointmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * The data used to update Appointments.
+     */
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyInput>
+    /**
+     * Filter which Appointments to update
+     */
+    where?: AppointmentWhereInput
+    /**
+     * Limit how many Appointments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Appointment upsert
+   */
+  export type AppointmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Appointment to update in case it exists.
+     */
+    where: AppointmentWhereUniqueInput
+    /**
+     * In case the Appointment found by the `where` argument doesn't exist, create a new Appointment with this data.
+     */
+    create: XOR<AppointmentCreateInput, AppointmentUncheckedCreateInput>
+    /**
+     * In case the Appointment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AppointmentUpdateInput, AppointmentUncheckedUpdateInput>
+  }
+
+  /**
+   * Appointment delete
+   */
+  export type AppointmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter which Appointment to delete.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment deleteMany
+   */
+  export type AppointmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Appointments to delete
+     */
+    where?: AppointmentWhereInput
+    /**
+     * Limit how many Appointments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Appointment without action
+   */
+  export type AppointmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Address
    */
 
@@ -14849,6 +16164,20 @@ export namespace Prisma {
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
+  export const AppointmentScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    date: 'date',
+    notes: 'notes',
+    owner_id: 'owner_id',
+    tenant_id: 'tenant_id',
+    property_id: 'property_id',
+    created_at: 'created_at'
+  };
+
+  export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
+
+
   export const AddressScalarFieldEnum: {
     id: 'id',
     number: 'number',
@@ -15026,6 +16355,8 @@ export namespace Prisma {
     messages?: MessageListRelationFilter
     profile_photos?: ProfilePhotoListRelationFilter
     documents?: DocumentListRelationFilter
+    appointments_as_owner?: AppointmentListRelationFilter
+    appointments_as_tenant?: AppointmentListRelationFilter
     address?: XOR<AddressScalarRelationFilter, AddressWhereInput>
   }
 
@@ -15052,6 +16383,8 @@ export namespace Prisma {
     messages?: MessageOrderByRelationAggregateInput
     profile_photos?: ProfilePhotoOrderByRelationAggregateInput
     documents?: DocumentOrderByRelationAggregateInput
+    appointments_as_owner?: AppointmentOrderByRelationAggregateInput
+    appointments_as_tenant?: AppointmentOrderByRelationAggregateInput
     address?: AddressOrderByWithRelationInput
   }
 
@@ -15081,6 +16414,8 @@ export namespace Prisma {
     messages?: MessageListRelationFilter
     profile_photos?: ProfilePhotoListRelationFilter
     documents?: DocumentListRelationFilter
+    appointments_as_owner?: AppointmentListRelationFilter
+    appointments_as_tenant?: AppointmentListRelationFilter
     address?: XOR<AddressScalarRelationFilter, AddressWhereInput>
   }, "id" | "email">
 
@@ -15300,6 +16635,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoListRelationFilter
     swipes?: SwipeListRelationFilter
     conversations?: ConversationListRelationFilter
+    appointments?: AppointmentListRelationFilter
   }
 
   export type PropertyOrderByWithRelationInput = {
@@ -15322,6 +16658,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoOrderByRelationAggregateInput
     swipes?: SwipeOrderByRelationAggregateInput
     conversations?: ConversationOrderByRelationAggregateInput
+    appointments?: AppointmentOrderByRelationAggregateInput
   }
 
   export type PropertyWhereUniqueInput = Prisma.AtLeast<{
@@ -15347,6 +16684,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoListRelationFilter
     swipes?: SwipeListRelationFilter
     conversations?: ConversationListRelationFilter
+    appointments?: AppointmentListRelationFilter
   }, "id">
 
   export type PropertyOrderByWithAggregationInput = {
@@ -15755,6 +17093,82 @@ export namespace Prisma {
     deleted_at?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   }
 
+  export type AppointmentWhereInput = {
+    AND?: AppointmentWhereInput | AppointmentWhereInput[]
+    OR?: AppointmentWhereInput[]
+    NOT?: AppointmentWhereInput | AppointmentWhereInput[]
+    id?: StringFilter<"Appointment"> | string
+    title?: StringFilter<"Appointment"> | string
+    date?: DateTimeFilter<"Appointment"> | Date | string
+    notes?: StringNullableFilter<"Appointment"> | string | null
+    owner_id?: StringFilter<"Appointment"> | string
+    tenant_id?: StringFilter<"Appointment"> | string
+    property_id?: StringFilter<"Appointment"> | string
+    created_at?: DateTimeFilter<"Appointment"> | Date | string
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    tenant?: XOR<UserScalarRelationFilter, UserWhereInput>
+    property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
+  }
+
+  export type AppointmentOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    date?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    owner_id?: SortOrder
+    tenant_id?: SortOrder
+    property_id?: SortOrder
+    created_at?: SortOrder
+    owner?: UserOrderByWithRelationInput
+    tenant?: UserOrderByWithRelationInput
+    property?: PropertyOrderByWithRelationInput
+  }
+
+  export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AppointmentWhereInput | AppointmentWhereInput[]
+    OR?: AppointmentWhereInput[]
+    NOT?: AppointmentWhereInput | AppointmentWhereInput[]
+    title?: StringFilter<"Appointment"> | string
+    date?: DateTimeFilter<"Appointment"> | Date | string
+    notes?: StringNullableFilter<"Appointment"> | string | null
+    owner_id?: StringFilter<"Appointment"> | string
+    tenant_id?: StringFilter<"Appointment"> | string
+    property_id?: StringFilter<"Appointment"> | string
+    created_at?: DateTimeFilter<"Appointment"> | Date | string
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    tenant?: XOR<UserScalarRelationFilter, UserWhereInput>
+    property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
+  }, "id">
+
+  export type AppointmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    date?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    owner_id?: SortOrder
+    tenant_id?: SortOrder
+    property_id?: SortOrder
+    created_at?: SortOrder
+    _count?: AppointmentCountOrderByAggregateInput
+    _max?: AppointmentMaxOrderByAggregateInput
+    _min?: AppointmentMinOrderByAggregateInput
+  }
+
+  export type AppointmentScalarWhereWithAggregatesInput = {
+    AND?: AppointmentScalarWhereWithAggregatesInput | AppointmentScalarWhereWithAggregatesInput[]
+    OR?: AppointmentScalarWhereWithAggregatesInput[]
+    NOT?: AppointmentScalarWhereWithAggregatesInput | AppointmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Appointment"> | string
+    title?: StringWithAggregatesFilter<"Appointment"> | string
+    date?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
+    notes?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
+    owner_id?: StringWithAggregatesFilter<"Appointment"> | string
+    tenant_id?: StringWithAggregatesFilter<"Appointment"> | string
+    property_id?: StringWithAggregatesFilter<"Appointment"> | string
+    created_at?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
+  }
+
   export type AddressWhereInput = {
     AND?: AddressWhereInput | AddressWhereInput[]
     OR?: AddressWhereInput[]
@@ -15853,6 +17267,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -15879,6 +17295,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserUpdateInput = {
@@ -15903,6 +17321,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -15929,6 +17349,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -16161,6 +17583,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoCreateNestedManyWithoutPropertyInput
     swipes?: SwipeCreateNestedManyWithoutPropertyInput
     conversations?: ConversationCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateInput = {
@@ -16181,6 +17604,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUncheckedCreateNestedManyWithoutPropertyInput
     swipes?: SwipeUncheckedCreateNestedManyWithoutPropertyInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUpdateInput = {
@@ -16201,6 +17625,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateInput = {
@@ -16221,6 +17646,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUncheckedUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUncheckedUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyCreateManyInput = {
@@ -16619,6 +18045,80 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type AppointmentCreateInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    created_at?: Date | string
+    owner: UserCreateNestedOneWithoutAppointments_as_ownerInput
+    tenant: UserCreateNestedOneWithoutAppointments_as_tenantInput
+    property: PropertyCreateNestedOneWithoutAppointmentsInput
+  }
+
+  export type AppointmentUncheckedCreateInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    owner_id: string
+    tenant_id: string
+    property_id: string
+    created_at?: Date | string
+  }
+
+  export type AppointmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutAppointments_as_ownerNestedInput
+    tenant?: UserUpdateOneRequiredWithoutAppointments_as_tenantNestedInput
+    property?: PropertyUpdateOneRequiredWithoutAppointmentsNestedInput
+  }
+
+  export type AppointmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    owner_id?: StringFieldUpdateOperationsInput | string
+    tenant_id?: StringFieldUpdateOperationsInput | string
+    property_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppointmentCreateManyInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    owner_id: string
+    tenant_id: string
+    property_id: string
+    created_at?: Date | string
+  }
+
+  export type AppointmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppointmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    owner_id?: StringFieldUpdateOperationsInput | string
+    tenant_id?: StringFieldUpdateOperationsInput | string
+    property_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AddressCreateInput = {
     id?: string
     number: string
@@ -16818,6 +18318,12 @@ export namespace Prisma {
     none?: DocumentWhereInput
   }
 
+  export type AppointmentListRelationFilter = {
+    every?: AppointmentWhereInput
+    some?: AppointmentWhereInput
+    none?: AppointmentWhereInput
+  }
+
   export type AddressScalarRelationFilter = {
     is?: AddressWhereInput
     isNot?: AddressWhereInput
@@ -16849,6 +18355,10 @@ export namespace Prisma {
   }
 
   export type DocumentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AppointmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -17456,6 +18966,39 @@ export namespace Prisma {
     deleted_at?: SortOrder
   }
 
+  export type AppointmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    date?: SortOrder
+    notes?: SortOrder
+    owner_id?: SortOrder
+    tenant_id?: SortOrder
+    property_id?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type AppointmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    date?: SortOrder
+    notes?: SortOrder
+    owner_id?: SortOrder
+    tenant_id?: SortOrder
+    property_id?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type AppointmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    date?: SortOrder
+    notes?: SortOrder
+    owner_id?: SortOrder
+    tenant_id?: SortOrder
+    property_id?: SortOrder
+    created_at?: SortOrder
+  }
+
   export type UserListRelationFilter = {
     every?: UserWhereInput
     some?: UserWhereInput
@@ -17570,6 +19113,20 @@ export namespace Prisma {
     connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
   }
 
+  export type AppointmentCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<AppointmentCreateWithoutOwnerInput, AppointmentUncheckedCreateWithoutOwnerInput> | AppointmentCreateWithoutOwnerInput[] | AppointmentUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutOwnerInput | AppointmentCreateOrConnectWithoutOwnerInput[]
+    createMany?: AppointmentCreateManyOwnerInputEnvelope
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+  }
+
+  export type AppointmentCreateNestedManyWithoutTenantInput = {
+    create?: XOR<AppointmentCreateWithoutTenantInput, AppointmentUncheckedCreateWithoutTenantInput> | AppointmentCreateWithoutTenantInput[] | AppointmentUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutTenantInput | AppointmentCreateOrConnectWithoutTenantInput[]
+    createMany?: AppointmentCreateManyTenantInputEnvelope
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+  }
+
   export type AddressCreateNestedOneWithoutUsersInput = {
     create?: XOR<AddressCreateWithoutUsersInput, AddressUncheckedCreateWithoutUsersInput>
     connectOrCreate?: AddressCreateOrConnectWithoutUsersInput
@@ -17635,6 +19192,20 @@ export namespace Prisma {
     connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
     createMany?: DocumentCreateManyUserInputEnvelope
     connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type AppointmentUncheckedCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<AppointmentCreateWithoutOwnerInput, AppointmentUncheckedCreateWithoutOwnerInput> | AppointmentCreateWithoutOwnerInput[] | AppointmentUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutOwnerInput | AppointmentCreateOrConnectWithoutOwnerInput[]
+    createMany?: AppointmentCreateManyOwnerInputEnvelope
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+  }
+
+  export type AppointmentUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<AppointmentCreateWithoutTenantInput, AppointmentUncheckedCreateWithoutTenantInput> | AppointmentCreateWithoutTenantInput[] | AppointmentUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutTenantInput | AppointmentCreateOrConnectWithoutTenantInput[]
+    createMany?: AppointmentCreateManyTenantInputEnvelope
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -17779,6 +19350,34 @@ export namespace Prisma {
     deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
   }
 
+  export type AppointmentUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<AppointmentCreateWithoutOwnerInput, AppointmentUncheckedCreateWithoutOwnerInput> | AppointmentCreateWithoutOwnerInput[] | AppointmentUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutOwnerInput | AppointmentCreateOrConnectWithoutOwnerInput[]
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutOwnerInput | AppointmentUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: AppointmentCreateManyOwnerInputEnvelope
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    update?: AppointmentUpdateWithWhereUniqueWithoutOwnerInput | AppointmentUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: AppointmentUpdateManyWithWhereWithoutOwnerInput | AppointmentUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
+  }
+
+  export type AppointmentUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<AppointmentCreateWithoutTenantInput, AppointmentUncheckedCreateWithoutTenantInput> | AppointmentCreateWithoutTenantInput[] | AppointmentUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutTenantInput | AppointmentCreateOrConnectWithoutTenantInput[]
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutTenantInput | AppointmentUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: AppointmentCreateManyTenantInputEnvelope
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    update?: AppointmentUpdateWithWhereUniqueWithoutTenantInput | AppointmentUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: AppointmentUpdateManyWithWhereWithoutTenantInput | AppointmentUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
+  }
+
   export type AddressUpdateOneRequiredWithoutUsersNestedInput = {
     create?: XOR<AddressCreateWithoutUsersInput, AddressUncheckedCreateWithoutUsersInput>
     connectOrCreate?: AddressCreateOrConnectWithoutUsersInput
@@ -17905,6 +19504,34 @@ export namespace Prisma {
     deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
   }
 
+  export type AppointmentUncheckedUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<AppointmentCreateWithoutOwnerInput, AppointmentUncheckedCreateWithoutOwnerInput> | AppointmentCreateWithoutOwnerInput[] | AppointmentUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutOwnerInput | AppointmentCreateOrConnectWithoutOwnerInput[]
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutOwnerInput | AppointmentUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: AppointmentCreateManyOwnerInputEnvelope
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    update?: AppointmentUpdateWithWhereUniqueWithoutOwnerInput | AppointmentUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: AppointmentUpdateManyWithWhereWithoutOwnerInput | AppointmentUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<AppointmentCreateWithoutTenantInput, AppointmentUncheckedCreateWithoutTenantInput> | AppointmentCreateWithoutTenantInput[] | AppointmentUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutTenantInput | AppointmentCreateOrConnectWithoutTenantInput[]
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutTenantInput | AppointmentUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: AppointmentCreateManyTenantInputEnvelope
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    update?: AppointmentUpdateWithWhereUniqueWithoutTenantInput | AppointmentUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: AppointmentUpdateManyWithWhereWithoutTenantInput | AppointmentUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
+  }
+
   export type AddressCreateNestedOneWithoutAgenciesInput = {
     create?: XOR<AddressCreateWithoutAgenciesInput, AddressUncheckedCreateWithoutAgenciesInput>
     connectOrCreate?: AddressCreateOrConnectWithoutAgenciesInput
@@ -18014,6 +19641,13 @@ export namespace Prisma {
     connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
   }
 
+  export type AppointmentCreateNestedManyWithoutPropertyInput = {
+    create?: XOR<AppointmentCreateWithoutPropertyInput, AppointmentUncheckedCreateWithoutPropertyInput> | AppointmentCreateWithoutPropertyInput[] | AppointmentUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPropertyInput | AppointmentCreateOrConnectWithoutPropertyInput[]
+    createMany?: AppointmentCreateManyPropertyInputEnvelope
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+  }
+
   export type AnnouncementPhotoUncheckedCreateNestedManyWithoutPropertyInput = {
     create?: XOR<AnnouncementPhotoCreateWithoutPropertyInput, AnnouncementPhotoUncheckedCreateWithoutPropertyInput> | AnnouncementPhotoCreateWithoutPropertyInput[] | AnnouncementPhotoUncheckedCreateWithoutPropertyInput[]
     connectOrCreate?: AnnouncementPhotoCreateOrConnectWithoutPropertyInput | AnnouncementPhotoCreateOrConnectWithoutPropertyInput[]
@@ -18033,6 +19667,13 @@ export namespace Prisma {
     connectOrCreate?: ConversationCreateOrConnectWithoutPropertyInput | ConversationCreateOrConnectWithoutPropertyInput[]
     createMany?: ConversationCreateManyPropertyInputEnvelope
     connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type AppointmentUncheckedCreateNestedManyWithoutPropertyInput = {
+    create?: XOR<AppointmentCreateWithoutPropertyInput, AppointmentUncheckedCreateWithoutPropertyInput> | AppointmentCreateWithoutPropertyInput[] | AppointmentUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPropertyInput | AppointmentCreateOrConnectWithoutPropertyInput[]
+    createMany?: AppointmentCreateManyPropertyInputEnvelope
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
   }
 
   export type EnumPropertyTypeFieldUpdateOperationsInput = {
@@ -18109,6 +19750,20 @@ export namespace Prisma {
     deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
   }
 
+  export type AppointmentUpdateManyWithoutPropertyNestedInput = {
+    create?: XOR<AppointmentCreateWithoutPropertyInput, AppointmentUncheckedCreateWithoutPropertyInput> | AppointmentCreateWithoutPropertyInput[] | AppointmentUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPropertyInput | AppointmentCreateOrConnectWithoutPropertyInput[]
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutPropertyInput | AppointmentUpsertWithWhereUniqueWithoutPropertyInput[]
+    createMany?: AppointmentCreateManyPropertyInputEnvelope
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    update?: AppointmentUpdateWithWhereUniqueWithoutPropertyInput | AppointmentUpdateWithWhereUniqueWithoutPropertyInput[]
+    updateMany?: AppointmentUpdateManyWithWhereWithoutPropertyInput | AppointmentUpdateManyWithWhereWithoutPropertyInput[]
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
+  }
+
   export type AnnouncementPhotoUncheckedUpdateManyWithoutPropertyNestedInput = {
     create?: XOR<AnnouncementPhotoCreateWithoutPropertyInput, AnnouncementPhotoUncheckedCreateWithoutPropertyInput> | AnnouncementPhotoCreateWithoutPropertyInput[] | AnnouncementPhotoUncheckedCreateWithoutPropertyInput[]
     connectOrCreate?: AnnouncementPhotoCreateOrConnectWithoutPropertyInput | AnnouncementPhotoCreateOrConnectWithoutPropertyInput[]
@@ -18149,6 +19804,20 @@ export namespace Prisma {
     update?: ConversationUpdateWithWhereUniqueWithoutPropertyInput | ConversationUpdateWithWhereUniqueWithoutPropertyInput[]
     updateMany?: ConversationUpdateManyWithWhereWithoutPropertyInput | ConversationUpdateManyWithWhereWithoutPropertyInput[]
     deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutPropertyNestedInput = {
+    create?: XOR<AppointmentCreateWithoutPropertyInput, AppointmentUncheckedCreateWithoutPropertyInput> | AppointmentCreateWithoutPropertyInput[] | AppointmentUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPropertyInput | AppointmentCreateOrConnectWithoutPropertyInput[]
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutPropertyInput | AppointmentUpsertWithWhereUniqueWithoutPropertyInput[]
+    createMany?: AppointmentCreateManyPropertyInputEnvelope
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+    update?: AppointmentUpdateWithWhereUniqueWithoutPropertyInput | AppointmentUpdateWithWhereUniqueWithoutPropertyInput[]
+    updateMany?: AppointmentUpdateManyWithWhereWithoutPropertyInput | AppointmentUpdateManyWithWhereWithoutPropertyInput[]
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
   }
 
   export type PropertyCreateNestedOneWithoutPhotosInput = {
@@ -18377,6 +20046,48 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutMessagesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesInput, UserUpdateWithoutMessagesInput>, UserUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserCreateNestedOneWithoutAppointments_as_ownerInput = {
+    create?: XOR<UserCreateWithoutAppointments_as_ownerInput, UserUncheckedCreateWithoutAppointments_as_ownerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAppointments_as_ownerInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAppointments_as_tenantInput = {
+    create?: XOR<UserCreateWithoutAppointments_as_tenantInput, UserUncheckedCreateWithoutAppointments_as_tenantInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAppointments_as_tenantInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type PropertyCreateNestedOneWithoutAppointmentsInput = {
+    create?: XOR<PropertyCreateWithoutAppointmentsInput, PropertyUncheckedCreateWithoutAppointmentsInput>
+    connectOrCreate?: PropertyCreateOrConnectWithoutAppointmentsInput
+    connect?: PropertyWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutAppointments_as_ownerNestedInput = {
+    create?: XOR<UserCreateWithoutAppointments_as_ownerInput, UserUncheckedCreateWithoutAppointments_as_ownerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAppointments_as_ownerInput
+    upsert?: UserUpsertWithoutAppointments_as_ownerInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAppointments_as_ownerInput, UserUpdateWithoutAppointments_as_ownerInput>, UserUncheckedUpdateWithoutAppointments_as_ownerInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutAppointments_as_tenantNestedInput = {
+    create?: XOR<UserCreateWithoutAppointments_as_tenantInput, UserUncheckedCreateWithoutAppointments_as_tenantInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAppointments_as_tenantInput
+    upsert?: UserUpsertWithoutAppointments_as_tenantInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAppointments_as_tenantInput, UserUpdateWithoutAppointments_as_tenantInput>, UserUncheckedUpdateWithoutAppointments_as_tenantInput>
+  }
+
+  export type PropertyUpdateOneRequiredWithoutAppointmentsNestedInput = {
+    create?: XOR<PropertyCreateWithoutAppointmentsInput, PropertyUncheckedCreateWithoutAppointmentsInput>
+    connectOrCreate?: PropertyCreateOrConnectWithoutAppointmentsInput
+    upsert?: PropertyUpsertWithoutAppointmentsInput
+    connect?: PropertyWhereUniqueInput
+    update?: XOR<XOR<PropertyUpdateToOneWithWhereWithoutAppointmentsInput, PropertyUpdateWithoutAppointmentsInput>, PropertyUncheckedUpdateWithoutAppointmentsInput>
   }
 
   export type UserCreateNestedManyWithoutAddressInput = {
@@ -18844,6 +20555,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoCreateNestedManyWithoutPropertyInput
     swipes?: SwipeCreateNestedManyWithoutPropertyInput
     conversations?: ConversationCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutOwnerInput = {
@@ -18863,6 +20575,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUncheckedCreateNestedManyWithoutPropertyInput
     swipes?: SwipeUncheckedCreateNestedManyWithoutPropertyInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutOwnerInput = {
@@ -19028,6 +20741,66 @@ export namespace Prisma {
 
   export type DocumentCreateManyUserInputEnvelope = {
     data: DocumentCreateManyUserInput | DocumentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AppointmentCreateWithoutOwnerInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    created_at?: Date | string
+    tenant: UserCreateNestedOneWithoutAppointments_as_tenantInput
+    property: PropertyCreateNestedOneWithoutAppointmentsInput
+  }
+
+  export type AppointmentUncheckedCreateWithoutOwnerInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    tenant_id: string
+    property_id: string
+    created_at?: Date | string
+  }
+
+  export type AppointmentCreateOrConnectWithoutOwnerInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutOwnerInput, AppointmentUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type AppointmentCreateManyOwnerInputEnvelope = {
+    data: AppointmentCreateManyOwnerInput | AppointmentCreateManyOwnerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AppointmentCreateWithoutTenantInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    created_at?: Date | string
+    owner: UserCreateNestedOneWithoutAppointments_as_ownerInput
+    property: PropertyCreateNestedOneWithoutAppointmentsInput
+  }
+
+  export type AppointmentUncheckedCreateWithoutTenantInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    owner_id: string
+    property_id: string
+    created_at?: Date | string
+  }
+
+  export type AppointmentCreateOrConnectWithoutTenantInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutTenantInput, AppointmentUncheckedCreateWithoutTenantInput>
+  }
+
+  export type AppointmentCreateManyTenantInputEnvelope = {
+    data: AppointmentCreateManyTenantInput | AppointmentCreateManyTenantInput[]
     skipDuplicates?: boolean
   }
 
@@ -19317,6 +21090,52 @@ export namespace Prisma {
     uploaded_at?: DateTimeFilter<"Document"> | Date | string
   }
 
+  export type AppointmentUpsertWithWhereUniqueWithoutOwnerInput = {
+    where: AppointmentWhereUniqueInput
+    update: XOR<AppointmentUpdateWithoutOwnerInput, AppointmentUncheckedUpdateWithoutOwnerInput>
+    create: XOR<AppointmentCreateWithoutOwnerInput, AppointmentUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type AppointmentUpdateWithWhereUniqueWithoutOwnerInput = {
+    where: AppointmentWhereUniqueInput
+    data: XOR<AppointmentUpdateWithoutOwnerInput, AppointmentUncheckedUpdateWithoutOwnerInput>
+  }
+
+  export type AppointmentUpdateManyWithWhereWithoutOwnerInput = {
+    where: AppointmentScalarWhereInput
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutOwnerInput>
+  }
+
+  export type AppointmentScalarWhereInput = {
+    AND?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
+    OR?: AppointmentScalarWhereInput[]
+    NOT?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
+    id?: StringFilter<"Appointment"> | string
+    title?: StringFilter<"Appointment"> | string
+    date?: DateTimeFilter<"Appointment"> | Date | string
+    notes?: StringNullableFilter<"Appointment"> | string | null
+    owner_id?: StringFilter<"Appointment"> | string
+    tenant_id?: StringFilter<"Appointment"> | string
+    property_id?: StringFilter<"Appointment"> | string
+    created_at?: DateTimeFilter<"Appointment"> | Date | string
+  }
+
+  export type AppointmentUpsertWithWhereUniqueWithoutTenantInput = {
+    where: AppointmentWhereUniqueInput
+    update: XOR<AppointmentUpdateWithoutTenantInput, AppointmentUncheckedUpdateWithoutTenantInput>
+    create: XOR<AppointmentCreateWithoutTenantInput, AppointmentUncheckedCreateWithoutTenantInput>
+  }
+
+  export type AppointmentUpdateWithWhereUniqueWithoutTenantInput = {
+    where: AppointmentWhereUniqueInput
+    data: XOR<AppointmentUpdateWithoutTenantInput, AppointmentUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type AppointmentUpdateManyWithWhereWithoutTenantInput = {
+    where: AppointmentScalarWhereInput
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutTenantInput>
+  }
+
   export type AddressUpsertWithoutUsersInput = {
     update: XOR<AddressUpdateWithoutUsersInput, AddressUncheckedUpdateWithoutUsersInput>
     create: XOR<AddressCreateWithoutUsersInput, AddressUncheckedCreateWithoutUsersInput>
@@ -19406,6 +21225,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -19431,6 +21252,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutAgencyInput = {
@@ -19507,6 +21330,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -19532,6 +21357,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserCreateWithoutTenant_profileInput = {
@@ -19555,6 +21382,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -19580,6 +21409,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutTenant_profileInput = {
@@ -19619,6 +21450,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -19644,6 +21477,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type AddressCreateWithoutPropertiesInput = {
@@ -19698,6 +21533,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -19723,6 +21560,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutPropertiesInput = {
@@ -19808,6 +21647,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AppointmentCreateWithoutPropertyInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    created_at?: Date | string
+    owner: UserCreateNestedOneWithoutAppointments_as_ownerInput
+    tenant: UserCreateNestedOneWithoutAppointments_as_tenantInput
+  }
+
+  export type AppointmentUncheckedCreateWithoutPropertyInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    owner_id: string
+    tenant_id: string
+    created_at?: Date | string
+  }
+
+  export type AppointmentCreateOrConnectWithoutPropertyInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutPropertyInput, AppointmentUncheckedCreateWithoutPropertyInput>
+  }
+
+  export type AppointmentCreateManyPropertyInputEnvelope = {
+    data: AppointmentCreateManyPropertyInput | AppointmentCreateManyPropertyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AddressUpsertWithoutPropertiesInput = {
     update: XOR<AddressUpdateWithoutPropertiesInput, AddressUncheckedUpdateWithoutPropertiesInput>
     create: XOR<AddressCreateWithoutPropertiesInput, AddressUncheckedCreateWithoutPropertiesInput>
@@ -19877,6 +21746,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -19902,6 +21773,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type AnnouncementPhotoUpsertWithWhereUniqueWithoutPropertyInput = {
@@ -19963,6 +21836,22 @@ export namespace Prisma {
     data: XOR<ConversationUpdateManyMutationInput, ConversationUncheckedUpdateManyWithoutPropertyInput>
   }
 
+  export type AppointmentUpsertWithWhereUniqueWithoutPropertyInput = {
+    where: AppointmentWhereUniqueInput
+    update: XOR<AppointmentUpdateWithoutPropertyInput, AppointmentUncheckedUpdateWithoutPropertyInput>
+    create: XOR<AppointmentCreateWithoutPropertyInput, AppointmentUncheckedCreateWithoutPropertyInput>
+  }
+
+  export type AppointmentUpdateWithWhereUniqueWithoutPropertyInput = {
+    where: AppointmentWhereUniqueInput
+    data: XOR<AppointmentUpdateWithoutPropertyInput, AppointmentUncheckedUpdateWithoutPropertyInput>
+  }
+
+  export type AppointmentUpdateManyWithWhereWithoutPropertyInput = {
+    where: AppointmentScalarWhereInput
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutPropertyInput>
+  }
+
   export type PropertyCreateWithoutPhotosInput = {
     id?: string
     title: string
@@ -19980,6 +21869,7 @@ export namespace Prisma {
     owner: UserCreateNestedOneWithoutPropertiesInput
     swipes?: SwipeCreateNestedManyWithoutPropertyInput
     conversations?: ConversationCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutPhotosInput = {
@@ -19999,6 +21889,7 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     swipes?: SwipeUncheckedCreateNestedManyWithoutPropertyInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutPhotosInput = {
@@ -20034,6 +21925,7 @@ export namespace Prisma {
     owner?: UserUpdateOneRequiredWithoutPropertiesNestedInput
     swipes?: SwipeUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutPhotosInput = {
@@ -20053,6 +21945,7 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     swipes?: SwipeUncheckedUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type UserCreateWithoutProfile_photosInput = {
@@ -20076,6 +21969,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationCreateNestedManyWithoutOwnerInput
     messages?: MessageCreateNestedManyWithoutSenderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -20101,6 +21996,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUncheckedCreateNestedManyWithoutOwnerInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutProfile_photosInput = {
@@ -20140,6 +22037,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUpdateManyWithoutOwnerNestedInput
     messages?: MessageUpdateManyWithoutSenderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -20165,6 +22064,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUncheckedUpdateManyWithoutOwnerNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserCreateWithoutDocumentsInput = {
@@ -20188,6 +22089,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationCreateNestedManyWithoutOwnerInput
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -20213,6 +22116,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUncheckedCreateNestedManyWithoutOwnerInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -20252,6 +22157,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUpdateManyWithoutOwnerNestedInput
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -20277,6 +22184,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUncheckedUpdateManyWithoutOwnerNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserCreateWithoutSwipesInput = {
@@ -20300,6 +22209,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -20325,6 +22236,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutSwipesInput = {
@@ -20349,6 +22262,7 @@ export namespace Prisma {
     owner: UserCreateNestedOneWithoutPropertiesInput
     photos?: AnnouncementPhotoCreateNestedManyWithoutPropertyInput
     conversations?: ConversationCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutSwipesInput = {
@@ -20368,6 +22282,7 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     photos?: AnnouncementPhotoUncheckedCreateNestedManyWithoutPropertyInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutSwipesInput = {
@@ -20430,6 +22345,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -20455,6 +22372,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type PropertyUpsertWithoutSwipesInput = {
@@ -20485,6 +22404,7 @@ export namespace Prisma {
     owner?: UserUpdateOneRequiredWithoutPropertiesNestedInput
     photos?: AnnouncementPhotoUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutSwipesInput = {
@@ -20504,6 +22424,7 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     photos?: AnnouncementPhotoUncheckedUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type ConversationUpsertWithoutSwipeInput = {
@@ -20573,6 +22494,7 @@ export namespace Prisma {
     owner: UserCreateNestedOneWithoutPropertiesInput
     photos?: AnnouncementPhotoCreateNestedManyWithoutPropertyInput
     swipes?: SwipeCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutConversationsInput = {
@@ -20592,6 +22514,7 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     photos?: AnnouncementPhotoUncheckedCreateNestedManyWithoutPropertyInput
     swipes?: SwipeUncheckedCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutConversationsInput = {
@@ -20620,6 +22543,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -20645,6 +22570,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutConversations_as_tenantInput = {
@@ -20673,6 +22600,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -20698,6 +22627,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutConversations_as_ownerInput = {
@@ -20788,6 +22719,7 @@ export namespace Prisma {
     owner?: UserUpdateOneRequiredWithoutPropertiesNestedInput
     photos?: AnnouncementPhotoUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutConversationsInput = {
@@ -20807,6 +22739,7 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     photos?: AnnouncementPhotoUncheckedUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUncheckedUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type UserUpsertWithoutConversations_as_tenantInput = {
@@ -20841,6 +22774,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -20866,6 +22801,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserUpsertWithoutConversations_as_ownerInput = {
@@ -20900,6 +22837,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -20925,6 +22864,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -20987,6 +22928,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationCreateNestedManyWithoutOwnerInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
     address: AddressCreateNestedOneWithoutUsersInput
   }
 
@@ -21012,6 +22955,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUncheckedCreateNestedManyWithoutOwnerInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -21080,6 +23025,8 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUpdateManyWithoutOwnerNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
     address?: AddressUpdateOneRequiredWithoutUsersNestedInput
   }
 
@@ -21105,6 +23052,344 @@ export namespace Prisma {
     conversations_as_owner?: ConversationUncheckedUpdateManyWithoutOwnerNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type UserCreateWithoutAppointments_as_ownerInput = {
+    id?: string
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    phone?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    is_active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    agency?: AgencyCreateNestedOneWithoutUserInput
+    tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
+    properties?: PropertyCreateNestedManyWithoutOwnerInput
+    swipes?: SwipeCreateNestedManyWithoutUserInput
+    conversations_as_tenant?: ConversationCreateNestedManyWithoutTenantInput
+    conversations_as_owner?: ConversationCreateNestedManyWithoutOwnerInput
+    messages?: MessageCreateNestedManyWithoutSenderInput
+    profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
+    address: AddressCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutAppointments_as_ownerInput = {
+    id?: string
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    phone?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    is_active?: boolean
+    address_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    agency?: AgencyUncheckedCreateNestedOneWithoutUserInput
+    tenant_profile?: TenantProfileUncheckedCreateNestedOneWithoutUserInput
+    properties?: PropertyUncheckedCreateNestedManyWithoutOwnerInput
+    swipes?: SwipeUncheckedCreateNestedManyWithoutUserInput
+    conversations_as_tenant?: ConversationUncheckedCreateNestedManyWithoutTenantInput
+    conversations_as_owner?: ConversationUncheckedCreateNestedManyWithoutOwnerInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type UserCreateOrConnectWithoutAppointments_as_ownerInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAppointments_as_ownerInput, UserUncheckedCreateWithoutAppointments_as_ownerInput>
+  }
+
+  export type UserCreateWithoutAppointments_as_tenantInput = {
+    id?: string
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    phone?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    is_active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    agency?: AgencyCreateNestedOneWithoutUserInput
+    tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
+    properties?: PropertyCreateNestedManyWithoutOwnerInput
+    swipes?: SwipeCreateNestedManyWithoutUserInput
+    conversations_as_tenant?: ConversationCreateNestedManyWithoutTenantInput
+    conversations_as_owner?: ConversationCreateNestedManyWithoutOwnerInput
+    messages?: MessageCreateNestedManyWithoutSenderInput
+    profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    address: AddressCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutAppointments_as_tenantInput = {
+    id?: string
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    phone?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    is_active?: boolean
+    address_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    agency?: AgencyUncheckedCreateNestedOneWithoutUserInput
+    tenant_profile?: TenantProfileUncheckedCreateNestedOneWithoutUserInput
+    properties?: PropertyUncheckedCreateNestedManyWithoutOwnerInput
+    swipes?: SwipeUncheckedCreateNestedManyWithoutUserInput
+    conversations_as_tenant?: ConversationUncheckedCreateNestedManyWithoutTenantInput
+    conversations_as_owner?: ConversationUncheckedCreateNestedManyWithoutOwnerInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserCreateOrConnectWithoutAppointments_as_tenantInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAppointments_as_tenantInput, UserUncheckedCreateWithoutAppointments_as_tenantInput>
+  }
+
+  export type PropertyCreateWithoutAppointmentsInput = {
+    id?: string
+    title: string
+    description?: string | null
+    property_type: $Enums.PropertyType
+    status?: $Enums.PropertyStatus
+    price: number
+    surface: number
+    rooms: number
+    parking?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    address: AddressCreateNestedOneWithoutPropertiesInput
+    owner: UserCreateNestedOneWithoutPropertiesInput
+    photos?: AnnouncementPhotoCreateNestedManyWithoutPropertyInput
+    swipes?: SwipeCreateNestedManyWithoutPropertyInput
+    conversations?: ConversationCreateNestedManyWithoutPropertyInput
+  }
+
+  export type PropertyUncheckedCreateWithoutAppointmentsInput = {
+    id?: string
+    title: string
+    description?: string | null
+    property_type: $Enums.PropertyType
+    status?: $Enums.PropertyStatus
+    address_id: string
+    price: number
+    surface: number
+    rooms: number
+    parking?: boolean
+    owner_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    photos?: AnnouncementPhotoUncheckedCreateNestedManyWithoutPropertyInput
+    swipes?: SwipeUncheckedCreateNestedManyWithoutPropertyInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutPropertyInput
+  }
+
+  export type PropertyCreateOrConnectWithoutAppointmentsInput = {
+    where: PropertyWhereUniqueInput
+    create: XOR<PropertyCreateWithoutAppointmentsInput, PropertyUncheckedCreateWithoutAppointmentsInput>
+  }
+
+  export type UserUpsertWithoutAppointments_as_ownerInput = {
+    update: XOR<UserUpdateWithoutAppointments_as_ownerInput, UserUncheckedUpdateWithoutAppointments_as_ownerInput>
+    create: XOR<UserCreateWithoutAppointments_as_ownerInput, UserUncheckedCreateWithoutAppointments_as_ownerInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAppointments_as_ownerInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAppointments_as_ownerInput, UserUncheckedUpdateWithoutAppointments_as_ownerInput>
+  }
+
+  export type UserUpdateWithoutAppointments_as_ownerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstname?: StringFieldUpdateOperationsInput | string
+    lastname?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agency?: AgencyUpdateOneWithoutUserNestedInput
+    tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
+    properties?: PropertyUpdateManyWithoutOwnerNestedInput
+    swipes?: SwipeUpdateManyWithoutUserNestedInput
+    conversations_as_tenant?: ConversationUpdateManyWithoutTenantNestedInput
+    conversations_as_owner?: ConversationUpdateManyWithoutOwnerNestedInput
+    messages?: MessageUpdateManyWithoutSenderNestedInput
+    profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
+    address?: AddressUpdateOneRequiredWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAppointments_as_ownerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstname?: StringFieldUpdateOperationsInput | string
+    lastname?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    address_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agency?: AgencyUncheckedUpdateOneWithoutUserNestedInput
+    tenant_profile?: TenantProfileUncheckedUpdateOneWithoutUserNestedInput
+    properties?: PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+    swipes?: SwipeUncheckedUpdateManyWithoutUserNestedInput
+    conversations_as_tenant?: ConversationUncheckedUpdateManyWithoutTenantNestedInput
+    conversations_as_owner?: ConversationUncheckedUpdateManyWithoutOwnerNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type UserUpsertWithoutAppointments_as_tenantInput = {
+    update: XOR<UserUpdateWithoutAppointments_as_tenantInput, UserUncheckedUpdateWithoutAppointments_as_tenantInput>
+    create: XOR<UserCreateWithoutAppointments_as_tenantInput, UserUncheckedCreateWithoutAppointments_as_tenantInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAppointments_as_tenantInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAppointments_as_tenantInput, UserUncheckedUpdateWithoutAppointments_as_tenantInput>
+  }
+
+  export type UserUpdateWithoutAppointments_as_tenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstname?: StringFieldUpdateOperationsInput | string
+    lastname?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agency?: AgencyUpdateOneWithoutUserNestedInput
+    tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
+    properties?: PropertyUpdateManyWithoutOwnerNestedInput
+    swipes?: SwipeUpdateManyWithoutUserNestedInput
+    conversations_as_tenant?: ConversationUpdateManyWithoutTenantNestedInput
+    conversations_as_owner?: ConversationUpdateManyWithoutOwnerNestedInput
+    messages?: MessageUpdateManyWithoutSenderNestedInput
+    profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    address?: AddressUpdateOneRequiredWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAppointments_as_tenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstname?: StringFieldUpdateOperationsInput | string
+    lastname?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    address_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agency?: AgencyUncheckedUpdateOneWithoutUserNestedInput
+    tenant_profile?: TenantProfileUncheckedUpdateOneWithoutUserNestedInput
+    properties?: PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+    swipes?: SwipeUncheckedUpdateManyWithoutUserNestedInput
+    conversations_as_tenant?: ConversationUncheckedUpdateManyWithoutTenantNestedInput
+    conversations_as_owner?: ConversationUncheckedUpdateManyWithoutOwnerNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type PropertyUpsertWithoutAppointmentsInput = {
+    update: XOR<PropertyUpdateWithoutAppointmentsInput, PropertyUncheckedUpdateWithoutAppointmentsInput>
+    create: XOR<PropertyCreateWithoutAppointmentsInput, PropertyUncheckedCreateWithoutAppointmentsInput>
+    where?: PropertyWhereInput
+  }
+
+  export type PropertyUpdateToOneWithWhereWithoutAppointmentsInput = {
+    where?: PropertyWhereInput
+    data: XOR<PropertyUpdateWithoutAppointmentsInput, PropertyUncheckedUpdateWithoutAppointmentsInput>
+  }
+
+  export type PropertyUpdateWithoutAppointmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    property_type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    status?: EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
+    price?: IntFieldUpdateOperationsInput | number
+    surface?: IntFieldUpdateOperationsInput | number
+    rooms?: IntFieldUpdateOperationsInput | number
+    parking?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: AddressUpdateOneRequiredWithoutPropertiesNestedInput
+    owner?: UserUpdateOneRequiredWithoutPropertiesNestedInput
+    photos?: AnnouncementPhotoUpdateManyWithoutPropertyNestedInput
+    swipes?: SwipeUpdateManyWithoutPropertyNestedInput
+    conversations?: ConversationUpdateManyWithoutPropertyNestedInput
+  }
+
+  export type PropertyUncheckedUpdateWithoutAppointmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    property_type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    status?: EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
+    address_id?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
+    surface?: IntFieldUpdateOperationsInput | number
+    rooms?: IntFieldUpdateOperationsInput | number
+    parking?: BoolFieldUpdateOperationsInput | boolean
+    owner_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    photos?: AnnouncementPhotoUncheckedUpdateManyWithoutPropertyNestedInput
+    swipes?: SwipeUncheckedUpdateManyWithoutPropertyNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type UserCreateWithoutAddressInput = {
@@ -21129,6 +23414,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
     documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
   }
 
   export type UserUncheckedCreateWithoutAddressInput = {
@@ -21153,6 +23440,8 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type UserCreateOrConnectWithoutAddressInput = {
@@ -21212,6 +23501,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoCreateNestedManyWithoutPropertyInput
     swipes?: SwipeCreateNestedManyWithoutPropertyInput
     conversations?: ConversationCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutAddressInput = {
@@ -21231,6 +23521,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUncheckedCreateNestedManyWithoutPropertyInput
     swipes?: SwipeUncheckedCreateNestedManyWithoutPropertyInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutPropertyInput
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutAddressInput = {
@@ -21385,6 +23676,26 @@ export namespace Prisma {
     uploaded_at?: Date | string
   }
 
+  export type AppointmentCreateManyOwnerInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    tenant_id: string
+    property_id: string
+    created_at?: Date | string
+  }
+
+  export type AppointmentCreateManyTenantInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    owner_id: string
+    property_id: string
+    created_at?: Date | string
+  }
+
   export type PropertyUpdateWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -21402,6 +23713,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutOwnerInput = {
@@ -21421,6 +23733,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUncheckedUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUncheckedUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateManyWithoutOwnerInput = {
@@ -21580,6 +23893,66 @@ export namespace Prisma {
     uploaded_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AppointmentUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: UserUpdateOneRequiredWithoutAppointments_as_tenantNestedInput
+    property?: PropertyUpdateOneRequiredWithoutAppointmentsNestedInput
+  }
+
+  export type AppointmentUncheckedUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    tenant_id?: StringFieldUpdateOperationsInput | string
+    property_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    tenant_id?: StringFieldUpdateOperationsInput | string
+    property_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppointmentUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutAppointments_as_ownerNestedInput
+    property?: PropertyUpdateOneRequiredWithoutAppointmentsNestedInput
+  }
+
+  export type AppointmentUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    owner_id?: StringFieldUpdateOperationsInput | string
+    property_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    owner_id?: StringFieldUpdateOperationsInput | string
+    property_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AnnouncementPhotoCreateManyPropertyInput = {
     id?: string
     url: string
@@ -21599,6 +23972,16 @@ export namespace Prisma {
     swipe_id: string
     tenant_id: string
     owner_id: string
+    created_at?: Date | string
+  }
+
+  export type AppointmentCreateManyPropertyInput = {
+    id?: string
+    title: string
+    date: Date | string
+    notes?: string | null
+    owner_id: string
+    tenant_id: string
     created_at?: Date | string
   }
 
@@ -21669,6 +24052,36 @@ export namespace Prisma {
     swipe_id?: StringFieldUpdateOperationsInput | string
     tenant_id?: StringFieldUpdateOperationsInput | string
     owner_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppointmentUpdateWithoutPropertyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutAppointments_as_ownerNestedInput
+    tenant?: UserUpdateOneRequiredWithoutAppointments_as_tenantNestedInput
+  }
+
+  export type AppointmentUncheckedUpdateWithoutPropertyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    owner_id?: StringFieldUpdateOperationsInput | string
+    tenant_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutPropertyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    owner_id?: StringFieldUpdateOperationsInput | string
+    tenant_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21771,6 +24184,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAddressInput = {
@@ -21795,6 +24210,8 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAddressInput = {
@@ -21859,6 +24276,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutAddressInput = {
@@ -21878,6 +24296,7 @@ export namespace Prisma {
     photos?: AnnouncementPhotoUncheckedUpdateManyWithoutPropertyNestedInput
     swipes?: SwipeUncheckedUpdateManyWithoutPropertyNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+    appointments?: AppointmentUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateManyWithoutAddressInput = {

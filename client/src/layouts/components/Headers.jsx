@@ -18,6 +18,9 @@ export default function Headers() {
                 <NavLink to="/home">Home</NavLink>
                 <NavLink to="/profile">Profile</NavLink>
                 <NavLink to="/discussions">Discussions</NavLink>
+                {user?.role === "user" && (
+                    <NavLink to="/agenda">Agenda</NavLink>
+                )}
             </nav>
             <div>
                 <Button onClick={logout}>Logout</Button>

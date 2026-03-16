@@ -227,6 +227,17 @@ exports.Prisma.MessageScalarFieldEnum = {
   deleted_at: 'deleted_at'
 };
 
+exports.Prisma.AppointmentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  date: 'date',
+  notes: 'notes',
+  owner_id: 'owner_id',
+  tenant_id: 'tenant_id',
+  property_id: 'property_id',
+  created_at: 'created_at'
+};
+
 exports.Prisma.AddressScalarFieldEnum = {
   id: 'id',
   number: 'number',
@@ -301,6 +312,7 @@ exports.Prisma.ModelName = {
   Swipe: 'Swipe',
   Conversation: 'Conversation',
   Message: 'Message',
+  Appointment: 'Appointment',
   Address: 'Address'
 };
 

@@ -179,6 +179,22 @@ export default function AgendaPage() {
                                                 <p className="agenda-item-notes">{appt.notes}</p>
                                             )}
                                         </div>
+                                        <div className="agenda-item-actions">
+                                            <Button
+                                                className="agenda-unavailable-btn"
+                                                onClick={async () => {
+                                                    if (!confirm("Signaler votre indisponibilité et retirer ce rendez-vous ?")) return;
+                                                    try {
+                                                        await api.delete(`/appointments/${appt.id}`);
+                                                        setAppointments((prev) => prev.filter((a) => a.id !== appt.id));
+                                                    } catch {
+                                                        alert("Impossible de retirer le rendez-vous.");
+                                                    }
+                                                }}
+                                            >
+                                                Pas disponible
+                                            </Button>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -241,29 +257,19 @@ export default function AgendaPage() {
                                     <>
                                         <label className="agenda-field">
                                             Bien immobilier
-
                                             <Select
                                                 required
-                                                value={properties
-                                                    .map(p => ({
+                                                value={form.property_id}
+                                                onChange={(e) => setForm((p) => ({ ...p, property_id: e.target.value }))}
+                                                options={[
+                                                    { value: "", label: "-- Choisir un bien --" },
+                                                    ...properties.map((p) => ({
                                                         value: p.id,
-                                                        label: `${p.title} ${p.address?.city ? `(${p.address.city})` : ""}`
-                                                    }))
-                                                    .find(opt => opt.value === form.property_id)
-                                                    }
-                                                    onChange={(selected) =>
-                                                        setForm((prev) => ({
-                                                            ...prev,
-                                                            property_id: selected?.value || ""
-                                                        }))
-                                                    }
-                                                    options={properties.map((p) => ({
-                                                        value: p.id,
-                                                        label: `${p.title} ${p.address?.city ? `(${p.address.city})` : ""}`
-                                                    }))}
-                                                    placeholder="-- Choisir un bien --"
-                                                />
-                                            </label>        
+                                                        label: `${p.title}${p.address?.city ? ` (${p.address.city})` : ""}`,
+                                                    })),
+                                                ]}
+                                            />
+                                        </label>        
                                         <label className="agenda-field">
                                             Locataire
                                             <SearchableSelect
@@ -341,6 +347,12 @@ export default function AgendaPage() {
                                         )}
                                     </div>
                                     <div className="agenda-item-actions">
+                                        <a
+                                            className="agenda-mailto-btn"
+                                            href={`mailto:${appt.tenant?.email}?subject=${encodeURIComponent(`Rendez-vous — ${appt.title}`)}&body=${encodeURIComponent(`Bonjour ${appt.tenant?.firstname},\n\nJe vous confirme notre rendez-vous :\n\n📅 ${appt.title}\n📆 Le ${formatDate(appt.date)}\n🏠 ${appt.property?.title}${appt.property?.address?.city ? ` (${appt.property.address.city})` : ''}${appt.notes ? `\n📝 ${appt.notes}` : ''}\n\nCordialement,\n${user.firstname} ${user.lastname}`)}`}
+                                        >
+                                            ✉ Envoyer un email
+                                        </a>
                                         <Button
                                             className="agenda-edit-btn"
                                             onClick={() => openEdit(appt)}

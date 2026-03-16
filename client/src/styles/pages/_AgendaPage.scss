@@ -178,6 +178,7 @@
     align-items: flex-start;
 }
 
+.agenda-mailto-btn,
 .agenda-edit-btn,
 .agenda-delete-btn {
     padding: 0.4rem 0.8rem;
@@ -193,6 +194,18 @@
     }
 }
 
+.agenda-mailto-btn {
+    background-color: transparent;
+    color: $button-bg;
+    border: 1px solid rgba($button-bg, 0.4);
+    text-decoration: none;
+
+    &:hover {
+        background-color: rgba($button-bg, 0.1);
+        border-color: $button-bg;
+    }
+}
+
 .agenda-edit-btn {
     background-color: $input-bg;
     color: $main-text-color;
@@ -202,6 +215,20 @@
     background-color: rgba(#f87171, 0.2);
     color: #f87171;
     border: 1px solid rgba(#f87171, 0.3);
+}
+
+.agenda-unavailable-btn {
+    background-color: rgba(#f87171, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(#f87171, 0.3);
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
+    font-size: 0.825rem;
+    font-family: 'BeVietnamPro', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.85; }
 }
 
 
