@@ -314,6 +314,20 @@ async function main() {
             owner_id: owner1.id,
             address: { number: '45', street: 'Rue de Marcinelle', city: 'Charleroi', postal_code: '6000', country: 'Belgique' }
         },
+
+        // Hornu
+        {
+            title: 'Château à louer',
+            description: 'Magnifique château à louer avec piscine et sauna',
+            property_type: 'Castel',
+            status: 'published',
+            price: 1400,
+            surface: 1997,
+            rooms: 60,
+            parking: true,
+            owner_id: owner1.id,
+            address: { number: '23', street: 'Rue Henri Degorge', city: 'Hornu', postal_code: '7301', country: 'Belgique' }
+        },
     ];
 
     // Supprimer les biens existants (cascade → appointments, swipes, conversations)
@@ -336,6 +350,15 @@ async function main() {
     }
 
     console.log(`\n🎉 Done! ${created} properties created.`);
+
+    // --- Photos ---
+    const propChateau = createdProperties['Château à louer'];
+    if (propChateau) {
+        await prisma.announcementPhoto.create({
+            data: { url: '/uploads/properties/chateau-hornu.jpg', order: 0, property_id: propChateau.id }
+        });
+        console.log('  📸 Photo ajoutée : Château à louer');
+    }
 
     // --- Rendez-vous pour Alice (locataire) ---
     const propIxelles   = createdProperties['Bel appartement lumineux à Ixelles'];

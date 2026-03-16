@@ -67,7 +67,9 @@ export default function AgencyHome() {
                             ...apartment,
                             city: apartment.address?.city,
                             postal_code: apartment.address?.postal_code,
-                            image: apartment.photos?.[0]?.url ?? null,
+                            image: apartment.photos?.[0]?.url
+                                ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${apartment.photos[0].url}`
+                                : null,
                         };
 
                         return (

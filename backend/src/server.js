@@ -1,6 +1,10 @@
 import 'dotenv/config';
 
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
@@ -57,16 +61,15 @@ app.get('/health', (req, res) => {
 });
 
 // Fichiers statiques — cross-origin autorisé pour l'affichage frontend
-app.use('/uploads/documents', express.static('uploads/documents', {
+app.use('/uploads/documents', express.static(path.join(__dirname, '../uploads/documents'), {
     setHeaders: (res, filePath) => {
         res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-        // PDF : forcer le téléchargement ; images : affichage inline
         if (filePath.endsWith('.pdf')) {
             res.setHeader('Content-Disposition', `attachment; filename="${path.basename(filePath)}"`);
         }
     }
 }));
-app.use('/uploads', express.static('uploads', {
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
     setHeaders: (res) => {
         res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     }

@@ -13,7 +13,15 @@ const ownerSelect = {
     lastname: true,
     email: true,
     phone: true,
-    agency: true
+    role: true,
+    agency: {
+        select: {
+            id: true,
+            nom_agence: true,
+            numero_tva: true,
+            site_web: true
+        }
+    }
 };
 
 class PropertyService {
@@ -45,7 +53,7 @@ class PropertyService {
                         country: address.country || 'Belgique'
                     }
                 },
-                owner_id: ownerId
+                owner: { connect: { id: ownerId } }
             },
             include: {
                 address: true,

@@ -60,7 +60,10 @@ async function uploadFile(file) {
 function ConversationItem({ conv, isActive, currentUserId, onClick }) {
     const lastMsg = conv.messages?.[0];
     const unread = conv._count?.messages ?? 0;
-    const photo = conv.property?.photos?.[0]?.url;
+    const photoPath = conv.property?.photos?.[0]?.url;
+    const photo = photoPath
+        ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${photoPath}`
+        : null;
     const city = conv.property?.address?.city;
     const otherUser = conv.tenant_id === currentUserId ? conv.owner : conv.tenant;
 

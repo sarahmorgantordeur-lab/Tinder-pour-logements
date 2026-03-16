@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.get('/agencies', UserController.getAgencies);
 router.get('/profile', authenticate, UserController.getProfile);
-router.get('/:id', authenticate, UserController.getPublicProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
 
 // Photos de profil
@@ -25,5 +24,8 @@ router.put('/tenant-profile', authenticate, UserController.updateTenantProfile);
 
 // Profil agence
 router.put('/agency', authenticate, UserController.updateAgency);
+
+// Profil public — doit être en dernier pour ne pas intercepter les routes nommées
+router.get('/:id', authenticate, UserController.getPublicProfile);
 
 export default router;

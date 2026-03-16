@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 import Headers from "../layouts/components/Headers";
@@ -6,6 +6,8 @@ import Footer from "../layouts/components/Footer";
 import Select from "../components/ui/Select";
 import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
+
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const PROPERTY_TYPES = [
     "Bungalow", "Chalet", "Castel", "Farm", "CountryHouse",
@@ -52,15 +54,19 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
     const navigate = useNavigate();
     const isEdit = Boolean(id);
     const handleClose = onClose ?? (() => navigate(-1));
+    const photoInputRef = useRef(null);
 
-    const [formData, setFormData]       = useState(buildForm(null));
+    const [formData, setFormData]           = useState(buildForm(null));
     const [currentStatus, setCurrentStatus] = useState("draft");
-    const [loading, setLoading]         = useState(isEdit);
-    const [saving, setSaving]           = useState(false);
-    const [statusSaving, setStatusSaving] = useState(false);
-    const [error, setError]             = useState(null);
-    const [success, setSuccess]         = useState(false);
-    const [statusError, setStatusError] = useState(null);
+    const [photos, setPhotos]               = useState([]);
+    const [loading, setLoading]             = useState(isEdit);
+    const [saving, setSaving]               = useState(false);
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
+    const [statusSaving, setStatusSaving]   = useState(false);
+    const [error, setError]                 = useState(null);
+    const [success, setSuccess]             = useState(false);
+    const [photoError, setPhotoError]       = useState(null);
+    const [statusError, setStatusError]     = useState(null);
     const [statusSuccess, setStatusSuccess] = useState(false);
 
     useEffect(() => {
@@ -69,6 +75,7 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
             .then(({ data }) => {
                 setFormData(buildForm(data.property));
                 setCurrentStatus(data.property.status);
+                setPhotos(data.property.photos ?? []);
             })
             .catch(() => setError("Impossible de charger l'annonce."))
             .finally(() => setLoading(false));
@@ -109,6 +116,56 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
             setError(err.response?.data?.message || "Erreur lors de la sauvegarde.");
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handlePhotoUpload = async (files) => {
+        if (!files || files.length === 0) return;
+        setUploadingPhoto(true);
+        setPhotoError(null);
+        try {
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+            Array.from(files).forEach((file) => formData.append('pictures', file));
+            const res = await fetch(`${BASE_URL}/properties/${id}/photos`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || 'Erreur lors de l\'upload.');
+            }
+            const { property } = await res.json();
+            setPhotos(property.photos ?? []);
+        } catch (err) {
+            setPhotoError(err.message || "Erreur lors de l'upload des photos.");
+        } finally {
+            setUploadingPhoto(false);
+            if (photoInputRef.current) photoInputRef.current.value = '';
+        }
+    };
+
+    const handlePhotoDelete = async (photoUrl) => {
+        setPhotoError(null);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${BASE_URL}/properties/${id}/photos`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ photoUrl }),
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || 'Erreur lors de la suppression.');
+            }
+            const { property } = await res.json();
+            setPhotos(property.photos ?? []);
+        } catch (err) {
+            setPhotoError(err.message || "Erreur lors de la suppression de la photo.");
         }
     };
 
@@ -230,6 +287,53 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
                         </label>
                     </fieldset>
 
+                    {isEdit && (
+                    <section className="edit-announcement-section edit-announcement-photos">
+                        <h2 className="edit-announcement-section-title">Photos</h2>
+
+                        {photoError && <p className="edit-announcement-error">{photoError}</p>}
+
+                        {photos.length > 0 && (
+                            <div className="edit-announcement-photo-grid">
+                                {photos.map((photo) => (
+                                    <div key={photo.id} className="edit-announcement-photo-item">
+                                        <img
+                                            src={`http://localhost:3000${photo.url}`}
+                                            alt="Photo du bien"
+                                            className="edit-announcement-photo-img"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="edit-announcement-photo-delete"
+                                            onClick={() => handlePhotoDelete(photo.url)}
+                                            title="Supprimer cette photo"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <input
+                            ref={photoInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            multiple
+                            style={{ display: 'none' }}
+                            onChange={(e) => handlePhotoUpload(e.target.files)}
+                        />
+                        <Button
+                            type="button"
+                            className="edit-announcement-photo-add-btn"
+                            onClick={() => photoInputRef.current?.click()}
+                            disabled={uploadingPhoto}
+                        >
+                            {uploadingPhoto ? "Upload en cours..." : "+ Ajouter des photos"}
+                        </Button>
+                    </section>
+                )}
+
                     <div className="edit-announcement-actions">
                         <Button type="button" className="edit-announcement-cancel" onClick={handleClose}>
                             Annuler
@@ -239,6 +343,7 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
                         </Button>
                     </div>
                 </form>
+
 
                 {isEdit && (
                     <section className="edit-announcement-section edit-announcement-status">

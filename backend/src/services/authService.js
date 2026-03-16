@@ -33,12 +33,7 @@ class AuthService {
                         postal_code: address?.postal_code || '',
                         country: address?.country || 'Belgique'
                     }
-                },
-                agency: role === 'agency' ? {
-                    create: {
-                        nom_agence: `${firstname} ${lastname} Agency`
-                    }
-                } : undefined
+                }
             }
         });
 
