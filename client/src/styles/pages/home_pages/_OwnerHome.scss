@@ -6,12 +6,15 @@
     align-items: center;
     padding: 2rem;
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 
     @media (max-width: 768px) {
         padding: 1.5rem;
     }
 
     @media (max-width: 480px) {
-        padding: 1rem;
+        padding: 1rem 0.75rem;
     }
 }

@@ -17,6 +17,11 @@
         flex-direction: column;
         height: auto;
         overflow: visible;
+        min-height: calc(100vh - 68px);
+    }
+
+    @media (max-width: 480px) {
+        height: auto;
     }
 }
 
@@ -36,6 +41,10 @@
         border-right: none;
         border-bottom: 1px solid $border-color-muted;
         max-height: 40vh;
+    }
+
+    @media (max-width: 480px) {
+        max-height: 35vh;
     }
 }
 
@@ -277,6 +286,10 @@
         .discussion-msg-body {
             align-items: flex-end;
             max-width: 70%;
+
+            @media (max-width: 480px) {
+                max-width: 85%;
+            }
         }
     }
 
@@ -286,6 +299,10 @@
         .discussion-msg-body {
             align-items: flex-start;
             max-width: 70%;
+
+            @media (max-width: 480px) {
+                max-width: 85%;
+            }
         }
     }
 }
@@ -383,12 +400,14 @@
     flex: 1;
     font-size: 0.95rem;
     padding: 0.65rem 1rem;
+    min-height: 44px;
     border-radius: 0.5rem;
     border: 1px solid $border-color-muted;
     outline: none;
     background-color: $input-bg;
     color: $main-text-color;
     transition: border-color 0.3s;
+    box-sizing: border-box;
 
     &::placeholder {
         color: $text-muted;
@@ -401,12 +420,17 @@
     &:disabled {
         opacity: 0.6;
     }
+
+    @media (max-width: 480px) {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.75rem;
+    }
 }
 
 .discussion-photo-btn {
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -430,6 +454,7 @@
 
 .discussion-send-btn {
     padding: 0.65rem 1.25rem;
+    min-height: 44px;
     background-color: $button-bg;
     color: $main-text-color;
     border: none;
@@ -446,6 +471,11 @@
     &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.6rem 1rem;
+        font-size: 0.875rem;
     }
 }
 
