@@ -31,4 +31,19 @@ describe('Navigation header', () => {
     cy.loginAndVisit('agency', '/home')
     cy.get('header, nav').should('exist')
   })
+
+  it('le lien Agenda est visible dans la navbar pour le tenant', () => {
+    cy.loginAndVisit('tenant', '/home')
+    cy.get('nav').contains('Agenda').should('exist')
+  })
+
+  it('le lien Agenda n\'est pas visible pour owner', () => {
+    cy.loginAndVisit('owner', '/home')
+    cy.get('nav').contains('Agenda').should('not.exist')
+  })
+
+  it('le lien Agenda n\'est pas visible pour agency', () => {
+    cy.loginAndVisit('agency', '/home')
+    cy.get('nav').contains('Agenda').should('not.exist')
+  })
 })
