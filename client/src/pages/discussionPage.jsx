@@ -8,6 +8,8 @@ import Select from "../components/ui/Select";
 import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 function formatTime(dateStr) {
     const date = new Date(dateStr);
     const now = new Date();
@@ -20,6 +22,39 @@ function formatTime(dateStr) {
         return date.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
     }
     return date.toLocaleDateString("fr-BE", { day: "2-digit", month: "2-digit" });
+}
+
+function parseContent(content) {
+    try {
+        const parsed = JSON.parse(content);
+        if (parsed && typeof parsed === "object" && parsed.type) return parsed;
+    } catch {}
+    return null;
+}
+
+function displayLastMessage(content) {
+    const parsed = parseContent(content);
+    if (parsed?.type === "doc_request") return "📋 Demande de document";
+    if (parsed?.type === "doc_upload") return "📎 Document envoyé";
+    if (parsed?.type === "image") return "🖼️ Photo";
+    return content;
+}
+
+async function uploadFile(file) {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("document", file);
+    const res = await fetch(`${BASE_URL}/users/documents`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+    });
+    if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Échec de l'upload.");
+    }
+    const { document } = await res.json();
+    return document;
 }
 
 function ConversationItem({ conv, isActive, currentUserId, onClick }) {
@@ -50,7 +85,7 @@ function ConversationItem({ conv, isActive, currentUserId, onClick }) {
                 {lastMsg && (
                     <p className="discussion-conv-last">
                         {lastMsg.sender?.id === currentUserId ? "Vous : " : ""}
-                        {lastMsg.content}
+                        {displayLastMessage(lastMsg.content)}
                     </p>
                 )}
             </div>
@@ -66,10 +101,90 @@ function ConversationItem({ conv, isActive, currentUserId, onClick }) {
     );
 }
 
-function MessageBubble({ msg, isOwn }) {
+function MessageBubble({ msg, isOwn, isTenant, onDocUpload }) {
+    const parsed = parseContent(msg.content);
+    const fileInputRef = useRef(null);
     const initials =
         msg.sender?.firstname?.[0]?.toUpperCase() +
         (msg.sender?.lastname?.[0]?.toUpperCase() ?? "");
+
+    const renderContent = () => {
+        if (parsed?.type === "doc_request") {
+            return (
+                <div className="discussion-doc-card discussion-doc-card--request">
+                    <div className="discussion-doc-header">
+                        <span className="discussion-doc-icon">📋</span>
+                        <div className="discussion-doc-info">
+                            <p className="discussion-doc-title">Demande de document</p>
+                            <p className="discussion-doc-text">
+                                {parsed.text || "Veuillez renvoyer ce document complété."}
+                            </p>
+                        </div>
+                    </div>
+                    {parsed.templateUrl && (
+                        <a
+                            href={`http://localhost:3000${parsed.templateUrl}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="discussion-doc-template-link"
+                        >
+                            📥 Télécharger le document vierge
+                            {parsed.templateLabel ? ` — ${parsed.templateLabel}` : ""}
+                        </a>
+                    )}
+                    {isTenant && (
+                        <>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".pdf"
+                                style={{ display: "none" }}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) onDocUpload(file);
+                                    e.target.value = "";
+                                }}
+                            />
+                            <button
+                                className="discussion-doc-upload-btn"
+                                onClick={() => fileInputRef.current?.click()}
+                            >
+                                📎 Envoyer le document complété
+                            </button>
+                        </>
+                    )}
+                </div>
+            );
+        }
+        if (parsed?.type === "doc_upload") {
+            return (
+                <div className="discussion-doc-card discussion-doc-card--upload">
+                    <span className="discussion-doc-icon">📎</span>
+                    <div className="discussion-doc-info">
+                        <p className="discussion-doc-title">Document envoyé</p>
+                        <a
+                            href={`http://localhost:3000${parsed.url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="discussion-doc-link"
+                        >
+                            {parsed.label || "Voir le document"}
+                        </a>
+                    </div>
+                </div>
+            );
+        }
+        if (parsed?.type === "image") {
+            return (
+                <img
+                    src={`http://localhost:3000${parsed.url}`}
+                    alt={parsed.label || "photo"}
+                    className="discussion-msg-image"
+                />
+            );
+        }
+        return <p>{msg.content}</p>;
+    };
 
     return (
         <div className={`discussion-msg ${isOwn ? "discussion-msg--own" : "discussion-msg--other"}`}>
@@ -88,8 +203,8 @@ function MessageBubble({ msg, isOwn }) {
                         {msg.sender?.firstname} {msg.sender?.lastname}
                     </p>
                 )}
-                <div className="discussion-msg-bubble">
-                    <p>{msg.content}</p>
+                <div className={`discussion-msg-bubble${parsed ? " discussion-msg-bubble--doc" : ""}`}>
+                    {renderContent()}
                 </div>
                 <span className="discussion-msg-time">{formatTime(msg.created_at)}</span>
             </div>
@@ -100,6 +215,7 @@ function MessageBubble({ msg, isOwn }) {
 export default function DiscussionPage() {
     const { user } = useAuth();
     const isOwnerOrAgency = user?.role === "owner" || user?.role === "agency";
+    const isTenant = user?.role === "user";
     const [searchParams] = useSearchParams();
     const filterPropertyId = searchParams.get("property");
 
@@ -114,6 +230,8 @@ export default function DiscussionPage() {
     const [activeProperty, setActiveProperty] = useState(null);
 
     const messagesEndRef = useRef(null);
+    const docRequestInputRef = useRef(null);
+    const photoInputRef = useRef(null);
 
     useEffect(() => {
         const endpoint = isOwnerOrAgency ? "/conversations/owner" : "/conversations";
@@ -157,40 +275,91 @@ export default function DiscussionPage() {
         );
     };
 
+    const pushMessage = (newMsg) => {
+        setMessages((prev) => [...prev, newMsg]);
+        setConversations((prev) =>
+            prev.map((c) =>
+                c.id === activeId
+                    ? {
+                        ...c,
+                        messages: [{
+                            ...newMsg,
+                            sender: { id: user.id, firstname: user.firstname, lastname: user.lastname },
+                        }],
+                    }
+                    : c
+            )
+        );
+    };
+
+    const sendMessage = async (content) => {
+        const { data } = await api.post(`/conversations/${activeId}/messages`, { content });
+        pushMessage(data.data);
+    };
+
     const handleSend = async (e) => {
         e.preventDefault();
         if (!draft.trim() || !activeId) return;
-
         setSending(true);
         setError(null);
         try {
-            const { data } = await api.post(`/conversations/${activeId}/messages`, {
-                content: draft.trim(),
-            });
-            setMessages((prev) => [...prev, data.data]);
+            await sendMessage(draft.trim());
             setDraft("");
+        } catch (err) {
+            setError(err.message || "Erreur lors de l'envoi.");
+        } finally {
+            setSending(false);
+        }
+    };
 
-            setConversations((prev) =>
-                prev.map((c) =>
-                    c.id === activeId
-                        ? {
-                            ...c,
-                              messages: [
-                                  {
-                                      ...data.data,
-                                      sender: {
-                                          id: user.id,
-                                          firstname: user.firstname,
-                                          lastname: user.lastname,
-                                      },
-                                  },
-                              ],
-                          }
-                        : c
-                )
+    // Owner/agency: picks a blank template file, uploads it, sends as doc_request
+    const handleRequestDocFile = async (file) => {
+        setSending(true);
+        setError(null);
+        try {
+            const doc = await uploadFile(file);
+            await sendMessage(
+                JSON.stringify({
+                    type: "doc_request",
+                    text: "Veuillez remplir et renvoyer ce document complété.",
+                    templateUrl: doc.url,
+                    templateLabel: file.name,
+                })
             );
         } catch (err) {
             setError(err.message || "Erreur lors de l'envoi.");
+        } finally {
+            setSending(false);
+        }
+    };
+
+    // Owner/agency: sends a photo directly in the conversation
+    const handleSendPhoto = async (file) => {
+        setSending(true);
+        setError(null);
+        try {
+            const doc = await uploadFile(file);
+            await sendMessage(
+                JSON.stringify({ type: "image", url: doc.url, label: file.name })
+            );
+        } catch (err) {
+            setError(err.message || "Erreur lors de l'envoi de la photo.");
+        } finally {
+            setSending(false);
+        }
+    };
+
+    // Tenant: uploads their filled document (PDF only) in response to a doc_request
+    const handleDocUpload = async (file) => {
+        setSending(true);
+        setError(null);
+        try {
+            const doc = await uploadFile(file);
+            await sendMessage(
+                JSON.stringify({ type: "doc_upload", url: doc.url, label: file.name })
+            );
+        } catch (err) {
+            setError(err.message || "Erreur lors de l'envoi du document.");
         } finally {
             setSending(false);
         }
@@ -201,7 +370,6 @@ export default function DiscussionPage() {
     const properties = isOwnerOrAgency
         ? [...new Map(conversations.filter(c => c.property_id).map(c => [c.property_id, c.property])).values()]
         : [];
-
 
     return (
         <div className="discussion-page">
@@ -289,12 +457,33 @@ export default function DiscussionPage() {
                                     {activeConv?.property?.address?.city}
                                 </p>
                                 {isOwnerOrAgency && activeConv?.tenant?.id && (
-                                    <Link
-                                        to={`/users/${activeConv.tenant.id}`}
-                                        className="discussion-view-profile-btn"
-                                    >
-                                        Voir le profil de {activeConv.tenant.firstname} {activeConv.tenant.lastname}
-                                    </Link>
+                                    <div className="discussion-thread-actions">
+                                        <Link
+                                            to={`/users/${activeConv.tenant.id}`}
+                                            className="discussion-view-profile-btn"
+                                        >
+                                            Voir le profil de {activeConv.tenant.firstname} {activeConv.tenant.lastname}
+                                        </Link>
+                                        {/* Hidden input: PDF or images for owner/agency */}
+                                        <input
+                                            ref={docRequestInputRef}
+                                            type="file"
+                                            accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                            style={{ display: "none" }}
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) handleRequestDocFile(file);
+                                                e.target.value = "";
+                                            }}
+                                        />
+                                        <button
+                                            className="discussion-doc-request-btn"
+                                            onClick={() => docRequestInputRef.current?.click()}
+                                            disabled={sending}
+                                        >
+                                            📋 Demander un document
+                                        </button>
+                                    </div>
                                 )}
                             </header>
 
@@ -314,6 +503,8 @@ export default function DiscussionPage() {
                                         key={msg.id}
                                         msg={msg}
                                         isOwn={msg.sender?.id === user?.id}
+                                        isTenant={isTenant}
+                                        onDocUpload={handleDocUpload}
                                     />
                                 ))}
                                 <div ref={messagesEndRef} />
@@ -324,6 +515,30 @@ export default function DiscussionPage() {
                                     <p className="discussion-error">{error}</p>
                                 )}
                                 <div className="discussion-send-row">
+                                    {isOwnerOrAgency && (
+                                        <>
+                                            <input
+                                                ref={photoInputRef}
+                                                type="file"
+                                                accept=".jpg,.jpeg,.png,.webp"
+                                                style={{ display: "none" }}
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) handleSendPhoto(file);
+                                                    e.target.value = "";
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="discussion-photo-btn"
+                                                onClick={() => photoInputRef.current?.click()}
+                                                disabled={sending}
+                                                title="Envoyer une photo"
+                                            >
+                                                🖼️
+                                            </button>
+                                        </>
+                                    )}
                                     <TextInput
                                         className="discussion-send-input"
                                         type="text"

@@ -391,6 +391,31 @@
     }
 }
 
+.discussion-photo-btn {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+
+    &:hover {
+        border-color: $border-color;
+        background-color: rgba($border-color-muted, 0.4);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
 .discussion-send-btn {
     padding: 0.65rem 1.25rem;
     background-color: $button-bg;
@@ -410,4 +435,140 @@
         opacity: 0.5;
         cursor: not-allowed;
     }
+}
+
+// Thread header actions row
+.discussion-thread-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+// Button to request a document (owner/agency)
+.discussion-doc-request-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    background-color: transparent;
+    color: $button-bg;
+    border: 1px solid rgba($button-bg, 0.4);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-family: 'BeVietnamPro', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: rgba($button-bg, 0.1);
+        border-color: $button-bg;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// Image dans une bulle
+.discussion-msg-image {
+    display: block;
+    max-width: 260px;
+    max-height: 320px;
+    border-radius: 10px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+// Doc bubble — no background, let the card handle its own look
+.discussion-msg-bubble--doc {
+    padding: 0;
+    background: none !important;
+}
+
+// Doc cards (request & upload)
+.discussion-doc-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid $border-color-muted;
+    background-color: $background-color-light;
+    min-width: 220px;
+
+    .discussion-msg--own & {
+        background-color: rgba($button-bg, 0.12);
+        border-color: rgba($button-bg, 0.3);
+    }
+}
+
+.discussion-doc-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.discussion-doc-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.discussion-doc-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.discussion-doc-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $main-text-color;
+    margin: 0;
+}
+
+.discussion-doc-text {
+    font-size: 0.825rem;
+    color: $text-muted;
+    font-style: italic;
+    margin: 0;
+}
+
+.discussion-doc-link {
+    font-size: 0.825rem;
+    color: $button-bg;
+    text-decoration: underline;
+
+    &:hover { opacity: 0.8; }
+}
+
+.discussion-doc-template-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.825rem;
+    color: $button-bg;
+    text-decoration: underline;
+    padding: 0.3rem 0;
+
+    &:hover { opacity: 0.8; }
+}
+
+.discussion-doc-upload-btn {
+    align-self: flex-start;
+    padding: 0.4rem 0.9rem;
+    background-color: $button-bg;
+    color: $main-text-color;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.825rem;
+    font-family: 'BeVietnamPro', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.85; }
 }

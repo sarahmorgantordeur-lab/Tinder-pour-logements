@@ -1,5 +1,6 @@
 import 'dotenv/config';
 
+import path from 'path';
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
@@ -55,6 +56,22 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
 
+// Fichiers statiques — cross-origin autorisé pour l'affichage frontend
+app.use('/uploads/documents', express.static('uploads/documents', {
+    setHeaders: (res, filePath) => {
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+        // PDF : forcer le téléchargement ; images : affichage inline
+        if (filePath.endsWith('.pdf')) {
+            res.setHeader('Content-Disposition', `attachment; filename="${path.basename(filePath)}"`);
+        }
+    }
+}));
+app.use('/uploads', express.static('uploads', {
+    setHeaders: (res) => {
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    }
+}));
+
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
 });
@@ -63,8 +80,6 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Internal server error' });
 });
-
-app.use('/uploads', express.static('uploads'));
 
 const startServer = async () => {
     try {
