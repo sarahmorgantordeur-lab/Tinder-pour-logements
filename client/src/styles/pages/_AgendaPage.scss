@@ -154,6 +154,16 @@
     }
 }
 
+.agenda-item-owner {
+    font-size: 0.875rem;
+    color: $text-muted;
+    margin: 0;
+
+    strong {
+        color: $main-text-color;
+    }
+}
+
 .agenda-item-notes {
     font-size: 0.825rem;
     color: $text-muted;
@@ -242,6 +252,64 @@
 
     textarea {
         resize: vertical;
+    }
+}
+
+// ── SearchableSelect ─────────────────────────────────
+.searchable-select {
+    position: relative;
+
+    &__input {
+        width: 100%;
+        box-sizing: border-box;
+        background-color: $input-bg;
+        border: 1px solid $border-color-muted;
+        border-radius: 0.5rem;
+        padding: 0.6rem 0.75rem;
+        color: $main-text-color;
+        font-family: 'BeVietnamPro', sans-serif;
+        font-size: 0.9rem;
+        transition: border-color 0.2s;
+
+        &::placeholder { color: $text-muted; }
+        &:focus {
+            outline: none;
+            border-color: $border-color;
+        }
+    }
+
+    &__dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background-color: $bg-color-medium;
+        border: 1px solid $border-color;
+        border-radius: 0.5rem;
+        max-height: 200px;
+        overflow-y: auto;
+        list-style: none;
+        margin: 0;
+        padding: 0.25rem 0;
+    }
+
+    &__option {
+        padding: 0.55rem 0.75rem;
+        color: $main-text-color;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.15s;
+
+        &:hover { background-color: $background-color-light; }
+        &--selected { color: $button-bg; font-weight: 600; }
+    }
+
+    &__empty {
+        padding: 0.55rem 0.75rem;
+        color: $text-muted;
+        font-size: 0.875rem;
+        font-style: italic;
     }
 }
 

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../api";
+import { useAuth } from "../hooks/useAuth";
 import Headers from "../layouts/components/Headers";
 import Footer from "../layouts/components/Footer";
 import Select from "../components/ui/Select";
+import SearchableSelect from "../components/ui/SearchableSelect";
 import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
 import Modal from "../components/ui/Modal";
@@ -17,6 +19,9 @@ function formatDate(iso) {
 
 export default function AgendaPage() {
 
+    const { user } = useAuth();
+    const isTenant = user?.role === "user";
+
     const [appointments, setAppointments] = useState([]);
     const [properties, setProperties]     = useState([]);
     const [tenants, setTenants]           = useState([]);
@@ -29,33 +34,40 @@ export default function AgendaPage() {
     const [formError, setFormError] = useState(null);
     const [showForm, setShowForm]   = useState(false);
 
-    // Charger rdv + biens + tenants (via conversations)
+    // Charger les rdv selon le rôle
     useEffect(() => {
-        Promise.allSettled([
-            api.get("/appointments"),
-            api.get("/properties/owner/my-properties"),
-            api.get("/conversations/owner"),
-        ])
-            .then(([apptRes, propRes, convRes]) => {
-                if (apptRes.status === "fulfilled") {
-                    setAppointments(apptRes.value.data.appointments || []);
-                }
-                if (propRes.status === "fulfilled") {
-                    setProperties(propRes.value.data.properties || propRes.value.data.apartments || []);
-                } else {
-                    setError("Impossible de charger les biens.");
-                }
-                if (convRes.status === "fulfilled") {
-                    const convs = convRes.value.data.conversations || [];
-                    const seen = new Map();
-                    convs.forEach((c) => {
-                        if (c.tenant && !seen.has(c.tenant.id)) seen.set(c.tenant.id, c.tenant);
-                    });
-                    setTenants(Array.from(seen.values()));
-                }
-            })
-            .finally(() => setLoading(false));
-    }, []);
+        if (isTenant) {
+            api.get("/appointments/tenant")
+                .then(({ data }) => setAppointments(data.appointments || []))
+                .catch(() => setError("Impossible de charger vos rendez-vous."))
+                .finally(() => setLoading(false));
+        } else {
+            Promise.allSettled([
+                api.get("/appointments"),
+                api.get("/properties/owner/my-properties"),
+                api.get("/conversations/owner"),
+            ])
+                .then(([apptRes, propRes, convRes]) => {
+                    if (apptRes.status === "fulfilled") {
+                        setAppointments(apptRes.value.data.appointments || []);
+                    }
+                    if (propRes.status === "fulfilled") {
+                        setProperties(propRes.value.data.properties || propRes.value.data.apartments || []);
+                    } else {
+                        setError("Impossible de charger les biens.");
+                    }
+                    if (convRes.status === "fulfilled") {
+                        const convs = convRes.value.data.conversations || [];
+                        const seen = new Map();
+                        convs.forEach((c) => {
+                            if (c.tenant && !seen.has(c.tenant.id)) seen.set(c.tenant.id, c.tenant);
+                        });
+                        setTenants(Array.from(seen.values()));
+                    }
+                })
+                .finally(() => setLoading(false));
+        }
+    }, [isTenant]);
 
     const openCreate = () => {
         setEditId(null);
@@ -119,6 +131,65 @@ export default function AgendaPage() {
         return acc;
     }, {});
 
+    // Vue tenant — liste en lecture seule groupée par bien
+    if (isTenant) {
+        const grouped = appointments.reduce((acc, appt) => {
+            const key = appt.property?.id ?? "unknown";
+            if (!acc[key]) acc[key] = { property: appt.property, items: [] };
+            acc[key].items.push(appt);
+            return acc;
+        }, {});
+
+        return (
+            <div className="agenda-page">
+                <Headers />
+                <main className="agenda-content">
+                    <header className="agenda-header">
+                        <div>
+                            <p className="agenda-kicker">Mes visites</p>
+                            <h1 className="agenda-title">Mes rendez-vous</h1>
+                        </div>
+                    </header>
+
+                    {loading && <p className="agenda-loading">Chargement...</p>}
+                    {error   && <p className="agenda-error">{error}</p>}
+
+                    {!loading && !error && Object.keys(grouped).length === 0 && (
+                        <p className="agenda-empty">Aucun rendez-vous prévu pour l'instant.</p>
+                    )}
+
+                    {Object.values(grouped).map(({ property, items }) => (
+                        <section key={property?.id} className="agenda-group">
+                            <h2 className="agenda-group-title">
+                                {property?.title ?? "Bien inconnu"}
+                                {property?.address?.city && (
+                                    <span className="agenda-group-city"> · {property.address.city}</span>
+                                )}
+                            </h2>
+                            <ul className="agenda-list">
+                                {items.map((appt) => (
+                                    <li key={appt.id} className="agenda-item">
+                                        <div className="agenda-item-info">
+                                            <p className="agenda-item-title">{appt.title}</p>
+                                            <p className="agenda-item-date">{formatDate(appt.date)}</p>
+                                            <p className="agenda-item-owner">
+                                                Organisé par : <strong>{appt.owner?.firstname} {appt.owner?.lastname}</strong>
+                                            </p>
+                                            {appt.notes && (
+                                                <p className="agenda-item-notes">{appt.notes}</p>
+                                            )}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    ))}
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+
     return (
         <div className="agenda-page">
             <Headers />
@@ -170,34 +241,49 @@ export default function AgendaPage() {
                                     <>
                                         <label className="agenda-field">
                                             Bien immobilier
+
                                             <Select
                                                 required
-                                                value={form.property_id}
-                                                onChange={(e) => setForm((p) => ({ ...p, property_id: e.target.value }))}
-                                            >
-                                                <option value="">-- Choisir un bien --</option>
-                                                {properties.map((p) => (
-                                                    <option key={p.id} value={p.id}>
-                                                        {p.title} {p.address?.city ? `(${p.address.city})` : ""}
-                                                    </option>
-                                                ))}
-                                            </Select>
-                                        </label>
-
+                                                value={properties
+                                                    .map(p => ({
+                                                        value: p.id,
+                                                        label: `${p.title} ${p.address?.city ? `(${p.address.city})` : ""}`
+                                                    }))
+                                                    .find(opt => opt.value === form.property_id)
+                                                    }
+                                                    onChange={(selected) =>
+                                                        setForm((prev) => ({
+                                                            ...prev,
+                                                            property_id: selected?.value || ""
+                                                        }))
+                                                    }
+                                                    options={properties.map((p) => ({
+                                                        value: p.id,
+                                                        label: `${p.title} ${p.address?.city ? `(${p.address.city})` : ""}`
+                                                    }))}
+                                                    placeholder="-- Choisir un bien --"
+                                                />
+                                            </label>        
                                         <label className="agenda-field">
                                             Locataire
-                                            <Select
+                                            <SearchableSelect
                                                 required
-                                                value={form.tenant_id}
-                                                onChange={(e) => setForm((p) => ({ ...p, tenant_id: e.target.value }))}
-                                            >
-                                                <option value="">-- Choisir un locataire --</option>
-                                                {tenants.map((t) => (
-                                                    <option key={t.id} value={t.id}>
-                                                        {t.firstname} {t.lastname}
-                                                    </option>
-                                                ))}
-                                            </Select>
+                                                value={tenants
+                                                    .map((t) => ({ value: t.id, label: `${t.firstname} ${t.lastname}` }))
+                                                    .find((opt) => opt.value === form.tenant_id)
+                                                }
+                                                onChange={(selected) =>
+                                                    setForm((prev) => ({
+                                                        ...prev,
+                                                        tenant_id: selected?.value || "",
+                                                    }))
+                                                }
+                                                options={tenants.map((t) => ({
+                                                    value: t.id,
+                                                    label: `${t.firstname} ${t.lastname}`,
+                                                }))}
+                                                placeholder="-- Choisir un locataire --"
+                                            />
                                         </label>
                                     </>
                                 )}

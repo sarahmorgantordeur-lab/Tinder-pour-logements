@@ -27,7 +27,32 @@ const appointmentSelect = {
     property: { select: { id: true, title: true, address: { select: { city: true } } } },
 };
 
+const tenantAppointmentSelect = {
+    id: true,
+    title: true,
+    date: true,
+    notes: true,
+    created_at: true,
+    owner: { select: { id: true, firstname: true, lastname: true, email: true } },
+    property: { select: { id: true, title: true, address: { select: { city: true } } } },
+};
+
 class AppointmentController {
+    // GET /appointments/tenant — liste des rdv où l'utilisateur connecté est le locataire
+    static async listAsTenant(req, res) {
+        try {
+            const appointments = await prisma.appointment.findMany({
+                where: { tenant_id: req.user.id },
+                select: tenantAppointmentSelect,
+                orderBy: { date: 'asc' },
+            });
+            res.status(200).json({ appointments });
+        } catch (error) {
+            console.error('[Appointment.listAsTenant]', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
     // GET /appointments — liste des rdv de l'owner/agency connecté
     static async list(req, res) {
         try {
