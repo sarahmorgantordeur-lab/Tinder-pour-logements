@@ -16,12 +16,18 @@
     font-display: swap;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     background-color: $main-bg;
     color: $main-text-color;
     font-family: 'BeVietnamPro', sans-serif;
     font-size: clamp(0.875rem, 1vw + 0.5rem, 1rem);
     line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
 h1 { font-size: clamp(1.75rem, 3vw + 1rem, 2.5rem); }

@@ -7,17 +7,21 @@
     justify-content: center;
     min-height: 100%;
     width: 60%;
-    gap: 32px;
-    padding: 2rem 0;
+    gap: 32px
 
     @media (max-width: 900px) {
         width: 85%;
         gap: 24px;
+        height: auto;
+        min-height: 100%;
+        padding: 2rem 1.5rem;
     }
 
     @media (max-width: 580px) {
         width: 100%;
         padding: 1rem;
+        height: auto;
+        min-height: unset;
         gap: 20px;
     }
 }

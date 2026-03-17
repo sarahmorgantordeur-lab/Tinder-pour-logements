@@ -6,6 +6,9 @@
     align-items: center;
     padding: 2rem;
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 
     @media (max-width: 900px) {
         padding: 1.5rem;
@@ -20,6 +23,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        @media (max-width: 480px) {
+            width: 100%;
+        }
     }
 
     .swipe-buttons {
@@ -35,10 +42,12 @@
 
         @media (max-width: 580px) {
             width: 100%;
+            gap: 12px;
         }
 
         .swipe-button {
             width: 100%;
+            min-height: 44px;
         }
     }
 }
@@ -48,6 +57,7 @@
     width: 100%;
     max-width: 900px;
     margin-bottom: 1.5rem;
+    box-sizing: border-box;
 }
 
 .user-home-filter-row {
@@ -64,6 +74,7 @@
 .user-home-filter-input {
     flex: 1;
     min-width: 120px;
+    min-height: 44px;
     font-size: 0.9rem;
     padding: 0.6rem 0.75rem;
     border-radius: 8px;
@@ -72,6 +83,7 @@
     background-color: $input-bg;
     color: $main-text-color;
     transition: border-color 0.3s;
+    box-sizing: border-box;
 
     &::placeholder {
         color: $text-muted;
@@ -89,11 +101,17 @@
             flex: 1;
         }
     }
+
+    @media (max-width: 480px) {
+        min-width: 0;
+        width: 100%;
+    }
 }
 
 .user-home-filter-select {
     flex: 1;
     min-width: 150px;
+    min-height: 44px;
     font-size: 0.9rem;
     padding: 0.6rem 0.75rem;
     border-radius: 8px;
@@ -101,10 +119,17 @@
     outline: none;
     background-color: $input-bg;
     color: $main-text-color;
+    box-sizing: border-box;
+
+    @media (max-width: 480px) {
+        min-width: 0;
+        width: 100%;
+    }
 }
 
 .user-home-filter-btn {
     padding: 0.6rem 1.25rem;
+    min-height: 44px;
     background-color: $button-bg;
     color: $main-text-color;
     border: none;
@@ -117,10 +142,15 @@
     &:hover {
         background-color: rgba($color: $button-bg, $alpha: 0.9);
     }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
 }
 
 .user-home-filter-clear {
     padding: 0.6rem 1rem;
+    min-height: 44px;
     background-color: transparent;
     color: $text-muted;
     border: 1px solid $border-color-muted;
@@ -133,6 +163,10 @@
     &:hover {
         color: $main-text-color;
         border-color: $border-color;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
     }
 }
 

@@ -121,6 +121,7 @@
 
 .create-agency-cancel {
     padding: 0.75rem 2rem;
+    min-height: 44px;
     background-color: transparent;
     color: $text-muted;
     border: 1px solid $border-color-muted;
@@ -141,6 +142,7 @@
 
 .create-agency-submit {
     padding: 0.75rem 2rem;
+    min-height: 44px;
     background-color: $button-bg;
     color: $main-text-color;
     border: none;
