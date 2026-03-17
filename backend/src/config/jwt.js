@@ -88,6 +88,23 @@ export const authenticate = async (req, res, next) => {
   }
 };
 
+export const optionalAuthenticate = async (req, _res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return next();
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = verifyToken(token);
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, role: true, is_active: true }
+    });
+    if (user?.is_active) req.user = user;
+  } catch {
+    // token invalide, on continue sans utilisateur
+  }
+  next();
+};
+
 export {
   JWT_SECRET,
   JWT_EXPIRES_IN,

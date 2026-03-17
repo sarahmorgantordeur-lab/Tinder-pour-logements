@@ -63,8 +63,12 @@ class PropertyService {
         });
     }
 
-    static async getAll(filters = {}, pagination = { skip: 0, take: 20 }) {
+    static async getAll(filters = {}, pagination = { skip: 0, take: 20 }, userId = null) {
     const where = { status: { not: 'archived' } };
+
+    if (userId) {
+        where.swipes = { none: { user_id: userId, direction: false } };
+    }
 
     if (filters.propertyType) where.property_type = filters.propertyType;
     if (filters.city) where.address = { city: { contains: filters.city, mode: 'insensitive' } };

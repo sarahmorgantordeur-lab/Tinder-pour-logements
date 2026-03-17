@@ -21,7 +21,7 @@ class PropertyController {
             const filters = { propertyType, city, minPrice, maxPrice, minSurface, minRooms };
             const skip = (Number(page) - 1) * Number(limit);
 
-            const { total, properties } = await PropertyService.getAll(filters, { skip, take: Number(limit) });
+            const { total, properties } = await PropertyService.getAll(filters, { skip, take: Number(limit) }, req.user?.id);
 
             res.status(200).json({
                 page: Number(page),

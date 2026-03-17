@@ -214,6 +214,11 @@
     &:hover {
         background-color: rgba(229, 115, 115, 0.9);
     }
+
+    // Toujours visible sur touch/mobile
+    @media (hover: none) {
+        opacity: 1;
+    }
 }
 
 .edit-announcement-photo-add-btn {

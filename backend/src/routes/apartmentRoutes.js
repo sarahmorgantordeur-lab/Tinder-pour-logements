@@ -1,6 +1,6 @@
 import express from 'express';
 import PropertyController from '../controllers/apartmentController.js';
-import { authenticate } from '../config/jwt.js';
+import { authenticate, optionalAuthenticate } from '../config/jwt.js';
 import { isOwnerOrAgency } from '../middlewares/roleMiddleware.js';
 import { uploadPicturesMiddleware } from '../middlewares/uploadMiddleware.js';
 import { uuidParamValidation } from '../utils/validators.js';
@@ -8,7 +8,7 @@ import { uuidParamValidation } from '../utils/validators.js';
 const router = express.Router();
 
 // Routes publiques
-router.get('/', PropertyController.getAll);
+router.get('/', optionalAuthenticate, PropertyController.getAll);
 
 // Routes protégées — propriétaires et agences
 router.get('/owner/my-properties', authenticate, isOwnerOrAgency, PropertyController.getMyProperties);
