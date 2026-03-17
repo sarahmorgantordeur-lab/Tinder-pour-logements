@@ -243,7 +243,10 @@ export default function DiscussionPage() {
                                         disabled={sending || !draft.trim()}
                                         title="Envoyer"
                                     >
-                                        {sending ? "..." : <SendIcon />}
+                                        {sending
+                                            ? "..."
+                                            : <><span className="discussion-send-btn__text">Envoyer</span><SendIcon className="discussion-send-btn__icon" /></>
+                                        }
                                     </Button>
                                 </div>
                             </form>
