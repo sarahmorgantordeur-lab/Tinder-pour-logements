@@ -6,23 +6,16 @@
     border-top: 1px solid $border-color-muted;
     transition: all 0.3s ease;
 
+    @media (max-width: 900px) {
+        display: none;
+    }
+
     .footer-top {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        padding: 2.5rem 2rem;
+        align-items: center;
+        padding: 1rem 2rem;
         gap: 2rem;
-
-        @media (max-width: 768px) {
-            flex-direction: column;
-            padding: 2rem 1.5rem;
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 480px) {
-            padding: 1.5rem 1rem;
-            gap: 1.25rem;
-        }
     }
 
     .footer-brand {
@@ -58,9 +51,8 @@
             gap: 2rem;
         }
 
-        @media (max-width: 480px) {
-            flex-wrap: wrap;
-            gap: 1.5rem;
+        @media (max-width: 900px) {
+            display: none;
         }
 
         .footer-nav-group {

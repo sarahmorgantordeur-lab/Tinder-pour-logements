@@ -10,11 +10,11 @@
     box-sizing: border-box;
     overflow-x: hidden;
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
         padding: 1.5rem;
     }
 
-    @media (max-width: 480px) {
-        padding: 1rem 0.75rem;
+    @media (max-width: 580px) {
+        padding: 1rem;
     }
 }

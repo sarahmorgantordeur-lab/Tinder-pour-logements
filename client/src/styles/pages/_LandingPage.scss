@@ -10,8 +10,10 @@
     min-height: 100vh;
     overflow-x: hidden;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1250px) {
         flex-direction: column;
+        width: 100%;
+        min-height: 50vh;
     }
 
     .landing-intro {
@@ -26,13 +28,17 @@
         background-size: cover;
         background-position: center center;
 
-        @media (max-width: 768px) {
+        @media (max-width: 1250px) {
             width: 100%;
+            min-height: 50vh;
+        }
+
+        @media (max-width: 900px) {
             min-height: 50vh;
             padding: 1.5rem;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 580px) {
             min-height: 45vh;
             padding: 1rem;
         }
@@ -48,12 +54,12 @@
             border-color: $border-color;
             border-width: 1px;
 
-            @media (max-width: 768px) {
+            @media (max-width: 900px) {
                 padding: 32px;
                 border-radius: 24px;
             }
 
-            @media (max-width: 480px) {
+            @media (max-width: 580px) {
                 padding: 20px;
                 border-radius: 16px;
             }
@@ -63,11 +69,11 @@
                 font-weight: 700;
                 margin-bottom: 1rem;
 
-                @media (max-width: 768px) {
+                @media (max-width: 900px) {
                     font-size: 36px;
                 }
 
-                @media (max-width: 480px) {
+                @media (max-width: 580px) {
                     font-size: 28px;
                 }
             }
@@ -80,11 +86,11 @@
     margin-bottom: 2rem;
     line-height: 150%;
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
         font-size: 16px;
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 580px) {
         font-size: 14px;
         margin-bottom: 1rem;
     }
@@ -99,7 +105,7 @@
     border-radius: 5px;
     cursor: pointer;
 
-    @media (max-width: 480px) {
+    @media (max-width: 580px) {
         font-size: 16px;
         padding: 0.6rem 1.2rem;
     }
@@ -111,13 +117,19 @@
     justify-content: center;
     align-items: center;
     background-color: $background-color-light;
+    overflow-y: auto;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1250px) {
         width: 100%;
-        padding: 2rem 1.5rem;
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 900px) {
+        width: 100%;
+        padding: 2rem 1.5rem;
+        align-items: flex-start;
+    }
+
+    @media (max-width: 580px) {
         padding: 1.5rem 1rem;
     }
 }

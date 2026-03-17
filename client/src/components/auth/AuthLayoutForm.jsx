@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SwitchAuth from "./SwitchAuth";
 import Login from "./Login";
 import Register from "./Register";
@@ -10,6 +11,8 @@ const fadeVariants = {
 };
 
 export default function AuthLayoutForm({ isLogin, isRegister, setIsLogin, setIsRegister }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     return (
         <div className="auth-layout-form">
@@ -24,7 +27,10 @@ export default function AuthLayoutForm({ isLogin, isRegister, setIsLogin, setIsR
                     transition={{ duration: 0.2 }}
                     style={{ width: "100%" }}
                 >
-                    {isLogin ? <Login /> : <Register />}
+                    {isLogin
+                        ? <Login email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
+                        : <Register email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
+                    }
                 </motion.div>
             </AnimatePresence>
         </div>
