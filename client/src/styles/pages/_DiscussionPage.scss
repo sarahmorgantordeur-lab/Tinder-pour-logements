@@ -3,39 +3,40 @@
 .discussion-page {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     background-color: $main-bg;
 }
 
 .discussion-main {
     display: flex;
     flex: 1;
-    height: calc(100vh - 68px);
     overflow: hidden;
-
-    @media (max-width: 768px) {
-        flex-direction: column;
-        height: auto;
-        overflow: visible;
-    }
+    min-height: 0;
 }
 
-// Sidebar — liste des conversations
+// ── Sidebar ────────────────────────────────────────────────────────────────────
 .discussion-sidebar {
     width: 320px;
     min-width: 320px;
-    border-right: 1px solid $border-color-muted;
-    background-color: $background-color-light;
+    border-right: 1px solid rgba($border-color-muted, 0.6);
+    background-color: rgba($background-color-light, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
     overflow: hidden;
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
         width: 100%;
         min-width: unset;
         border-right: none;
-        border-bottom: 1px solid $border-color-muted;
-        max-height: 40vh;
+    }
+
+    &--hidden-mobile {
+        @media (max-width: 900px) {
+            display: none;
+        }
     }
 }
 
@@ -44,7 +45,8 @@
     font-weight: 700;
     color: $main-text-color;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid $border-color-muted;
+    border-bottom: 1px solid rgba($border-color-muted, 0.5);
+    background-color: rgba($background-color-light, 0.4);
 }
 
 .discussion-loading {
@@ -63,12 +65,32 @@
 
 .discussion-filter {
     padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid $border-color-muted;
+    border-bottom: 1px solid rgba($border-color-muted, 0.5);
 }
 
 .discussion-conv-list {
     overflow-y: auto;
     flex: 1;
+}
+
+.discussion-property-group {
+    padding-top: 0.25rem;
+}
+
+.discussion-property-group-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $text-muted;
+    padding: 0.6rem 1.25rem 0.3rem;
+    margin: 0;
+    opacity: 0.7;
+}
+
+.discussion-property-group-city {
+    font-weight: 400;
+    opacity: 0.8;
 }
 
 .discussion-conv-item {
@@ -77,21 +99,21 @@
     gap: 0.75rem;
     width: 100%;
     padding: 0.875rem 1.25rem;
-    background: none;
+    background: transparent;
     border: none;
-    border-bottom: 1px solid $border-color-muted;
+    border-bottom: 1px solid rgba($border-color-muted, 0.35);
     border-left: 3px solid transparent;
     cursor: pointer;
     text-align: left;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, border-left-color 0.2s;
     color: $main-text-color;
 
     &:hover {
-        background-color: rgba($color: $border-color-muted, $alpha: 0.5);
+        background-color: rgba($border-color, 0.15);
     }
 
     &--active {
-        background-color: rgba($color: $border-color, $alpha: 0.25);
+        background-color: rgba($button-bg, 0.1);
         border-left-color: $button-bg;
     }
 }
@@ -102,6 +124,7 @@
     height: 48px;
     border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 
     img {
         width: 100%;
@@ -113,7 +136,7 @@
 .discussion-conv-photo--placeholder {
     width: 48px;
     height: 48px;
-    background-color: $border-color-muted;
+    background-color: rgba($border-color-muted, 0.6);
     border-radius: 8px;
 }
 
@@ -143,7 +166,7 @@
 
 .discussion-conv-last {
     font-size: 0.8rem;
-    color: $text-muted;
+    color: rgba($text-muted, 0.75);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -160,14 +183,14 @@
 
 .discussion-conv-time {
     font-size: 0.75rem;
-    color: $text-muted;
+    color: rgba($text-muted, 0.7);
 }
 
 .discussion-conv-badge {
     background-color: $button-bg;
-    color: $main-text-color;
+    color: $main-bg;
     font-size: 0.7rem;
-    font-weight: 600;
+    font-weight: 700;
     border-radius: 999px;
     min-width: 18px;
     height: 18px;
@@ -175,18 +198,21 @@
     align-items: center;
     justify-content: center;
     padding: 0 4px;
+    box-shadow: 0 0 6px rgba($button-bg, 0.5);
 }
 
-// Thread — zone de messagerie
+// ── Thread ─────────────────────────────────────────────────────────────────────
 .discussion-thread {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: $main-bg;
+    background: linear-gradient(180deg, rgba($background-color-light, 0.06) 0%, $main-bg 60%);
 
-    @media (max-width: 768px) {
-        min-height: 60vh;
+    &--hidden-mobile {
+        @media (max-width: 900px) {
+            display: none;
+        }
     }
 }
 
@@ -195,40 +221,72 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $text-muted;
+    color: rgba($text-muted, 0.6);
     font-size: 0.9rem;
     padding: 2rem;
     text-align: center;
 }
 
+.discussion-back-btn {
+    display: none;
+
+    @media (max-width: 900px) {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: none;
+        border: none;
+        color: $main-text-color;
+        font-size: 0.9rem;
+        font-family: 'BeVietnamPro', sans-serif;
+        cursor: pointer;
+        padding: 0;
+        margin-bottom: 0.5rem;
+        opacity: 0.8;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
 .discussion-thread-header {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid $border-color-muted;
-    background-color: $background-color-light;
+    border-bottom: 1px solid rgba($border-color-muted, 0.5);
+    background-color: rgba($background-color-light, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
 }
 
-.discussion-view-profile-btn {
+.discussion-view-profile-btn,
+.discussion-doc-request-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    margin-top: 0.5rem;
     padding: 0.4rem 0.9rem;
-    background-color: transparent;
+    background-color: rgba($button-bg, 0.08);
     color: $button-bg;
-    border: 1px solid $button-bg;
+    border: 1px solid rgba($button-bg, 0.35);
     border-radius: 8px;
     font-size: 0.8rem;
     font-weight: 600;
+    font-family: 'BeVietnamPro', sans-serif;
     text-decoration: none;
-    width: fit-content;
-    transition: background-color 0.2s, color 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
 
     &:hover {
-        background-color: $button-bg;
-        color: $main-bg;
+        background-color: rgba($button-bg, 0.2);
+        border-color: $button-bg;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 }
 
@@ -245,6 +303,7 @@
     margin: 0;
 }
 
+// ── Messages ───────────────────────────────────────────────────────────────────
 .discussion-messages {
     flex: 1;
     overflow-y: auto;
@@ -253,19 +312,18 @@
     flex-direction: column;
     gap: 1rem;
 
-    @media (max-width: 480px) {
+    @media (max-width: 580px) {
         padding: 1rem;
     }
 }
 
 .discussion-messages-empty {
-    color: $text-muted;
+    color: rgba($text-muted, 0.6);
     font-size: 0.9rem;
     text-align: center;
     margin: 0;
 }
 
-// Bulles de messages
 .discussion-msg {
     display: flex;
     width: 100%;
@@ -295,7 +353,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: $border-color;
+    background-color: rgba($border-color, 0.7);
+    border: 1px solid rgba($border-color, 0.4);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -319,7 +378,7 @@
 
 .discussion-msg-name {
     font-size: 0.75rem;
-    color: $text-muted;
+    color: rgba($text-muted, 0.8);
     margin: 0;
 }
 
@@ -327,16 +386,20 @@
     padding: 0.6rem 1rem;
     border-radius: 12px;
 
-    // Messages reçus — fond sombre
     .discussion-msg--other & {
-        background-color: #150c08;
+        background-color: rgba($background-color-light, 0.7);
+        border: 1px solid rgba($border-color-muted, 0.5);
         border-bottom-left-radius: 4px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
-    // Messages envoyés — fond accent
     .discussion-msg--own & {
-        background-color: $button-bg;
+        background-color: rgba($button-bg, 0.85);
+        border: 1px solid rgba($button-bg, 0.4);
         border-bottom-right-radius: 4px;
+        box-shadow: 0 2px 10px rgba($button-bg, 0.2);
     }
 
     p {
@@ -349,20 +412,22 @@
 
 .discussion-msg-time {
     font-size: 0.7rem;
-    color: $text-muted;
+    color: rgba($text-muted, 0.6);
 
     .discussion-msg--own & {
         text-align: right;
     }
 }
 
-// Formulaire d'envoi
+// ── Formulaire d'envoi ────────────────────────────────────────────────────────
 .discussion-send-form {
     padding: 1rem 1.5rem;
-    border-top: 1px solid $border-color-muted;
-    background-color: $background-color-light;
+    border-top: 1px solid rgba($border-color-muted, 0.5);
+    background-color: rgba($background-color-light, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 
-    @media (max-width: 480px) {
+    @media (max-width: 580px) {
         padding: 0.75rem 1rem;
     }
 }
@@ -384,18 +449,19 @@
     font-size: 0.95rem;
     padding: 0.65rem 1rem;
     border-radius: 0.5rem;
-    border: 1px solid $border-color-muted;
+    border: 1px solid rgba($border-color-muted, 0.6);
     outline: none;
-    background-color: $input-bg;
+    background-color: rgba($input-bg, 0.35);
     color: $main-text-color;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, background-color 0.3s;
 
     &::placeholder {
-        color: $text-muted;
+        color: rgba($text-muted, 0.6);
     }
 
     &:focus {
-        border-color: $border-color;
+        border-color: rgba($border-color, 0.8);
+        background-color: rgba($input-bg, 0.5);
     }
 
     &:disabled {
@@ -410,16 +476,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: transparent;
-    border: 1px solid $border-color-muted;
+    background-color: rgba($border-color-muted, 0.3);
+    border: 1px solid rgba($border-color-muted, 0.5);
     border-radius: 8px;
     font-size: 1.1rem;
     cursor: pointer;
     transition: border-color 0.2s, background-color 0.2s;
 
     &:hover {
-        border-color: $border-color;
-        background-color: rgba($border-color-muted, 0.4);
+        border-color: rgba($border-color, 0.7);
+        background-color: rgba($border-color-muted, 0.5);
     }
 
     &:disabled {
@@ -430,17 +496,19 @@
 
 .discussion-send-btn {
     padding: 0.65rem 1.25rem;
-    background-color: $button-bg;
-    color: $main-text-color;
-    border: none;
+    background-color: rgba($button-bg, 0.9);
+    color: $main-bg;
+    border: 1px solid rgba($button-bg, 0.5);
     border-radius: 8px;
     font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color 0.2s, box-shadow 0.2s;
     white-space: nowrap;
 
     &:hover {
-        background-color: rgba($color: $button-bg, $alpha: 0.9);
+        background-color: $button-bg;
+        box-shadow: 0 0 10px rgba($button-bg, 0.3);
     }
 
     &:disabled {
@@ -449,43 +517,26 @@
     }
 }
 
-// Thread header actions row
+// ── Thread header actions ──────────────────────────────────────────────────────
 .discussion-thread-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
     margin-top: 0.5rem;
-}
 
-// Button to request a document (owner/agency)
-.discussion-doc-request-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.9rem;
-    background-color: transparent;
-    color: $button-bg;
-    border: 1px solid rgba($button-bg, 0.4);
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-family: 'BeVietnamPro', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
-    white-space: nowrap;
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: stretch;
 
-    &:hover {
-        background-color: rgba($button-bg, 0.1);
-        border-color: $button-bg;
-    }
-
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+        a, button {
+            justify-content: center;
+        }
     }
 }
 
-// Image dans une bulle
+
+// ── Images & documents ─────────────────────────────────────────────────────────
 .discussion-msg-image {
     display: block;
     max-width: 260px;
@@ -493,28 +544,33 @@
     border-radius: 10px;
     object-fit: cover;
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-// Doc bubble — no background, let the card handle its own look
 .discussion-msg-bubble--doc {
     padding: 0;
     background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
 }
 
-// Doc cards (request & upload)
 .discussion-doc-card {
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
     padding: 0.75rem 1rem;
     border-radius: 12px;
-    border: 1px solid $border-color-muted;
-    background-color: $background-color-light;
+    border: 1px solid rgba($border-color-muted, 0.5);
+    background-color: rgba($background-color-light, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     min-width: 220px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 
     .discussion-msg--own & {
-        background-color: rgba($button-bg, 0.12);
-        border-color: rgba($button-bg, 0.3);
+        background-color: rgba($button-bg, 0.1);
+        border-color: rgba($button-bg, 0.25);
     }
 }
 
@@ -545,7 +601,7 @@
 
 .discussion-doc-text {
     font-size: 0.825rem;
-    color: $text-muted;
+    color: rgba($text-muted, 0.85);
     font-style: italic;
     margin: 0;
 }
@@ -573,14 +629,18 @@
 .discussion-doc-upload-btn {
     align-self: flex-start;
     padding: 0.4rem 0.9rem;
-    background-color: $button-bg;
-    color: $main-text-color;
-    border: none;
+    background-color: rgba($button-bg, 0.85);
+    color: $main-bg;
+    border: 1px solid rgba($button-bg, 0.4);
     border-radius: 6px;
     font-size: 0.825rem;
     font-family: 'BeVietnamPro', sans-serif;
+    font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: background-color 0.2s, box-shadow 0.2s;
 
-    &:hover { opacity: 0.85; }
+    &:hover {
+        background-color: $button-bg;
+        box-shadow: 0 0 8px rgba($button-bg, 0.3);
+    }
 }

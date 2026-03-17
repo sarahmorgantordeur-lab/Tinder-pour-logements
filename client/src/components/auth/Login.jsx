@@ -3,9 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 
-export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+export default function Login({ email, setEmail, password, setPassword }) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
