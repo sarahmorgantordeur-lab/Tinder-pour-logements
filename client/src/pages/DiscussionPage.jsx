@@ -9,6 +9,7 @@ import ConversationItem from "../components/discussion/ConversationItem";
 import MessageBubble from "../components/discussion/MessageBubble";
 import ApartmentModal from "../components/cards/ApartmentModal";
 import { useDiscussion } from "../hooks/useDiscussion";
+import SendIcon from "../assets/icons/send-message.svg?react";
 
 export default function DiscussionPage() {
     const {
@@ -240,8 +241,9 @@ export default function DiscussionPage() {
                                         className="discussion-send-btn"
                                         type="submit"
                                         disabled={sending || !draft.trim()}
+                                        title="Envoyer"
                                     >
-                                        {sending ? "..." : "Envoyer"}
+                                        {sending ? "..." : <SendIcon />}
                                     </Button>
                                 </div>
                             </form>
