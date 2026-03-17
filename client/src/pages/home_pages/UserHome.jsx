@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AppartementCard from "../../components/cards/AppartementCard";
+import ApartmentModal from "../../components/cards/ApartmentModal";
 import {useHome} from "../../hooks/useHome";
 import Button from "../../components/ui/Button";
 import Select from "../../components/ui/Select";
@@ -16,6 +17,7 @@ const swipAnimations = {
 export default function UserHome() {
     const { apartments, currentApartment, loading, error, filters, setFilters, fetchApartments, swipe } = useHome();
     const [form, setForm] = useState(filters);
+    const [selectedApartment, setSelectedApartment] = useState(null);
 
 const PROPERTY_TYPES = [
     "Bungalow", "Chalet", "Castel", "Farm", "CountryHouse",
@@ -159,14 +161,24 @@ function hasActiveFilter(f) {
                     onAnimationComplete={handleAnimationComplete}
                 >
                     {currentApartment && (
-                        <AppartementCard appartement={{
-                            ...currentApartment,
-                            city: currentApartment.address?.city,
-                            postal_code: currentApartment.address?.postal_code,
-                            image: currentApartment.photos?.[0]?.url
-                                ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${currentApartment.photos[0].url}`
-                                : null,
-                        }} />
+                        <AppartementCard
+                            appartement={{
+                                ...currentApartment,
+                                city: currentApartment.address?.city,
+                                postal_code: currentApartment.address?.postal_code,
+                                image: currentApartment.photos?.[0]?.url
+                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${currentApartment.photos[0].url}`
+                                    : null,
+                            }}
+                            onClick={() => setSelectedApartment({
+                                ...currentApartment,
+                                city: currentApartment.address?.city,
+                                postal_code: currentApartment.address?.postal_code,
+                                image: currentApartment.photos?.[0]?.url
+                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${currentApartment.photos[0].url}`
+                                    : null,
+                            })}
+                        />
                     )}
                 </motion.div>
             </AnimatePresence>
@@ -178,6 +190,13 @@ function hasActiveFilter(f) {
                     Like
                 </Button>
             </div>
+        {selectedApartment && (
+                <ApartmentModal
+                    appartement={selectedApartment}
+                    onClose={() => setSelectedApartment(null)}
+                    isOwner={false}
+                />
+            )}
         </div>
     );
 }

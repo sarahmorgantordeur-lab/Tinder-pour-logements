@@ -32,6 +32,7 @@ export function useDiscussion() {
             .then(({ data }) => {
                 setConversations(data.conversations);
                 if (filterPropertyId) {
+                    setActiveProperty(filterPropertyId);
                     const first = data.conversations.find(
                         (c) => c.property_id === filterPropertyId
                     );

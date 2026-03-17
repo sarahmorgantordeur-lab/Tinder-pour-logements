@@ -17,8 +17,8 @@
 
 // ── Sidebar ────────────────────────────────────────────────────────────────────
 .discussion-sidebar {
-    width: 320px;
-    min-width: 320px;
+    width: clamp(320px, 25vw, 480px);
+    min-width: clamp(320px, 25vw, 480px);
     border-right: 1px solid rgba($border-color-muted, 0.6);
     background-color: rgba($background-color-light, 0.55);
     backdrop-filter: blur(12px);
@@ -266,8 +266,10 @@
 }
 
 .discussion-view-profile-btn,
+.discussion-view-property-btn,
 .discussion-doc-request-btn {
     display: inline-flex;
+    width: fit-content;
     align-items: center;
     gap: 0.4rem;
     padding: 0.4rem 0.9rem;
