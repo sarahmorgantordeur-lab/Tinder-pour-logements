@@ -5,14 +5,14 @@ import Select from '../ui/Select';
 import Button from '../ui/Button';
 import { useHome } from '../../hooks/useHome';
 
-export default function AppartementOwnerCard({ appartement }) {
+export default function AppartementOwnerCard({ appartement, onClick }) {
   const imageSrc = appartement.image || landingImg;
 
 const {updateStatus} = useHome();
 
 
     return (
-        <motion.div className="appartement-owner-card">
+        <motion.div className="appartement-owner-card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
             <div className="appartement-owner-card-header">
                 <img className="appartement-owner-card-image" src={imageSrc} alt={appartement.title} />
                 <div className="appartement-owner-card-header-content">
@@ -20,7 +20,8 @@ const {updateStatus} = useHome();
                     <Select
                         className="appartement-owner-status"
                         value={appartement.status}
-                        onChange={(e) => updateStatus(appartement.id, e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => { e.stopPropagation(); updateStatus(appartement.id, e.target.value); }}
                         options={[
                             { value: "draft", label: "Brouillon" },
                             { value: "published", label: "Publié" },
@@ -34,7 +35,7 @@ const {updateStatus} = useHome();
                 <p className="appartement-owner-city">{appartement.postal_code}, {appartement.city}</p>
                 <p className="appartement-owner-price">{appartement.price} €</p>
             </div>
-            <div className="appartement-owner-card-footer">
+            <div className="appartement-owner-card-footer" onClick={(e) => e.stopPropagation()}>
                 <Link className='crud-link' to={`/discussions?property=${appartement.id}`}>
                     <Button className="appartement-owner-card-button">Messages</Button>
                 </Link>

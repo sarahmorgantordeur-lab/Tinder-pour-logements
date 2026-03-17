@@ -1,14 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AppartementOwnerCard from "../../components/cards/AppartementOwnerCard";
-import Headers from "../../layouts/components/Headers";
-import Footer from "../../layouts/components/Footer";
+import ApartmentModal from "../../components/cards/ApartmentModal";
 import Button from "../../components/ui/Button";
 import { useHome } from "../../hooks/useHome";
 
 export default function AgencyHome() {
     const { loading, error } = useHome();
     const { appartmentById, fetchMyProperties } = useHome();
+    const [selectedApartment, setSelectedApartment] = useState(null);
 
     useEffect(() => {
         fetchMyProperties();
@@ -79,12 +79,20 @@ export default function AgencyHome() {
                             >
                                 <AppartementOwnerCard
                                     appartement={formattedApartment}
+                                    onClick={() => setSelectedApartment(formattedApartment)}
                                 />
                             </div>
                         );
                     })}
                     </div>
                     </div>
+            )}
+            {selectedApartment && (
+                <ApartmentModal
+                    appartement={selectedApartment}
+                    onClose={() => setSelectedApartment(null)}
+                    isOwner={true}
+                />
             )}
         </div>
     );

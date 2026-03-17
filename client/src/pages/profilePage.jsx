@@ -96,6 +96,7 @@ export default function ProfilePage() {
 
             setSuccess(true);
             setFormData((prev) => ({ ...prev, password: "" }));
+            window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
             setError(err.message || "Erreur lors de la sauvegarde.");
         } finally {

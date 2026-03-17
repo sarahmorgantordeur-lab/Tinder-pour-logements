@@ -198,12 +198,15 @@
     right: 0.3rem;
     width: 24px;
     height: 24px;
+    padding: 0;
+    box-sizing: border-box;
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.6);
     color: #fff;
     border: none;
     font-size: 1.1rem;
     line-height: 1;
+    user-select: none;
     cursor: pointer;
     display: flex;
     align-items: center;

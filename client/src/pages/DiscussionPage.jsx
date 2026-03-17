@@ -7,6 +7,7 @@ import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
 import ConversationItem from "../components/discussion/ConversationItem";
 import MessageBubble from "../components/discussion/MessageBubble";
+import ApartmentModal from "../components/cards/ApartmentModal";
 import { useDiscussion } from "../hooks/useDiscussion";
 
 export default function DiscussionPage() {
@@ -38,6 +39,7 @@ export default function DiscussionPage() {
     } = useDiscussion();
 
     const [mobileView, setMobileView] = useState("list");
+    const [showPropertyModal, setShowPropertyModal] = useState(false);
 
     const handleSelectConvMobile = (id) => {
         handleSelectConv(id);
@@ -136,6 +138,14 @@ export default function DiscussionPage() {
                                 <p className="discussion-thread-city">
                                     {activeConv?.property?.address?.city}
                                 </p>
+                                {isTenant && activeConv?.property && (
+                                    <button
+                                        className="discussion-view-property-btn"
+                                        onClick={() => setShowPropertyModal(true)}
+                                    >
+                                        Voir le logement
+                                    </button>
+                                )}
                                 {isOwnerOrAgency && activeConv?.tenant?.id && (
                                     <div className="discussion-thread-actions">
                                         <Link
@@ -240,6 +250,17 @@ export default function DiscussionPage() {
                 </section>
             </main>
             <Footer />
+            {showPropertyModal && activeConv?.property && (
+                <ApartmentModal
+                    appartement={{
+                        ...activeConv.property,
+                        city: activeConv.property.address?.city,
+                        postal_code: activeConv.property.address?.postal_code,
+                    }}
+                    onClose={() => setShowPropertyModal(false)}
+                    isOwner={false}
+                />
+            )}
         </div>
     );
 }
