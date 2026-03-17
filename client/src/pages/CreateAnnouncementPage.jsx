@@ -298,7 +298,7 @@ export default function CreateAnnouncementPage({ onClose } = {}) {
                                 {photos.map((photo) => (
                                     <div key={photo.id} className="edit-announcement-photo-item">
                                         <img
-                                            src={`http://localhost:3000${photo.url}`}
+                                            src={`${BASE_URL.replace('/api', '')}${photo.url}`}
                                             alt="Photo du bien"
                                             className="edit-announcement-photo-img"
                                         />

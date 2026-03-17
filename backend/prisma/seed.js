@@ -12,8 +12,8 @@ async function main() {
 
     const hashedPassword = await bcrypt.hash('Password123!', 10);
 
-    // --- Propriétaire particulier ---
-    const owner1 = await prisma.user.upsert({
+    // --- USERS ---
+    const thomas = await prisma.user.upsert({
         where: { email: 'thomas.dupont@immobe.be' },
         update: {},
         create: {
@@ -35,51 +35,29 @@ async function main() {
         }
     });
 
-    // --- Utilisateur agence ---
-    const agencyUser = await prisma.user.upsert({
-        where: { email: 'contact@remax-brussels.be' },
+    const michel = await prisma.user.upsert({
+        where: { email: 'michel.leblanc@immobe.be' },
         update: {},
         create: {
-            email: 'contact@remax-brussels.be',
+            email: 'michel.leblanc@immobe.be',
             password: hashedPassword,
-            firstname: 'RE/MAX',
-            lastname: 'Brussels',
-            role: 'agency',
-            phone: '+32 2 123 45 67',
+            firstname: 'Michel',
+            lastname: 'Leblanc',
+            role: 'owner',
+            phone: '+32 478 33 22 11',
             address: {
                 create: {
-                    number: '50',
-                    street: 'Meir',
-                    city: 'Anvers',
-                    postal_code: '2000',
+                    number: '12',
+                    street: 'Rue Royale',
+                    city: 'Bruxelles',
+                    postal_code: '1000',
                     country: 'Belgique'
                 }
             }
         }
     });
 
-    // Profil agence
-    await prisma.agency.upsert({
-        where: { user_id: agencyUser.id },
-        update: {},
-        create: {
-            nom_agence: 'RE/MAX Brussels',
-            numero_tva: 'BE0123456789',
-            user: { connect: { id: agencyUser.id } },
-            address: {
-                create: {
-                    number: '50',
-                    street: 'Meir',
-                    city: 'Anvers',
-                    postal_code: '2000',
-                    country: 'Belgique'
-                }
-            }
-        }
-    });
-
-    // --- Locataire ---
-    const tenant = await prisma.user.upsert({
+    const alice = await prisma.user.upsert({
         where: { email: 'alice.martin@gmail.com' },
         update: {},
         create: {
@@ -110,16 +88,10 @@ async function main() {
         }
     });
 
-    console.log(
-        '✅ Users:',
-        owner1.firstname, owner1.lastname, '|',
-        agencyUser.firstname, agencyUser.lastname, '|',
-        tenant.firstname, tenant.lastname
-    );
+    console.log('✅ Users created:', thomas.firstname, michel.firstname, alice.firstname);
 
-    // --- Biens immobiliers ---
-    const properties = [
-        // Bruxelles
+    // --- PROPERTIES ---
+    const propertiesData = [
         {
             title: 'Bel appartement lumineux à Ixelles',
             description: 'Superbe appartement 2 chambres en plein cœur d\'Ixelles. Parquet chêne, double vitrage, cave incluse.',
@@ -129,193 +101,34 @@ async function main() {
             surface: 78,
             rooms: 3,
             parking: false,
-            owner_id: owner1.id,
-            address: { number: '42', street: 'Rue du Bailli', city: 'Ixelles', postal_code: '1050', country: 'Belgique' }
+            owner_id: thomas.id,
+            address: { number: '42', street: 'Rue du Bailli', city: 'Ixelles', postal_code: '1050', country: 'Belgique' },
+            images: [
+                '/uploads/properties/ixelles-1.jpg',
+                '/uploads/properties/ixelles-2.jpg',
+                '/uploads/properties/ixelles-3.jpg',
+                '/uploads/properties/ixelles-4.jpg'
+            ]
         },
         {
-            title: 'Studio moderne près de la Grand-Place',
-            description: 'Studio entièrement rénové au cœur de Bruxelles. Cuisine équipée, salle de bain moderne.',
-            property_type: 'Studio',
-            status: 'published',
-            price: 750,
-            surface: 32,
-            rooms: 1,
-            parking: false,
-            owner_id: agencyUser.id,
-            address: { number: '15', street: 'Rue des Bouchers', city: 'Bruxelles', postal_code: '1000', country: 'Belgique' }
-        },
-        {
-            title: 'Maison de maître à Etterbeek',
-            description: 'Magnifique maison de maître avec jardin privatif. 4 chambres, 2 salles de bain, garage double.',
-            property_type: 'Mansion',
-            status: 'published',
-            price: 2800,
-            surface: 220,
-            rooms: 5,
-            parking: true,
-            owner_id: agencyUser.id,
-            address: { number: '88', street: 'Avenue de Tervueren', city: 'Etterbeek', postal_code: '1040', country: 'Belgique' }
-        },
-        {
-            title: 'Duplex à Schaerbeek',
-            description: 'Duplex 3 chambres dans un immeuble belle époque rénové. Hauts plafonds, moulures, terrasse 12m².',
-            property_type: 'Duplex',
-            status: 'published',
-            price: 1600,
-            surface: 105,
-            rooms: 4,
-            parking: false,
-            owner_id: owner1.id,
-            address: { number: '54', street: 'Rue Royale Sainte-Marie', city: 'Schaerbeek', postal_code: '1030', country: 'Belgique' }
-        },
-
-        // Liège
-        {
-            title: 'Appartement cosy en bord de Meuse',
-            description: 'Charmant appartement 2 chambres avec vue sur la Meuse. Parquet, ascenseur.',
-            property_type: 'Appartement',
-            status: 'published',
-            price: 850,
-            surface: 68,
-            rooms: 3,
-            parking: false,
-            owner_id: owner1.id,
-            address: { number: '8', street: 'Quai de la Goffe', city: 'Liège', postal_code: '4000', country: 'Belgique' }
-        },
-        {
-            title: 'Studio étudiant près de l\'ULiège',
-            description: 'Studio fonctionnel à 5 minutes de l\'ULiège. Internet inclus dans le loyer.',
-            property_type: 'StudentHousing',
-            status: 'published',
-            price: 490,
-            surface: 25,
-            rooms: 1,
-            parking: false,
-            owner_id: agencyUser.id,
-            address: { number: '101', street: 'Rue de Bruxelles', city: 'Liège', postal_code: '4000', country: 'Belgique' }
-        },
-        {
-            title: 'Villa avec piscine à Angleur',
-            description: 'Villa contemporaine 5 chambres avec piscine chauffée, double garage et grand jardin.',
-            property_type: 'Villa',
-            status: 'published',
-            price: 3500,
-            surface: 310,
-            rooms: 6,
-            parking: true,
-            owner_id: owner1.id,
-            address: { number: '12', street: 'Route du Condroz', city: 'Angleur', postal_code: '4031', country: 'Belgique' }
-        },
-
-        // Gand
-        {
-            title: 'Loft design dans le Patershol',
-            description: 'Loft design au cœur du quartier historique Patershol. Cuisine américaine, mezzanine, poutres apparentes.',
-            property_type: 'Loft',
-            status: 'published',
-            price: 1100,
-            surface: 85,
-            rooms: 2,
-            parking: false,
-            owner_id: agencyUser.id,
-            address: { number: '23', street: 'Kraanlei', city: 'Gand', postal_code: '9000', country: 'Belgique' }
-        },
-        {
-            title: 'Maison familiale à Gand-Nord',
-            description: 'Belle maison 4 chambres avec jardin et garage. Quartier calme, école à 200m.',
+            title: 'Maison familiale à Bruxelles',
+            description: 'Maison 4 chambres avec jardin et garage. Quartier calme, proche écoles.',
             property_type: 'BelEtageHouse',
             status: 'published',
-            price: 1450,
-            surface: 165,
+            price: 1800,
+            surface: 160,
             rooms: 5,
             parking: true,
-            owner_id: owner1.id,
-            address: { number: '67', street: 'Wondelgemstraat', city: 'Gand', postal_code: '9000', country: 'Belgique' }
+            owner_id: michel.id,
+            address: { number: '10', street: 'Avenue Louise', city: 'Bruxelles', postal_code: '1050', country: 'Belgique' },
+            images: [
+                '/uploads/properties/bruxelles-1.jpg',
+                '/uploads/properties/bruxelles-2.jpg',
+                '/uploads/properties/bruxelles-3.jpg',
+                '/uploads/properties/bruxelles-4.jpg',
+                '/uploads/properties/bruxelles-5.jpg'
+            ]
         },
-
-        // Anvers
-        {
-            title: 'Penthouse avec terrasse panoramique',
-            description: 'Exceptionnel penthouse au 8ème étage, terrasse 60m², vue panoramique sur les toits d\'Anvers.',
-            property_type: 'Penthouse',
-            status: 'published',
-            price: 3800,
-            surface: 190,
-            rooms: 4,
-            parking: true,
-            owner_id: agencyUser.id,
-            address: { number: '50', street: 'Meir', city: 'Anvers', postal_code: '2000', country: 'Belgique' }
-        },
-        {
-            title: 'Appartement 2 chambres - Zuid',
-            description: 'Appartement contemporain dans le quartier branché du Zuid. Proche musées et restaurants.',
-            property_type: 'Appartement',
-            status: 'published',
-            price: 980,
-            surface: 72,
-            rooms: 3,
-            parking: false,
-            owner_id: owner1.id,
-            address: { number: '14', street: 'Leopold de Waelplaats', city: 'Anvers', postal_code: '2000', country: 'Belgique' }
-        },
-
-        // Bruges
-        {
-            title: 'Maison de ville à Bruges',
-            description: 'Maison rénovée dans le centre historique de Bruges. Vue sur canal depuis le salon, jardin intérieur.',
-            property_type: 'BelEtageHouse',
-            status: 'published',
-            price: 1900,
-            surface: 145,
-            rooms: 4,
-            parking: false,
-            owner_id: agencyUser.id,
-            address: { number: '9', street: 'Dijver', city: 'Bruges', postal_code: '8000', country: 'Belgique' }
-        },
-
-        // Namur
-        {
-            title: 'Appartement vue sur la Citadelle',
-            description: 'Appartement 2 chambres avec balcon et vue imprenable sur la Citadelle de Namur. Parking privé inclus.',
-            property_type: 'Appartement',
-            status: 'published',
-            price: 790,
-            surface: 65,
-            rooms: 3,
-            parking: true,
-            owner_id: owner1.id,
-            address: { number: '34', street: 'Route Merveilleuse', city: 'Namur', postal_code: '5000', country: 'Belgique' }
-        },
-
-        // Louvain
-        {
-            title: 'Kot étudiant proche KU Leuven',
-            description: 'Studio meublé entièrement équipé pour étudiant. Charges comprises (eau, électricité, internet).',
-            property_type: 'StudentHousing',
-            status: 'published',
-            price: 580,
-            surface: 22,
-            rooms: 1,
-            parking: false,
-            owner_id: agencyUser.id,
-            address: { number: '118', street: 'Naamsestraat', city: 'Louvain', postal_code: '3000', country: 'Belgique' }
-        },
-
-        // Charleroi
-        {
-            title: 'Maison à rénover - Opportunité investissement',
-            description: 'Maison 3 façades à rénover. Grand potentiel, jardin de 300m².',
-            property_type: 'CountryHouse',
-            status: 'published',
-            price: 700,
-            surface: 130,
-            rooms: 4,
-            parking: false,
-            owner_id: owner1.id,
-            address: { number: '45', street: 'Rue de Marcinelle', city: 'Charleroi', postal_code: '6000', country: 'Belgique' }
-        },
-
-        // Hornu
         {
             title: 'Château à louer',
             description: 'Magnifique château à louer avec piscine et sauna',
@@ -325,18 +138,24 @@ async function main() {
             surface: 1997,
             rooms: 60,
             parking: true,
-            owner_id: owner1.id,
-            address: { number: '23', street: 'Rue Henri Degorge', city: 'Hornu', postal_code: '7301', country: 'Belgique' }
-        },
+            owner_id: thomas.id,
+            address: { number: '23', street: 'Rue Henri Degorge', city: 'Hornu', postal_code: '7301', country: 'Belgique' },
+            images: [
+                '/uploads/properties/chateau-hornu-1.jpg',
+                '/uploads/properties/chateau-hornu-2.jpg',
+                '/uploads/properties/chateau-hornu-3.jpg',
+                '/uploads/properties/chateau-hornu-4.jpg'
+            ]
+        }
     ];
 
-    // Supprimer les biens existants (cascade → appointments, swipes, conversations)
+    // Supprimer les biens existants
     await prisma.property.deleteMany({});
     console.log('🗑️  Anciens biens supprimés.');
 
     const createdProperties = {};
     let created = 0;
-    for (const { address, owner_id, ...data } of properties) {
+    for (const { address, owner_id, images, ...data } of propertiesData) {
         const prop = await prisma.property.create({
             data: {
                 ...data,
@@ -345,58 +164,38 @@ async function main() {
             }
         });
         createdProperties[data.title] = prop;
+
+        // Ajouter les images
+        for (let i = 0; i < images.length; i++) {
+            await prisma.announcementPhoto.create({
+                data: { url: images[i], order: i, property_id: prop.id }
+            });
+        }
+
         created++;
-        console.log(`  ✅ [${created}/${properties.length}] ${data.title}`);
+        console.log(`  ✅ [${created}/${propertiesData.length}] ${data.title} (+${images.length} images)`);
     }
 
-    console.log(`\n🎉 Done! ${created} properties created.`);
+    console.log(`\n🎉 Done! ${created} properties with images created.`);
 
-    // --- Photos ---
-    const propChateau = createdProperties['Château à louer'];
-    if (propChateau) {
-        await prisma.announcementPhoto.create({
-            data: { url: '/uploads/properties/chateau-hornu.jpg', order: 0, property_id: propChateau.id }
-        });
-        console.log('  📸 Photo ajoutée : Château à louer');
-    }
-
-    // --- Rendez-vous pour Alice (locataire) ---
-    const propIxelles   = createdProperties['Bel appartement lumineux à Ixelles'];
-    const propSchaer    = createdProperties['Duplex à Schaerbeek'];
-    const propBruges    = createdProperties['Maison de ville à Bruges'];
-
+    // --- Appointments for Alice ---
+    const propIxelles = createdProperties['Bel appartement lumineux à Ixelles'];
     const now = new Date();
     const appts = [
         {
-            title:       'Visite — Appartement lumineux Ixelles',
-            date:        new Date(now.getTime() + 3  * 24 * 60 * 60 * 1000),
-            notes:       'Rendez-vous à 14h devant l\'immeuble. Prévoir une pièce d\'identité.',
-            owner_id:    owner1.id,
-            tenant_id:   tenant.id,
-            property_id: propIxelles.id,
-        },
-        {
-            title:       'Visite — Duplex Schaerbeek',
-            date:        new Date(now.getTime() + 7  * 24 * 60 * 60 * 1000),
-            notes:       'Code interphone : 1234.',
-            owner_id:    owner1.id,
-            tenant_id:   tenant.id,
-            property_id: propSchaer.id,
-        },
-        {
-            title:       'Visite — Maison de ville Bruges',
-            date:        new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000),
-            owner_id:    agencyUser.id,
-            tenant_id:   tenant.id,
-            property_id: propBruges.id,
-        },
+            title: 'Visite — Appartement lumineux Ixelles',
+            date: new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000),
+            notes: 'Rendez-vous à 14h devant l\'immeuble. Prévoir une pièce d\'identité.',
+            owner_id: thomas.id,
+            tenant_id: alice.id,
+            property_id: propIxelles.id
+        }
     ];
 
     for (const appt of appts) {
         await prisma.appointment.create({ data: appt });
         console.log(`  📅 Rdv seedé : ${appt.title}`);
     }
-    console.log(`\n🎉 Done! ${appts.length} rendez-vous créés pour Alice.`);
 }
 
 main()
