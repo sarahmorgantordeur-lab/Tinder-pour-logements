@@ -20,11 +20,19 @@ export default function UserHome() {
     const [selectedApartment, setSelectedApartment] = useState(null);
 
 const PROPERTY_TYPES = [
-    "Bungalow", "Chalet", "Castel", "Farm", "CountryHouse",
-    "ApartmentBuilding", "MixedUseBuilding", "BelEtageHouse", "Mansion",
-    "Villa", "ManorHouse", "Pavilion", "GroundFloor", "Duplex", "Triplex",
-    "Studio", "Penthouse", "Loft", "StudentHousing", "ServiceApartment",
-    "Appartement", "Other",
+    "Appartement",
+    "BelEtageHouse",
+    "Castel",
+    "Duplex",
+    "StudentHousing",
+    "Villa",
+    "Chalet",
+    "Bungalow",
+    "Mansion",
+    "Penthouse",
+    "Loft", 
+    "Studio", 
+    "Other"
 ];
 
 const EMPTY_FILTERS = { city: "", minPrice: "", maxPrice: "", propertyType: "" };
