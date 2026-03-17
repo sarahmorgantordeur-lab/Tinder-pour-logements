@@ -70,7 +70,7 @@ export const createApartmentValidation = [
         .notEmpty()
         .withMessage('Region is required'),
     body('property_type')
-        .isIn(['apartment', 'house', 'studio', 'villa', 'land', 'commercial_space', 'other'])
+        .isIn(['Appartement','BelEtageHouse','Castel','Duplex','StudentHousing','Villa','Chalet','Bungalow','Mansion','Penthouse','Loft','Studio','Other'])
         .withMessage('Invalid property type'),
     body('listing_type')
         .isIn(['rent', 'sale'])
@@ -137,7 +137,7 @@ export const searchApartmentValidation = [
         .withMessage('minSurface must be a positive number'),
     query('propertyType')
         .optional()
-        .isIn(['apartment', 'house', 'studio', 'villa', 'land', 'commercial_space', 'other'])
+        .isIn(['Appartement','BelEtageHouse','Castel','Duplex','StudentHousing','Villa','Chalet','Bungalow','Mansion','Penthouse','Loft','Studio','Other'])
         .withMessage('Invalid property type'),
     query('listingType')
         .optional()

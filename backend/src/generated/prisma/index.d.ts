@@ -88,27 +88,18 @@ export type Role = (typeof Role)[keyof typeof Role]
 
 
 export const PropertyType: {
-  Bungalow: 'Bungalow',
-  Chalet: 'Chalet',
-  Castel: 'Castel',
-  Farm: 'Farm',
-  CountryHouse: 'CountryHouse',
-  ApartmentBuilding: 'ApartmentBuilding',
-  MixedUseBuilding: 'MixedUseBuilding',
+  Appartement: 'Appartement',
   BelEtageHouse: 'BelEtageHouse',
-  Mansion: 'Mansion',
-  Villa: 'Villa',
-  ManorHouse: 'ManorHouse',
-  Pavilion: 'Pavilion',
-  GroundFloor: 'GroundFloor',
+  Castel: 'Castel',
   Duplex: 'Duplex',
-  Triplex: 'Triplex',
-  Studio: 'Studio',
+  StudentHousing: 'StudentHousing',
+  Villa: 'Villa',
+  Chalet: 'Chalet',
+  Bungalow: 'Bungalow',
+  Mansion: 'Mansion',
   Penthouse: 'Penthouse',
   Loft: 'Loft',
-  StudentHousing: 'StudentHousing',
-  ServiceApartment: 'ServiceApartment',
-  Appartement: 'Appartement',
+  Studio: 'Studio',
   Other: 'Other'
 };
 

@@ -129,28 +129,19 @@ model Property {
 }
 
 enum PropertyType {
-  Bungalow
-  Chalet
-  Castel
-  Farm
-  CountryHouse
-  ApartmentBuilding
-  MixedUseBuilding
-  BelEtageHouse
-  Mansion
-  Villa
-  ManorHouse
-  Pavilion
-  GroundFloor
-  Duplex
-  Triplex
-  Studio
-  Penthouse
-  Loft
-  StudentHousing
-  ServiceApartment
-  Appartement
-  Other
+    Appartement
+    BelEtageHouse
+    Castel
+    Duplex
+    StudentHousing
+    Villa
+    Chalet
+    Bungalow
+    Mansion
+    Penthouse
+    Loft
+    Studio 
+    Other
 }
 
 enum PropertyStatus {

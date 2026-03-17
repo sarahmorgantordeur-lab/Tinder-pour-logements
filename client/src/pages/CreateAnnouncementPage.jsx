@@ -10,11 +10,19 @@ import TextInput from "../components/ui/TextInput";
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const PROPERTY_TYPES = [
-    "Bungalow", "Chalet", "Castel", "Farm", "CountryHouse",
-    "ApartmentBuilding", "MixedUseBuilding", "BelEtageHouse", "Mansion",
-    "Villa", "ManorHouse", "Pavilion", "GroundFloor", "Duplex", "Triplex",
-    "Studio", "Penthouse", "Loft", "StudentHousing", "ServiceApartment",
-    "Appartement", "Other",
+    "Appartement",
+    "BelEtageHouse",
+    "Castel",
+    "Duplex",
+    "StudentHousing",
+    "Villa",
+    "Chalet",
+    "Bungalow",
+    "Mansion",
+    "Penthouse",
+    "Loft", 
+    "Studio", 
+    "Other"
 ];
 
 const ALLOWED_TRANSITIONS = {
