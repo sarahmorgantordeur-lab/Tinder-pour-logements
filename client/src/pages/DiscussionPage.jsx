@@ -184,7 +184,7 @@ export default function DiscussionPage() {
 
                                 {!loadingMsgs && messages.length === 0 && (
                                     <p className="discussion-messages-empty">
-                                        Aucun message. Soyez le premier a ecrire !
+                                        Aucun message. Soyez le premier à ecrire !
                                     </p>
                                 )}
 
