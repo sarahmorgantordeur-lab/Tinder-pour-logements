@@ -172,7 +172,7 @@ export default function Register({ onLogin, email, setEmail, password, setPasswo
                     </AnimatePresence>
 
                     {agencyModalOpen && (
-                        <Modal onClose={() => setAgencyModalOpen(false)} className="modal-content--fit">
+                        <Modal onClose={() => setAgencyModalOpen(false)} className="modal-content--agency">
                             <CreateAgency onClose={() => {
                                 setAgencyModalOpen(false);
                                 api.get('/users/agencies').then(({ data }) => setAgencies(data.agencies || [])).catch(() => {});

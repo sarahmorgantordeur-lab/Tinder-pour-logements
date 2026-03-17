@@ -1,40 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../../api";
 import Button from "../ui/Button";
 import TextInput from "../ui/TextInput";
 
-const buildForm = (agency) => ({
-    nom_agence:  agency?.nom_agence  || "",
-    numero_tva:  agency?.numero_tva  || "",
-    numero_bce:  agency?.numero_bce  || "",
-    site_web:    agency?.site_web    || "",
+const initialForm = {
+    nom_agence:  "",
+    numero_tva:  "",
+    numero_bce:  "",
+    site_web:    "",
     address: {
-        number:      agency?.address?.number      || "",
-        box:         agency?.address?.box         || "",
-        street:      agency?.address?.street      || "",
-        city:        agency?.address?.city        || "",
-        postal_code: agency?.address?.postal_code || "",
-        country:     agency?.address?.country     || "Belgique",
+        number:      "",
+        box:         "",
+        street:      "",
+        city:        "",
+        postal_code: "",
+        country:     "Belgique",
     },
-});
+};
 
 export default function CreateAgency({ onClose } = {}) {
-    const [formData, setFormData] = useState(buildForm(null));
-    const [loading, setLoading]   = useState(true);
+    const [formData, setFormData] = useState(initialForm);
     const [saving, setSaving]     = useState(false);
     const [error, setError]       = useState(null);
     const [success, setSuccess]   = useState(false);
-
-    useEffect(() => {
-        api.get("/users/profile")
-            .then(({ data }) => {
-                if (data.user?.agency) {
-                    setFormData(buildForm(data.user.agency));
-                }
-            })
-            .catch(() => setError("Impossible de charger le profil agence."))
-            .finally(() => setLoading(false));
-    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -63,12 +51,10 @@ export default function CreateAgency({ onClose } = {}) {
         }
     };
 
-    if (loading) return <p className="create-agency-loading">Chargement...</p>;
-
     return (
         <form className="create-agency-form" onSubmit={handleSubmit}>
             {error   && <p className="create-agency-error">{error}</p>}
-            {success && <p className="create-agency-success">Profil agence mis à jour.</p>}
+            {success && <p className="create-agency-success">Agence créée avec succès.</p>}
 
             <div className="create-agency-sections">
             <fieldset className="create-agency-section">
@@ -182,7 +168,7 @@ export default function CreateAgency({ onClose } = {}) {
                     </Button>
                 )}
                 <Button type="submit" className="create-agency-submit" disabled={saving}>
-                    {saving ? "Enregistrement..." : "Enregistrer"}
+                    {saving ? "Enregistrement..." : "Créer l'agence"}
                 </Button>
             </div>
         </form>

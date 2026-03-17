@@ -9,38 +9,29 @@ export const HomeProvider = ({ children }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isDislikesPass, setIsDislikesPass] = useState(false);
 
     const [filters, setFilters] = useState({ city: "", minPrice: "", maxPrice: "", propertyType: "" });
 
-    const fetchApartments = useCallback(async (f = {}) => {
+    const fetchApartments = useCallback(async (f = {}, showDislikes = false, resetDislikes = false) => {
         setLoading(true);
         setError(null);
-        if (filters) {
-            const query = new URLSearchParams();
-            if (f.city) query.append("city", f.city);
-            if (f.minPrice) query.append("minPrice", f.minPrice);
-            if (f.maxPrice) query.append("maxPrice", f.maxPrice);
-            if (f.propertyType) query.append("propertyType", f.propertyType);
-            try {
-                const response = await api.get(`/properties?${query.toString()}`);
-                setApartments(Array.isArray(response.data.properties) ? response.data.properties : []);
-                setCurrentIndex(0);
-            } catch {
-                setError("Impossible de charger les logements");
-            } finally {
-                setLoading(false);
-            }
-        } else {    
+        const query = new URLSearchParams();
+        if (f.city) query.append("city", f.city);
+        if (f.minPrice) query.append("minPrice", f.minPrice);
+        if (f.maxPrice) query.append("maxPrice", f.maxPrice);
+        if (f.propertyType) query.append("propertyType", f.propertyType);
+        if (showDislikes) query.append("showDislikes", "true");
+        if (resetDislikes) query.append("resetDislikes", "true");
         try {
-            const response = await api.get("/properties");
+            const response = await api.get(`/properties?${query.toString()}`);
             setApartments(Array.isArray(response.data.properties) ? response.data.properties : []);
-            console.log("Fetched apartments:", response);
             setCurrentIndex(0);
+            setIsDislikesPass(showDislikes);
         } catch {
             setError("Impossible de charger les logements");
         } finally {
             setLoading(false);
-        }
         }
     }, []);
 
@@ -108,7 +99,13 @@ export const HomeProvider = ({ children }) => {
         } catch {
             // swipe enregistré localement même si l'API échoue
         } finally {
-            setCurrentIndex((prev) => prev + 1);
+            const nextIndex = currentIndex + 1;
+            if (nextIndex >= apartments.length && !isDislikesPass) {
+                // Liste normale épuisée → charger les dislikes pour un deuxième passage
+                await fetchApartments(filters, true);
+            } else {
+                setCurrentIndex(nextIndex);
+            }
         }
     };
 
@@ -116,6 +113,7 @@ export const HomeProvider = ({ children }) => {
         apartments,
         currentApartment: apartments[currentIndex] ?? null,
         remaining: apartments.length - currentIndex,
+        isDislikesPass,
         appartmentById,
         loading,
         error,

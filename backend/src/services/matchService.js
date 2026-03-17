@@ -6,7 +6,7 @@ const conversationInclude = {
     property: {
         include: {
             address: true,
-            photos: { orderBy: { order: 'asc' }, take: 1 }
+            photos: { orderBy: { order: 'asc' } }
         }
     },
     tenant: {

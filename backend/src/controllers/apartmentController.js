@@ -16,12 +16,12 @@ class PropertyController {
 
     static async getAll(req, res) {
         try {
-            const { propertyType, city, minPrice, maxPrice, minSurface, minRooms, page = 1, limit = 20 } = req.query;
+            const { propertyType, city, minPrice, maxPrice, minSurface, minRooms, page = 1, limit = 20, showDislikes, resetDislikes } = req.query;
 
             const filters = { propertyType, city, minPrice, maxPrice, minSurface, minRooms };
             const skip = (Number(page) - 1) * Number(limit);
 
-            const { total, properties } = await PropertyService.getAll(filters, { skip, take: Number(limit) }, req.user?.id);
+            const { total, properties } = await PropertyService.getAll(filters, { skip, take: Number(limit) }, req.user?.id, showDislikes === 'true', resetDislikes === 'true');
 
             res.status(200).json({
                 page: Number(page),

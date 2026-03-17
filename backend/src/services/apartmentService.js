@@ -63,11 +63,20 @@ class PropertyService {
         });
     }
 
-    static async getAll(filters = {}, pagination = { skip: 0, take: 20 }, userId = null) {
+    static async getAll(filters = {}, pagination = { skip: 0, take: 20 }, userId = null, showDislikes = false, resetDislikes = false) {
     const where = { status: { not: 'archived' } };
 
     if (userId) {
-        where.swipes = { none: { user_id: userId, direction: false } };
+        if (showDislikes) {
+            // Deuxième passage automatique : uniquement les propriétés dislikées
+            where.swipes = { some: { user_id: userId, direction: false } };
+        } else if (resetDislikes) {
+            // Rafraîchissement manuel : exclure uniquement les likes, les dislikes reviennent
+            where.swipes = { none: { user_id: userId, direction: true } };
+        } else {
+            // Mode normal : exclure tout ce qui a déjà été swipé (like ou dislike)
+            where.swipes = { none: { user_id: userId } };
+        }
     }
 
     if (filters.propertyType) where.property_type = filters.propertyType;

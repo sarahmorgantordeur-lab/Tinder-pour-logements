@@ -1136,6 +1136,8 @@ input, button, select, textarea {
 .discussion-view-property-btn,
 .discussion-doc-request-btn {
   display: inline-flex;
+  width: -moz-fit-content;
+  width: fit-content;
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.9rem;
@@ -1747,6 +1749,11 @@ input, button, select, textarea {
 .edit-announcement-photo-delete:hover {
   background-color: rgba(229, 115, 115, 0.9);
 }
+@media (hover: none) {
+  .edit-announcement-photo-delete {
+    opacity: 1;
+  }
+}
 
 .edit-announcement-photo-add-btn {
   align-self: flex-start;
@@ -2028,11 +2035,85 @@ input, button, select, textarea {
   }
 }
 
+.user-home-filter-toggle {
+  display: none;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 1rem;
+  background-color: #7D5A4F;
+  color: #FFF0EB;
+  border: 1px solid #42241A;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+@media (max-width: 768px) {
+  .user-home-filter-toggle {
+    display: flex;
+  }
+}
+
+.user-home-filter-badge {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #E89D82;
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.user-home-filter-toggle-icon {
+  transition: transform 0.25s ease;
+  font-size: 1rem;
+}
+.user-home-filter-toggle-icon--open {
+  transform: rotate(180deg);
+}
+
+.user-home-filter-collapsible {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+@media (min-width: 769px) {
+  .user-home-filter-collapsible {
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+  }
+}
+.user-home-filter-collapsible--open {
+  max-height: 600px;
+  opacity: 1;
+}
+
 .user-home-filter-row {
   display: flex;
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .user-home-filter-row {
+    flex-direction: column;
+    margin-top: 8px;
+  }
+}
+
+.user-home-filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+@media (max-width: 480px) {
+  .user-home-filter-actions {
+    flex-wrap: wrap;
+  }
 }
 
 .user-home-filter-input {
@@ -2062,10 +2143,11 @@ input, button, select, textarea {
   flex: 0.7;
   min-width: 100px;
 }
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .user-home-filter-input {
     min-width: 0;
     width: 100%;
+    flex: none;
   }
 }
 
@@ -2082,7 +2164,7 @@ input, button, select, textarea {
   color: #FFF0EB;
   box-sizing: border-box;
 }
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .user-home-filter-select {
     min-width: 0;
     width: 100%;
@@ -2090,6 +2172,7 @@ input, button, select, textarea {
 }
 
 .user-home-filter-btn {
+  flex: 1;
   padding: 0.6rem 1.25rem;
   min-height: 44px;
   background-color: #E89D82;
@@ -2111,6 +2194,7 @@ input, button, select, textarea {
 }
 
 .user-home-filter-clear {
+  flex: 1;
   padding: 0.6rem 1rem;
   min-height: 44px;
   background-color: transparent;
@@ -2128,6 +2212,29 @@ input, button, select, textarea {
 }
 @media (max-width: 480px) {
   .user-home-filter-clear {
+    width: 100%;
+  }
+}
+
+.user-home-filter-refresh {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  min-height: 44px;
+  background-color: transparent;
+  color: #CFA89B;
+  border: 1px solid #42241A;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.user-home-filter-refresh:hover {
+  color: #FFF0EB;
+  border-color: #604034;
+}
+@media (max-width: 480px) {
+  .user-home-filter-refresh {
     width: 100%;
   }
 }
@@ -2984,6 +3091,10 @@ select:focus {
   max-width: 800px;
   gap: 0;
   overflow: hidden;
+}
+.modal-content--agency {
+  width: 100%;
+  max-width: 1000px;
 }
 
 .apartment-modal-close {
