@@ -12,14 +12,12 @@ import CreateAgency from '../create/CreateAgency';
 import api from '../../api';
 
 
-export default function Register({ onLogin }) {
+export default function Register({ onLogin, email, setEmail, password, setPassword }) {
     const { register } = useAuth();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [agencyName, setAgencyName] = useState('');
-    const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
