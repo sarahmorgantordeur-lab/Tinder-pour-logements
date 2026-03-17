@@ -209,7 +209,7 @@ async function main() {
         ]
     },
     {
-        title: 'Mansion historique à Namur',
+        title: 'Maison historique à Namur',
         description: 'Grande maison de maître avec 6 chambres, jardin et garages. Style classique.',
         property_type: 'Mansion',
         status: 'published',
@@ -220,10 +220,10 @@ async function main() {
         owner_id: candice.id,
         address: { number: '34', street: 'Avenue de la Plante', city: 'Namur', postal_code: '5000', country: 'Belgique' },
         images: [
-            '/uploads/properties/mansion-namur-1.jpg',
-            '/uploads/properties/mansion-namur-2.jpg',
-            '/uploads/properties/mansion-namur-3.jpg',
-            '/uploads/properties/mansion-namur-4.jpg'
+            '/uploads/properties/maison-namur-1.jpg',
+            '/uploads/properties/maison-namur-2.jpg',
+            '/uploads/properties/maison-namur-3.jpg',
+            '/uploads/properties/maison-namur-4.jpg'
         ]
     },
     {
