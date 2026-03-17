@@ -40,7 +40,7 @@
     }
 
     @media (max-width: 480px) {
-        max-height: 35vh;
+        max-height: 100%;
     }
 }
 
@@ -73,6 +73,7 @@
 }
 
 .discussion-conv-list {
+    height: 100%;
     overflow-y: auto;
     flex: 1;
 }
