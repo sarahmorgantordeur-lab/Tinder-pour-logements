@@ -28,11 +28,12 @@ export default function AgendaPage() {
     const [loading, setLoading]           = useState(true);
     const [error, setError]               = useState(null);
 
-    const [form, setForm]           = useState(EMPTY_FORM);
-    const [editId, setEditId]       = useState(null);
-    const [saving, setSaving]       = useState(false);
-    const [formError, setFormError] = useState(null);
-    const [showForm, setShowForm]   = useState(false);
+    const [form, setForm]                   = useState(EMPTY_FORM);
+    const [editId, setEditId]               = useState(null);
+    const [saving, setSaving]               = useState(false);
+    const [formError, setFormError]         = useState(null);
+    const [showForm, setShowForm]           = useState(false);
+    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
     // Charger les rdv selon le rôle
     useEffect(() => {
@@ -114,12 +115,11 @@ export default function AgendaPage() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm("Supprimer ce rendez-vous ?")) return;
         try {
             await api.delete(`/appointments/${id}`);
             setAppointments((prev) => prev.filter((a) => a.id !== id));
         } catch {
-            alert("Impossible de supprimer le rendez-vous.");
+            setError("Impossible de supprimer le rendez-vous.");
         }
     };
 
@@ -180,20 +180,37 @@ export default function AgendaPage() {
                                             )}
                                         </div>
                                         <div className="agenda-item-actions">
-                                            <Button
-                                                className="agenda-unavailable-btn"
-                                                onClick={async () => {
-                                                    if (!confirm("Signaler votre indisponibilité et retirer ce rendez-vous ?")) return;
-                                                    try {
-                                                        await api.delete(`/appointments/${appt.id}`);
-                                                        setAppointments((prev) => prev.filter((a) => a.id !== appt.id));
-                                                    } catch {
-                                                        alert("Impossible de retirer le rendez-vous.");
-                                                    }
-                                                }}
-                                            >
-                                                Pas disponible
-                                            </Button>
+                                            {confirmDeleteId === appt.id ? (
+                                                <div className="agenda-confirm">
+                                                    <span>Confirmer ?</span>
+                                                    <Button
+                                                        className="agenda-confirm-yes"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await api.delete(`/appointments/${appt.id}`);
+                                                                setAppointments((prev) => prev.filter((a) => a.id !== appt.id));
+                                                            } catch {
+                                                                setConfirmDeleteId(null);
+                                                            }
+                                                        }}
+                                                    >
+                                                        Oui
+                                                    </Button>
+                                                    <Button
+                                                        className="agenda-confirm-no"
+                                                        onClick={() => setConfirmDeleteId(null)}
+                                                    >
+                                                        Non
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Button
+                                                    className="agenda-unavailable-btn"
+                                                    onClick={() => setConfirmDeleteId(appt.id)}
+                                                >
+                                                    Pas disponible
+                                                </Button>
+                                            )}
                                         </div>
                                     </li>
                                 ))}
