@@ -272,6 +272,46 @@
     &:hover { opacity: 0.85; }
 }
 
+.agenda-confirm {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    span {
+        font-size: 0.825rem;
+        color: $text-muted;
+    }
+}
+
+.agenda-confirm-yes {
+    background-color: rgba(#f87171, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(#f87171, 0.3);
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.4rem;
+    font-size: 0.825rem;
+    font-family: 'BeVietnamPro', sans-serif;
+    cursor: pointer;
+    min-height: 36px;
+
+    &:hover { opacity: 0.85; }
+}
+
+.agenda-confirm-no {
+    background-color: $input-bg;
+    color: $text-muted;
+    border: 1px solid $border-color-muted;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.4rem;
+    font-size: 0.825rem;
+    font-family: 'BeVietnamPro', sans-serif;
+    cursor: pointer;
+    min-height: 36px;
+
+    &:hover { opacity: 0.85; }
+}
+
 
 .agenda-modal-title {
     font-family: 'Neco', sans-serif;

@@ -7,7 +7,7 @@ import Select from "../components/ui/Select";
 import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const PROPERTY_TYPES = [
     "Appartement",
@@ -114,7 +114,7 @@ export default function EditAnnouncement() {
             Array.from(files).forEach((file) => formData.append('pictures', file));
             const res = await fetch(`${BASE_URL}/properties/${id}/photos`, {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${token}`, 'ngrok-skip-browser-warning': 'true' },
                 body: formData,
             });
             if (!res.ok) {
@@ -140,6 +140,7 @@ export default function EditAnnouncement() {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
                 },
                 body: JSON.stringify({ photoUrl }),
             });

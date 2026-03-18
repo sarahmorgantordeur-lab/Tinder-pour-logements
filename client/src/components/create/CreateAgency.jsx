@@ -91,6 +91,13 @@ export default function CreateAgency({ onClose, onSkip } = {}) {
         setError(null);
         setSuccess(false);
 
+        // Mode "pré-inscription" : collecter les données sans appeler l'API
+        if (onData) {
+            onData(formData);
+            setSaving(false);
+            return;
+        }
+
         try {
             await api.put("/users/agency", formData);
             setSuccess(true);
