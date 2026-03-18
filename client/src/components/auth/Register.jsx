@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import api from '../../api';
 import TenantIcon from '../../assets/icons/Tenant.svg?react';
 import LandlordIcon from '../../assets/icons/Landlord.svg?react';
 import AgencyIcon from '../../assets/icons/Agency.svg?react';

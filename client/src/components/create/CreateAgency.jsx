@@ -18,7 +18,7 @@ const initialForm = {
     },
 };
 
-export default function CreateAgency({ onClose, onSkip } = {}) {
+export default function CreateAgency({ onClose, onSkip, onData } = {}) {
     const [formData, setFormData]         = useState(initialForm);
     const [saving, setSaving]             = useState(false);
     const [error, setError]               = useState(null);
