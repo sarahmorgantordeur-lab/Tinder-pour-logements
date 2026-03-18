@@ -2770,15 +2770,12 @@ input, button, select, textarea {
 }
 .create-agency-form .create-agency-sections {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  width: 100%;
   gap: 2rem;
   align-items: flex-start;
 }
-@media (max-width: 768px) {
-  .create-agency-form .create-agency-sections {
-    flex-direction: column;
-  }
-}
+
 @media (max-width: 768px) {
   .create-agency-form {
     padding: 1.5rem;
@@ -2812,6 +2809,7 @@ input, button, select, textarea {
 .create-agency-section {
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 1.25rem;
   flex: 1;
   border: 1px solid #42241A;

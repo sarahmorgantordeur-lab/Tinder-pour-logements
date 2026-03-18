@@ -185,7 +185,37 @@ function hasActiveFilter(f) {
                   type="button"
                   onClick={handleClear}
                 >
-                  ✕ Effacer
+                    {currentApartment && (
+                        <AppartementCard
+                            appartement={{
+                                ...currentApartment,
+                                city: currentApartment.address?.city,
+                                postal_code: currentApartment.address?.postal_code,
+                                image: currentApartment.photos?.[0]?.url
+                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${currentApartment.photos[0].url}`
+                                    : null,
+                            }}
+                            onClick={() => setSelectedApartment({
+                                ...currentApartment,
+                                city: currentApartment.address?.city,
+                                postal_code: currentApartment.address?.postal_code,
+                                image: currentApartment.photos?.[0]?.url
+                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${currentApartment.photos[0].url}`
+                                    : null,
+                            })}
+                        />
+                    )}
+                </motion.div>
+            </AnimatePresence>
+            </SwipeCard>
+            <div className="swipe-buttons">
+                <Button onClick={swipeAction('dislike')} className="swipe-button swipe-button--dislike">
+                    <DislikeIcon className="swipe-btn-icon" />
+                    <span className="swipe-btn-text">Dislike</span>
+                </Button>
+                <Button onClick={swipeAction('like')} className="swipe-button swipe-button--like">
+                    <LikeIcon className="swipe-btn-icon" />
+                    <span className="swipe-btn-text">Like</span>
                 </Button>
               )}
             </div>

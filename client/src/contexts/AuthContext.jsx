@@ -28,9 +28,7 @@ export const AuthProvider = ({ children }) => {
             setUser(newUser);
             setToken(newToken);
 
-            if (role === 'agency') {
-                setPendingAgencySetup(true);
-            }
+            if (role === 'agency') setPendingAgencySetup(true);
 
             return { success: true };
         } catch (error) {
@@ -72,12 +70,22 @@ export const AuthProvider = ({ children }) => {
 
     const finishAgencySetup = () => setPendingAgencySetup(false);
 
+    const joinAgency = async (agencyId) => {
+        try {
+            await api.put('/users/join-agency', { agencyId });
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.response?.data?.message || "Une erreur est survenue" };
+        }
+    };
+
     const value = {
         user,
         token,
         loading,
         pendingAgencySetup,
         finishAgencySetup,
+        joinAgency,
         register,
         login,
         isAuthenticated,

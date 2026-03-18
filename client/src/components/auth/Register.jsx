@@ -2,15 +2,14 @@ import { useState, useEffect } from 'react';
 import TenantIcon from '../../assets/icons/Tenant.svg?react';
 import LandlordIcon from '../../assets/icons/Landlord.svg?react';
 import AgencyIcon from '../../assets/icons/Agency.svg?react';
-import { AnimatePresence, motion } from 'framer-motion';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { useAuth } from '../../hooks/useAuth';
 import CreateAgency from '../create/CreateAgency';
 
 
-export default function Register({ email, setEmail, password, setPassword }) {
-    const { register, finishAgencySetup } = useAuth();
+export default function Register({ email, setEmail, password, setPassword, step, setStep }) {
+    const { register, finishAgencySetup, joinAgency } = useAuth();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [phone, setPhone] = useState('');
@@ -18,10 +17,18 @@ export default function Register({ email, setEmail, password, setPassword }) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState('user');
-    const [step, setStep] = useState('form'); // 'form' | 'agency-profile'
+    const [agencies, setAgencies] = useState([]);
+    const [selectedAgencyId, setSelectedAgencyId] = useState('');
+
     useEffect(() => {
         if (role === 'agency') setSurname('');
     }, [role]);
+
+    useEffect(() => {
+        if (step === 'agency-profile') {
+            api.get('/users/agencies').then(res => setAgencies(res.data.agencies)).catch(() => {});
+        }
+    }, [step]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,19 +56,32 @@ export default function Register({ email, setEmail, password, setPassword }) {
         }
     };
 
+    const handleJoinAgency = async () => {
+        if (!selectedAgencyId) return;
+        setLoading(true);
+        try {
+            const result = await joinAgency(selectedAgencyId);
+            if (!result.success) {
+                setError(result.error || 'Erreur lors de l\'association à l\'agence');
+                return;
+            }
+            finishAgencySetup();
+        } catch {
+            setError('Impossible de contacter le serveur');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (step === 'agency-profile') {
         return (
             <div className="form-main-container">
                 <div className="form-wrapper">
-                    <h2 className="form-agency-title">Complétez votre profil agence</h2>
-                    <p className="form-agency-subtitle">Créez votre agence ou passez cette étape pour la compléter plus tard.</p>
-                    <CreateAgency onClose={finishAgencySetup} />
-                    <Button
-                        type="button"
-                        onClick={finishAgencySetup}
-                    >
-                        Passer cette étape
-                    </Button>
+                    <div className="form-container">
+                        
+                            <CreateAgency onClose={finishAgencySetup} onSkip={finishAgencySetup} />
+                        
+                    </div>
                 </div>
             </div>
         );

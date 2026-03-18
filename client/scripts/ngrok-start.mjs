@@ -8,11 +8,12 @@ let urlFound = false;
 
 ngrok.stdout.on('data', (data) => {
     const output = data.toString();
+    process.stdout.write('[ngrok] ' + output);
     if (!urlFound) {
-        const match = output.match(/url=(https:\/\/[^\s]+)/);
+        const match = output.match(/url=(https:\/\/[a-z0-9-]+\.ngrok[a-z-]*\.(?:app|io)[^\s]*)/);
         if (match) {
             urlFound = true;
-            const url = match[1];
+            const url = match[1].trim();
             console.log('\n\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m');
             console.log(`\x1b[32m  📱 Scanne ce QR code depuis ton téléphone\x1b[0m`);
             console.log(`\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n`);

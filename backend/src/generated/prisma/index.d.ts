@@ -2017,6 +2017,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type AgencyCountOutputType
+   */
+
+  export type AgencyCountOutputType = {
+    members: number
+  }
+
+  export type AgencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    members?: boolean | AgencyCountOutputTypeCountMembersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgencyCountOutputType
+     */
+    select?: AgencyCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+
+  /**
    * Count Type PropertyCountOutputType
    */
 
@@ -2178,6 +2209,7 @@ export namespace Prisma {
     bio: string | null
     role: $Enums.Role | null
     is_active: boolean | null
+    agency_member_id: string | null
     address_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -2194,6 +2226,7 @@ export namespace Prisma {
     bio: string | null
     role: $Enums.Role | null
     is_active: boolean | null
+    agency_member_id: string | null
     address_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -2210,6 +2243,7 @@ export namespace Prisma {
     bio: number
     role: number
     is_active: number
+    agency_member_id: number
     address_id: number
     created_at: number
     updated_at: number
@@ -2228,6 +2262,7 @@ export namespace Prisma {
     bio?: true
     role?: true
     is_active?: true
+    agency_member_id?: true
     address_id?: true
     created_at?: true
     updated_at?: true
@@ -2244,6 +2279,7 @@ export namespace Prisma {
     bio?: true
     role?: true
     is_active?: true
+    agency_member_id?: true
     address_id?: true
     created_at?: true
     updated_at?: true
@@ -2260,6 +2296,7 @@ export namespace Prisma {
     bio?: true
     role?: true
     is_active?: true
+    agency_member_id?: true
     address_id?: true
     created_at?: true
     updated_at?: true
@@ -2349,6 +2386,7 @@ export namespace Prisma {
     bio: string | null
     role: $Enums.Role
     is_active: boolean
+    agency_member_id: string | null
     address_id: string
     created_at: Date
     updated_at: Date
@@ -2382,11 +2420,13 @@ export namespace Prisma {
     bio?: boolean
     role?: boolean
     is_active?: boolean
+    agency_member_id?: boolean
     address_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
     agency?: boolean | User$agencyArgs<ExtArgs>
+    agency_member?: boolean | User$agency_memberArgs<ExtArgs>
     tenant_profile?: boolean | User$tenant_profileArgs<ExtArgs>
     properties?: boolean | User$propertiesArgs<ExtArgs>
     swipes?: boolean | User$swipesArgs<ExtArgs>
@@ -2411,10 +2451,12 @@ export namespace Prisma {
     bio?: boolean
     role?: boolean
     is_active?: boolean
+    agency_member_id?: boolean
     address_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
+    agency_member?: boolean | User$agency_memberArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2428,10 +2470,12 @@ export namespace Prisma {
     bio?: boolean
     role?: boolean
     is_active?: boolean
+    agency_member_id?: boolean
     address_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
+    agency_member?: boolean | User$agency_memberArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2445,15 +2489,17 @@ export namespace Prisma {
     bio?: boolean
     role?: boolean
     is_active?: boolean
+    agency_member_id?: boolean
     address_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstname" | "lastname" | "phone" | "bio" | "role" | "is_active" | "address_id" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstname" | "lastname" | "phone" | "bio" | "role" | "is_active" | "agency_member_id" | "address_id" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | User$agencyArgs<ExtArgs>
+    agency_member?: boolean | User$agency_memberArgs<ExtArgs>
     tenant_profile?: boolean | User$tenant_profileArgs<ExtArgs>
     properties?: boolean | User$propertiesArgs<ExtArgs>
     swipes?: boolean | User$swipesArgs<ExtArgs>
@@ -2468,9 +2514,11 @@ export namespace Prisma {
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency_member?: boolean | User$agency_memberArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
   }
   export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency_member?: boolean | User$agency_memberArgs<ExtArgs>
     address?: boolean | AddressDefaultArgs<ExtArgs>
   }
 
@@ -2478,6 +2526,7 @@ export namespace Prisma {
     name: "User"
     objects: {
       agency: Prisma.$AgencyPayload<ExtArgs> | null
+      agency_member: Prisma.$AgencyPayload<ExtArgs> | null
       tenant_profile: Prisma.$TenantProfilePayload<ExtArgs> | null
       properties: Prisma.$PropertyPayload<ExtArgs>[]
       swipes: Prisma.$SwipePayload<ExtArgs>[]
@@ -2500,6 +2549,7 @@ export namespace Prisma {
       bio: string | null
       role: $Enums.Role
       is_active: boolean
+      agency_member_id: string | null
       address_id: string
       created_at: Date
       updated_at: Date
@@ -2899,6 +2949,7 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     agency<T extends User$agencyArgs<ExtArgs> = {}>(args?: Subset<T, User$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    agency_member<T extends User$agency_memberArgs<ExtArgs> = {}>(args?: Subset<T, User$agency_memberArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     tenant_profile<T extends User$tenant_profileArgs<ExtArgs> = {}>(args?: Subset<T, User$tenant_profileArgs<ExtArgs>>): Prisma__TenantProfileClient<$Result.GetResult<Prisma.$TenantProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     properties<T extends User$propertiesArgs<ExtArgs> = {}>(args?: Subset<T, User$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     swipes<T extends User$swipesArgs<ExtArgs> = {}>(args?: Subset<T, User$swipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SwipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2948,6 +2999,7 @@ export namespace Prisma {
     readonly bio: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly is_active: FieldRef<"User", 'Boolean'>
+    readonly agency_member_id: FieldRef<"User", 'String'>
     readonly address_id: FieldRef<"User", 'String'>
     readonly created_at: FieldRef<"User", 'DateTime'>
     readonly updated_at: FieldRef<"User", 'DateTime'>
@@ -3351,6 +3403,25 @@ export namespace Prisma {
    * User.agency
    */
   export type User$agencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agency
+     */
+    select?: AgencySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Agency
+     */
+    omit?: AgencyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgencyInclude<ExtArgs> | null
+    where?: AgencyWhereInput
+  }
+
+  /**
+   * User.agency_member
+   */
+  export type User$agency_memberArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Agency
      */
@@ -3810,6 +3881,8 @@ export namespace Prisma {
     created_at?: boolean
     address?: boolean | AddressDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    members?: boolean | Agency$membersArgs<ExtArgs>
+    _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agency"]>
 
   export type AgencySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3853,6 +3926,8 @@ export namespace Prisma {
   export type AgencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     address?: boolean | AddressDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    members?: boolean | Agency$membersArgs<ExtArgs>
+    _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     address?: boolean | AddressDefaultArgs<ExtArgs>
@@ -3868,6 +3943,7 @@ export namespace Prisma {
     objects: {
       address: Prisma.$AddressPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      members: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4274,6 +4350,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     address<T extends AddressDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AddressDefaultArgs<ExtArgs>>): Prisma__AddressClient<$Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    members<T extends Agency$membersArgs<ExtArgs> = {}>(args?: Subset<T, Agency$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4704,6 +4781,30 @@ export namespace Prisma {
      * Limit how many Agencies to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Agency.members
+   */
+  export type Agency$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -16028,6 +16129,7 @@ export namespace Prisma {
     bio: 'bio',
     role: 'role',
     is_active: 'is_active',
+    agency_member_id: 'agency_member_id',
     address_id: 'address_id',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -16333,11 +16435,13 @@ export namespace Prisma {
     bio?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     is_active?: BoolFilter<"User"> | boolean
+    agency_member_id?: StringNullableFilter<"User"> | string | null
     address_id?: StringFilter<"User"> | string
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
     deleted_at?: DateTimeNullableFilter<"User"> | Date | string | null
     agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency_member?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     tenant_profile?: XOR<TenantProfileNullableScalarRelationFilter, TenantProfileWhereInput> | null
     properties?: PropertyListRelationFilter
     swipes?: SwipeListRelationFilter
@@ -16361,11 +16465,13 @@ export namespace Prisma {
     bio?: SortOrderInput | SortOrder
     role?: SortOrder
     is_active?: SortOrder
+    agency_member_id?: SortOrderInput | SortOrder
     address_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrderInput | SortOrder
     agency?: AgencyOrderByWithRelationInput
+    agency_member?: AgencyOrderByWithRelationInput
     tenant_profile?: TenantProfileOrderByWithRelationInput
     properties?: PropertyOrderByRelationAggregateInput
     swipes?: SwipeOrderByRelationAggregateInput
@@ -16392,11 +16498,13 @@ export namespace Prisma {
     bio?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     is_active?: BoolFilter<"User"> | boolean
+    agency_member_id?: StringNullableFilter<"User"> | string | null
     address_id?: StringFilter<"User"> | string
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
     deleted_at?: DateTimeNullableFilter<"User"> | Date | string | null
     agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency_member?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     tenant_profile?: XOR<TenantProfileNullableScalarRelationFilter, TenantProfileWhereInput> | null
     properties?: PropertyListRelationFilter
     swipes?: SwipeListRelationFilter
@@ -16420,6 +16528,7 @@ export namespace Prisma {
     bio?: SortOrderInput | SortOrder
     role?: SortOrder
     is_active?: SortOrder
+    agency_member_id?: SortOrderInput | SortOrder
     address_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -16442,6 +16551,7 @@ export namespace Prisma {
     bio?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     is_active?: BoolWithAggregatesFilter<"User"> | boolean
+    agency_member_id?: StringNullableWithAggregatesFilter<"User"> | string | null
     address_id?: StringWithAggregatesFilter<"User"> | string
     created_at?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -16462,6 +16572,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Agency"> | Date | string
     address?: XOR<AddressScalarRelationFilter, AddressWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    members?: UserListRelationFilter
   }
 
   export type AgencyOrderByWithRelationInput = {
@@ -16475,6 +16586,7 @@ export namespace Prisma {
     created_at?: SortOrder
     address?: AddressOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    members?: UserOrderByRelationAggregateInput
   }
 
   export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -16491,6 +16603,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Agency"> | Date | string
     address?: XOR<AddressScalarRelationFilter, AddressWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    members?: UserListRelationFilter
   }, "id" | "user_id">
 
   export type AgencyOrderByWithAggregationInput = {
@@ -17250,6 +17363,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -17273,6 +17387,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -17304,6 +17419,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -17327,6 +17443,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17354,6 +17471,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -17385,6 +17503,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17400,6 +17519,7 @@ export namespace Prisma {
     created_at?: Date | string
     address: AddressCreateNestedOneWithoutAgenciesInput
     user: UserCreateNestedOneWithoutAgencyInput
+    members?: UserCreateNestedManyWithoutAgency_memberInput
   }
 
   export type AgencyUncheckedCreateInput = {
@@ -17411,6 +17531,7 @@ export namespace Prisma {
     address_id: string
     user_id: string
     created_at?: Date | string
+    members?: UserUncheckedCreateNestedManyWithoutAgency_memberInput
   }
 
   export type AgencyUpdateInput = {
@@ -17422,6 +17543,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     address?: AddressUpdateOneRequiredWithoutAgenciesNestedInput
     user?: UserUpdateOneRequiredWithoutAgencyNestedInput
+    members?: UserUpdateManyWithoutAgency_memberNestedInput
   }
 
   export type AgencyUncheckedUpdateInput = {
@@ -17433,6 +17555,7 @@ export namespace Prisma {
     address_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: UserUncheckedUpdateManyWithoutAgency_memberNestedInput
   }
 
   export type AgencyCreateManyInput = {
@@ -18363,6 +18486,7 @@ export namespace Prisma {
     bio?: SortOrder
     role?: SortOrder
     is_active?: SortOrder
+    agency_member_id?: SortOrder
     address_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18379,6 +18503,7 @@ export namespace Prisma {
     bio?: SortOrder
     role?: SortOrder
     is_active?: SortOrder
+    agency_member_id?: SortOrder
     address_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18395,6 +18520,7 @@ export namespace Prisma {
     bio?: SortOrder
     role?: SortOrder
     is_active?: SortOrder
+    agency_member_id?: SortOrder
     address_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18486,6 +18612,16 @@ export namespace Prisma {
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type AgencyCountOrderByAggregateInput = {
@@ -18990,20 +19126,10 @@ export namespace Prisma {
     created_at?: SortOrder
   }
 
-  export type UserListRelationFilter = {
-    every?: UserWhereInput
-    some?: UserWhereInput
-    none?: UserWhereInput
-  }
-
   export type AgencyListRelationFilter = {
     every?: AgencyWhereInput
     some?: AgencyWhereInput
     none?: AgencyWhereInput
-  }
-
-  export type UserOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type AgencyOrderByRelationAggregateInput = {
@@ -19046,6 +19172,12 @@ export namespace Prisma {
   export type AgencyCreateNestedOneWithoutUserInput = {
     create?: XOR<AgencyCreateWithoutUserInput, AgencyUncheckedCreateWithoutUserInput>
     connectOrCreate?: AgencyCreateOrConnectWithoutUserInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type AgencyCreateNestedOneWithoutMembersInput = {
+    create?: XOR<AgencyCreateWithoutMembersInput, AgencyUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutMembersInput
     connect?: AgencyWhereUniqueInput
   }
 
@@ -19231,6 +19363,16 @@ export namespace Prisma {
     delete?: AgencyWhereInput | boolean
     connect?: AgencyWhereUniqueInput
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutUserInput, AgencyUpdateWithoutUserInput>, AgencyUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AgencyUpdateOneWithoutMembersNestedInput = {
+    create?: XOR<AgencyCreateWithoutMembersInput, AgencyUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutMembersInput
+    upsert?: AgencyUpsertWithoutMembersInput
+    disconnect?: AgencyWhereInput | boolean
+    delete?: AgencyWhereInput | boolean
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutMembersInput, AgencyUpdateWithoutMembersInput>, AgencyUncheckedUpdateWithoutMembersInput>
   }
 
   export type TenantProfileUpdateOneWithoutUserNestedInput = {
@@ -19535,6 +19677,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedManyWithoutAgency_memberInput = {
+    create?: XOR<UserCreateWithoutAgency_memberInput, UserUncheckedCreateWithoutAgency_memberInput> | UserCreateWithoutAgency_memberInput[] | UserUncheckedCreateWithoutAgency_memberInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAgency_memberInput | UserCreateOrConnectWithoutAgency_memberInput[]
+    createMany?: UserCreateManyAgency_memberInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutAgency_memberInput = {
+    create?: XOR<UserCreateWithoutAgency_memberInput, UserUncheckedCreateWithoutAgency_memberInput> | UserCreateWithoutAgency_memberInput[] | UserUncheckedCreateWithoutAgency_memberInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAgency_memberInput | UserCreateOrConnectWithoutAgency_memberInput[]
+    createMany?: UserCreateManyAgency_memberInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type AddressUpdateOneRequiredWithoutAgenciesNestedInput = {
     create?: XOR<AddressCreateWithoutAgenciesInput, AddressUncheckedCreateWithoutAgenciesInput>
     connectOrCreate?: AddressCreateOrConnectWithoutAgenciesInput
@@ -19549,6 +19705,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutAgencyInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAgencyInput, UserUpdateWithoutAgencyInput>, UserUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type UserUpdateManyWithoutAgency_memberNestedInput = {
+    create?: XOR<UserCreateWithoutAgency_memberInput, UserUncheckedCreateWithoutAgency_memberInput> | UserCreateWithoutAgency_memberInput[] | UserUncheckedCreateWithoutAgency_memberInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAgency_memberInput | UserCreateOrConnectWithoutAgency_memberInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutAgency_memberInput | UserUpsertWithWhereUniqueWithoutAgency_memberInput[]
+    createMany?: UserCreateManyAgency_memberInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutAgency_memberInput | UserUpdateWithWhereUniqueWithoutAgency_memberInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutAgency_memberInput | UserUpdateManyWithWhereWithoutAgency_memberInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutAgency_memberNestedInput = {
+    create?: XOR<UserCreateWithoutAgency_memberInput, UserUncheckedCreateWithoutAgency_memberInput> | UserCreateWithoutAgency_memberInput[] | UserUncheckedCreateWithoutAgency_memberInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAgency_memberInput | UserCreateOrConnectWithoutAgency_memberInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutAgency_memberInput | UserUpsertWithWhereUniqueWithoutAgency_memberInput[]
+    createMany?: UserCreateManyAgency_memberInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutAgency_memberInput | UserUpdateWithWhereUniqueWithoutAgency_memberInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutAgency_memberInput | UserUpdateManyWithWhereWithoutAgency_memberInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type TenantProfileCreateregionsInput = {
@@ -20483,6 +20667,7 @@ export namespace Prisma {
     site_web?: string | null
     created_at?: Date | string
     address: AddressCreateNestedOneWithoutAgenciesInput
+    members?: UserCreateNestedManyWithoutAgency_memberInput
   }
 
   export type AgencyUncheckedCreateWithoutUserInput = {
@@ -20493,11 +20678,39 @@ export namespace Prisma {
     site_web?: string | null
     address_id: string
     created_at?: Date | string
+    members?: UserUncheckedCreateNestedManyWithoutAgency_memberInput
   }
 
   export type AgencyCreateOrConnectWithoutUserInput = {
     where: AgencyWhereUniqueInput
     create: XOR<AgencyCreateWithoutUserInput, AgencyUncheckedCreateWithoutUserInput>
+  }
+
+  export type AgencyCreateWithoutMembersInput = {
+    id?: string
+    nom_agence: string
+    numero_tva?: string | null
+    numero_bce?: string | null
+    site_web?: string | null
+    created_at?: Date | string
+    address: AddressCreateNestedOneWithoutAgenciesInput
+    user: UserCreateNestedOneWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutMembersInput = {
+    id?: string
+    nom_agence: string
+    numero_tva?: string | null
+    numero_bce?: string | null
+    site_web?: string | null
+    address_id: string
+    user_id: string
+    created_at?: Date | string
+  }
+
+  export type AgencyCreateOrConnectWithoutMembersInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutMembersInput, AgencyUncheckedCreateWithoutMembersInput>
   }
 
   export type TenantProfileCreateWithoutUserInput = {
@@ -20845,6 +21058,7 @@ export namespace Prisma {
     site_web?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     address?: AddressUpdateOneRequiredWithoutAgenciesNestedInput
+    members?: UserUpdateManyWithoutAgency_memberNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutUserInput = {
@@ -20854,6 +21068,40 @@ export namespace Prisma {
     numero_bce?: NullableStringFieldUpdateOperationsInput | string | null
     site_web?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: UserUncheckedUpdateManyWithoutAgency_memberNestedInput
+  }
+
+  export type AgencyUpsertWithoutMembersInput = {
+    update: XOR<AgencyUpdateWithoutMembersInput, AgencyUncheckedUpdateWithoutMembersInput>
+    create: XOR<AgencyCreateWithoutMembersInput, AgencyUncheckedCreateWithoutMembersInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutMembersInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutMembersInput, AgencyUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type AgencyUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom_agence?: StringFieldUpdateOperationsInput | string
+    numero_tva?: NullableStringFieldUpdateOperationsInput | string | null
+    numero_bce?: NullableStringFieldUpdateOperationsInput | string | null
+    site_web?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: AddressUpdateOneRequiredWithoutAgenciesNestedInput
+    user?: UserUpdateOneRequiredWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nom_agence?: StringFieldUpdateOperationsInput | string
+    numero_tva?: NullableStringFieldUpdateOperationsInput | string | null
+    numero_bce?: NullableStringFieldUpdateOperationsInput | string | null
+    site_web?: NullableStringFieldUpdateOperationsInput | string | null
+    address_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21208,6 +21456,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string | null
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -21231,6 +21480,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -21250,6 +21500,70 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutAgencyInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type UserCreateWithoutAgency_memberInput = {
+    id?: string
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    phone?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    is_active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    agency?: AgencyCreateNestedOneWithoutUserInput
+    tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
+    properties?: PropertyCreateNestedManyWithoutOwnerInput
+    swipes?: SwipeCreateNestedManyWithoutUserInput
+    conversations_as_tenant?: ConversationCreateNestedManyWithoutTenantInput
+    conversations_as_owner?: ConversationCreateNestedManyWithoutOwnerInput
+    messages?: MessageCreateNestedManyWithoutSenderInput
+    profile_photos?: ProfilePhotoCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentCreateNestedManyWithoutTenantInput
+    address: AddressCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutAgency_memberInput = {
+    id?: string
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    phone?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    is_active?: boolean
+    address_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    agency?: AgencyUncheckedCreateNestedOneWithoutUserInput
+    tenant_profile?: TenantProfileUncheckedCreateNestedOneWithoutUserInput
+    properties?: PropertyUncheckedCreateNestedManyWithoutOwnerInput
+    swipes?: SwipeUncheckedCreateNestedManyWithoutUserInput
+    conversations_as_tenant?: ConversationUncheckedCreateNestedManyWithoutTenantInput
+    conversations_as_owner?: ConversationUncheckedCreateNestedManyWithoutOwnerInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    profile_photos?: ProfilePhotoUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    appointments_as_owner?: AppointmentUncheckedCreateNestedManyWithoutOwnerInput
+    appointments_as_tenant?: AppointmentUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type UserCreateOrConnectWithoutAgency_memberInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAgency_memberInput, UserUncheckedCreateWithoutAgency_memberInput>
+  }
+
+  export type UserCreateManyAgency_memberInputEnvelope = {
+    data: UserCreateManyAgency_memberInput | UserCreateManyAgency_memberInput[]
+    skipDuplicates?: boolean
   }
 
   export type AddressUpsertWithoutAgenciesInput = {
@@ -21313,6 +21627,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -21336,6 +21651,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21352,6 +21668,42 @@ export namespace Prisma {
     appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
+  export type UserUpsertWithWhereUniqueWithoutAgency_memberInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutAgency_memberInput, UserUncheckedUpdateWithoutAgency_memberInput>
+    create: XOR<UserCreateWithoutAgency_memberInput, UserUncheckedCreateWithoutAgency_memberInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutAgency_memberInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutAgency_memberInput, UserUncheckedUpdateWithoutAgency_memberInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutAgency_memberInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutAgency_memberInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    password?: StringFilter<"User"> | string
+    firstname?: StringFilter<"User"> | string
+    lastname?: StringFilter<"User"> | string
+    phone?: StringNullableFilter<"User"> | string | null
+    bio?: StringNullableFilter<"User"> | string | null
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    is_active?: BoolFilter<"User"> | boolean
+    agency_member_id?: StringNullableFilter<"User"> | string | null
+    address_id?: StringFilter<"User"> | string
+    created_at?: DateTimeFilter<"User"> | Date | string
+    updated_at?: DateTimeFilter<"User"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"User"> | Date | string | null
+  }
+
   export type UserCreateWithoutTenant_profileInput = {
     id?: string
     email: string
@@ -21366,6 +21718,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
     conversations_as_tenant?: ConversationCreateNestedManyWithoutTenantInput
@@ -21388,6 +21741,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -21434,6 +21788,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
     conversations_as_tenant?: ConversationUpdateManyWithoutTenantNestedInput
@@ -21456,6 +21811,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21517,6 +21873,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
     conversations_as_tenant?: ConversationCreateNestedManyWithoutTenantInput
@@ -21539,6 +21896,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -21730,6 +22088,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
     conversations_as_tenant?: ConversationUpdateManyWithoutTenantNestedInput
@@ -21752,6 +22111,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21953,6 +22313,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -21975,6 +22336,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22021,6 +22383,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -22043,6 +22406,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22073,6 +22437,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -22095,6 +22460,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22141,6 +22507,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -22163,6 +22530,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22193,6 +22561,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     conversations_as_tenant?: ConversationCreateNestedManyWithoutTenantInput
@@ -22215,6 +22584,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22329,6 +22699,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     conversations_as_tenant?: ConversationUpdateManyWithoutTenantNestedInput
@@ -22351,6 +22722,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22527,6 +22899,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -22549,6 +22922,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22584,6 +22958,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -22606,6 +22981,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22758,6 +23134,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -22780,6 +23157,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22821,6 +23199,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -22843,6 +23222,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22912,6 +23292,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -22934,6 +23315,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -23009,6 +23391,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -23031,6 +23414,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23061,6 +23445,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -23083,6 +23468,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -23118,6 +23504,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -23140,6 +23527,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     address_id: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -23231,6 +23619,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -23253,6 +23642,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23294,6 +23684,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -23316,6 +23707,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     address_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23397,6 +23789,7 @@ export namespace Prisma {
     updated_at?: Date | string
     deleted_at?: Date | string | null
     agency?: AgencyCreateNestedOneWithoutUserInput
+    agency_member?: AgencyCreateNestedOneWithoutMembersInput
     tenant_profile?: TenantProfileCreateNestedOneWithoutUserInput
     properties?: PropertyCreateNestedManyWithoutOwnerInput
     swipes?: SwipeCreateNestedManyWithoutUserInput
@@ -23419,6 +23812,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string | null
@@ -23453,6 +23847,7 @@ export namespace Prisma {
     site_web?: string | null
     created_at?: Date | string
     user: UserCreateNestedOneWithoutAgencyInput
+    members?: UserCreateNestedManyWithoutAgency_memberInput
   }
 
   export type AgencyUncheckedCreateWithoutAddressInput = {
@@ -23463,6 +23858,7 @@ export namespace Prisma {
     site_web?: string | null
     user_id: string
     created_at?: Date | string
+    members?: UserUncheckedCreateNestedManyWithoutAgency_memberInput
   }
 
   export type AgencyCreateOrConnectWithoutAddressInput = {
@@ -23539,25 +23935,6 @@ export namespace Prisma {
   export type UserUpdateManyWithWhereWithoutAddressInput = {
     where: UserScalarWhereInput
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutAddressInput>
-  }
-
-  export type UserScalarWhereInput = {
-    AND?: UserScalarWhereInput | UserScalarWhereInput[]
-    OR?: UserScalarWhereInput[]
-    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
-    id?: StringFilter<"User"> | string
-    email?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
-    firstname?: StringFilter<"User"> | string
-    lastname?: StringFilter<"User"> | string
-    phone?: StringNullableFilter<"User"> | string | null
-    bio?: StringNullableFilter<"User"> | string | null
-    role?: EnumRoleFilter<"User"> | $Enums.Role
-    is_active?: BoolFilter<"User"> | boolean
-    address_id?: StringFilter<"User"> | string
-    created_at?: DateTimeFilter<"User"> | Date | string
-    updated_at?: DateTimeFilter<"User"> | Date | string
-    deleted_at?: DateTimeNullableFilter<"User"> | Date | string | null
   }
 
   export type AgencyUpsertWithWhereUniqueWithoutAddressInput = {
@@ -23944,6 +24321,92 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserCreateManyAgency_memberInput = {
+    id?: string
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    phone?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    is_active?: boolean
+    address_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+  }
+
+  export type UserUpdateWithoutAgency_memberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstname?: StringFieldUpdateOperationsInput | string
+    lastname?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agency?: AgencyUpdateOneWithoutUserNestedInput
+    tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
+    properties?: PropertyUpdateManyWithoutOwnerNestedInput
+    swipes?: SwipeUpdateManyWithoutUserNestedInput
+    conversations_as_tenant?: ConversationUpdateManyWithoutTenantNestedInput
+    conversations_as_owner?: ConversationUpdateManyWithoutOwnerNestedInput
+    messages?: MessageUpdateManyWithoutSenderNestedInput
+    profile_photos?: ProfilePhotoUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUpdateManyWithoutTenantNestedInput
+    address?: AddressUpdateOneRequiredWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAgency_memberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstname?: StringFieldUpdateOperationsInput | string
+    lastname?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    address_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agency?: AgencyUncheckedUpdateOneWithoutUserNestedInput
+    tenant_profile?: TenantProfileUncheckedUpdateOneWithoutUserNestedInput
+    properties?: PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+    swipes?: SwipeUncheckedUpdateManyWithoutUserNestedInput
+    conversations_as_tenant?: ConversationUncheckedUpdateManyWithoutTenantNestedInput
+    conversations_as_owner?: ConversationUncheckedUpdateManyWithoutOwnerNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    profile_photos?: ProfilePhotoUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    appointments_as_owner?: AppointmentUncheckedUpdateManyWithoutOwnerNestedInput
+    appointments_as_tenant?: AppointmentUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutAgency_memberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    firstname?: StringFieldUpdateOperationsInput | string
+    lastname?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    address_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type AnnouncementPhotoCreateManyPropertyInput = {
     id?: string
     url: string
@@ -24122,6 +24585,7 @@ export namespace Prisma {
     bio?: string | null
     role?: $Enums.Role
     is_active?: boolean
+    agency_member_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string | null
@@ -24167,6 +24631,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     agency?: AgencyUpdateOneWithoutUserNestedInput
+    agency_member?: AgencyUpdateOneWithoutMembersNestedInput
     tenant_profile?: TenantProfileUpdateOneWithoutUserNestedInput
     properties?: PropertyUpdateManyWithoutOwnerNestedInput
     swipes?: SwipeUpdateManyWithoutUserNestedInput
@@ -24189,6 +24654,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24215,6 +24681,7 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
+    agency_member_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24228,6 +24695,7 @@ export namespace Prisma {
     site_web?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAgencyNestedInput
+    members?: UserUpdateManyWithoutAgency_memberNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutAddressInput = {
@@ -24238,6 +24706,7 @@ export namespace Prisma {
     site_web?: NullableStringFieldUpdateOperationsInput | string | null
     user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: UserUncheckedUpdateManyWithoutAgency_memberNestedInput
   }
 
   export type AgencyUncheckedUpdateManyWithoutAddressInput = {
