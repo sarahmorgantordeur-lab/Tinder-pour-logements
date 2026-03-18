@@ -4,7 +4,7 @@ const ALLOWED_TRANSITIONS = {
     draft:     ['published', 'archived'],
     published: ['draft', 'rented', 'archived'],
     rented:    ['published', 'archived'],
-    archived:  ['draft']
+    archived:  ['draft', 'published']
 };
 
 const ownerSelect = {

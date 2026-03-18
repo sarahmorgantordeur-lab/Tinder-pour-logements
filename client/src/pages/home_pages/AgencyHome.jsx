@@ -8,13 +8,28 @@ import { useHome } from "../../hooks/useHome";
 export default function AgencyHome() {
     const { loading, error } = useHome();
     const { appartmentById, fetchMyProperties } = useHome();
-    const [selectedApartment, setSelectedApartment] = useState(null);
+    const [selectedApartmentId, setSelectedApartmentId] = useState(null);
 
     useEffect(() => {
         fetchMyProperties();
     }, [fetchMyProperties]);
 
     const count = appartmentById?.length;
+
+    const selectedApartment = selectedApartmentId && appartmentById
+        ? (() => {
+            const a = appartmentById.find(p => p.id === selectedApartmentId);
+            if (!a) return null;
+            return {
+                ...a,
+                city: a.address?.city,
+                postal_code: a.address?.postal_code,
+                image: a.photos?.[0]?.url
+                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${a.photos[0].url}`
+                    : null,
+            };
+        })()
+        : null;
 
     return (
         <div className="agency-home">
@@ -79,7 +94,7 @@ export default function AgencyHome() {
                             >
                                 <AppartementOwnerCard
                                     appartement={formattedApartment}
-                                    onClick={() => setSelectedApartment(formattedApartment)}
+                                    onClick={() => setSelectedApartmentId(apartment.id)}
                                 />
                             </div>
                         );
@@ -90,7 +105,7 @@ export default function AgencyHome() {
             {selectedApartment && (
                 <ApartmentModal
                     appartement={selectedApartment}
-                    onClose={() => setSelectedApartment(null)}
+                    onClose={() => setSelectedApartmentId(null)}
                     isOwner={true}
                 />
             )}

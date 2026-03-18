@@ -10,8 +10,9 @@ export const AuthProvider = ({ children }) => {
     });
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [loading] = useState(false);
+    const [pendingAgencySetup, setPendingAgencySetup] = useState(false);
 
-    const register = async (name, surname, agencyName, email, password, phone, role) => {
+    const register = async (name, surname, _agencyName, email, password, phone, role) => {
         try {
             const response = await api.post("/auth/register", {
                 firstname: name,
@@ -27,9 +28,8 @@ export const AuthProvider = ({ children }) => {
             setUser(newUser);
             setToken(newToken);
 
-            // Si agence, créer le profil agence après l'inscription
-            if (role === 'agency' && agencyName) {
-                await api.put("/users/agency", { nom_agence: agencyName });
+            if (role === 'agency') {
+                setPendingAgencySetup(true);
             }
 
             return { success: true };
@@ -70,10 +70,14 @@ export const AuthProvider = ({ children }) => {
 
     const isAuthenticated = () => !!token;
 
+    const finishAgencySetup = () => setPendingAgencySetup(false);
+
     const value = {
         user,
         token,
         loading,
+        pendingAgencySetup,
+        finishAgencySetup,
         register,
         login,
         isAuthenticated,

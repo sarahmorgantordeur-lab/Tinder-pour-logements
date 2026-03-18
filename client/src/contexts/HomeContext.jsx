@@ -81,9 +81,9 @@ export const HomeProvider = ({ children }) => {
     const updateStatus = useCallback(async (propertyId, status) => {
         try {
             await api.patch(`/properties/${propertyId}/status`, { status });
-            setAppartmentById((prev) => prev.map((p) => p.id === propertyId ? { ...p, status } : p));
-        } catch {
-                setError("Impossible de mettre à jour le statut du logement");
+            setAppartmentById((prev) => Array.isArray(prev) ? prev.map((p) => p.id === propertyId ? { ...p, status } : p) : prev);
+        } catch (err) {
+            setError(err.response?.data?.message || "Impossible de mettre à jour le statut du logement");
         }
     }, []);
 

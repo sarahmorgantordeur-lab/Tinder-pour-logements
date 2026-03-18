@@ -18,7 +18,7 @@ const initialForm = {
     },
 };
 
-export default function CreateAgency({ onClose } = {}) {
+export default function CreateAgency({ onClose, onData } = {}) {
     const [formData, setFormData] = useState(initialForm);
     const [saving, setSaving]     = useState(false);
     const [error, setError]       = useState(null);
@@ -39,6 +39,13 @@ export default function CreateAgency({ onClose } = {}) {
         setSaving(true);
         setError(null);
         setSuccess(false);
+
+        // Mode "pré-inscription" : collecter les données sans appeler l'API
+        if (onData) {
+            onData(formData);
+            setSaving(false);
+            return;
+        }
 
         try {
             await api.put("/users/agency", formData);

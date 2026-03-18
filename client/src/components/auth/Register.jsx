@@ -3,44 +3,24 @@ import TenantIcon from '../../assets/icons/Tenant.svg?react';
 import LandlordIcon from '../../assets/icons/Landlord.svg?react';
 import AgencyIcon from '../../assets/icons/Agency.svg?react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Select from '../ui/Select';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
-import Modal from '../ui/Modal';
 import { useAuth } from '../../hooks/useAuth';
 import CreateAgency from '../create/CreateAgency';
-import api from '../../api';
 
 
-export default function Register({ onLogin, email, setEmail, password, setPassword }) {
-    const { register } = useAuth();
+export default function Register({ email, setEmail, password, setPassword }) {
+    const { register, finishAgencySetup } = useAuth();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
-    const [agencyName, setAgencyName] = useState('');
     const [phone, setPhone] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState('user');
     const [step, setStep] = useState('form'); // 'form' | 'agency-profile'
-    const [registeredUser, setRegisteredUser] = useState(null);
-    const [registeredToken, setRegisteredToken] = useState(null);
-    const [agencies, setAgencies] = useState([]);
-    const [agencyModalOpen, setAgencyModalOpen] = useState(false);
-
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const user = JSON.parse(localStorage.getItem('user') || 'null');
-            onLogin?.(user, token);
-        }
-    }, [onLogin]);
-
-    useEffect(() => {
-        if (role === 'agency') {
-            setSurname('');
-            api.get('/users/agencies').then(({ data }) => setAgencies(data.agencies || [])).catch(() => {});
-        }
+        if (role === 'agency') setSurname('');
     }, [role]);
 
     const handleSubmit = async (e) => {
@@ -52,27 +32,15 @@ export default function Register({ onLogin, email, setEmail, password, setPasswo
             return;
         }
 
-
-        if (password !== confirmPassword) {
-            setError('Les mots de passe ne correspondent pas');
-            return;
-        }
-
         setLoading(true);
         try {
-            const result = await register(name, surname, agencyName, email, password, phone, role);
+            const result = await register(name, surname, '', email, password, phone, role);
             if (!result.success) {
                 setError(result.error || 'Erreur lors de l\'inscription');
                 return;
             }
-            const user = JSON.parse(localStorage.getItem('user') || 'null');
-            const token = localStorage.getItem('token');
             if (role === 'agency') {
-                setRegisteredUser(user);
-                setRegisteredToken(token);
                 setStep('agency-profile');
-            } else {
-                onLogin?.(user, token);
             }
         } catch {
             setError('Impossible de contacter le serveur');
@@ -86,12 +54,13 @@ export default function Register({ onLogin, email, setEmail, password, setPasswo
             <div className="form-main-container">
                 <div className="form-wrapper">
                     <h2 className="form-agency-title">Complétez votre profil agence</h2>
-                    <CreateAgency />
+                    <p className="form-agency-subtitle">Créez votre agence ou passez cette étape pour la compléter plus tard.</p>
+                    <CreateAgency onClose={finishAgencySetup} />
                     <Button
                         type="button"
-                        onClick={() => onLogin?.(registeredUser, registeredToken)}
+                        onClick={finishAgencySetup}
                     >
-                        Terminer
+                        Passer cette étape
                     </Button>
                 </div>
             </div>
@@ -136,49 +105,6 @@ export default function Register({ onLogin, email, setEmail, password, setPasswo
                             placeholder='Last Name'
                         />
                     </div>
-                    <AnimatePresence initial={false}>
-                        {role === 'agency' && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                style={{ overflow: 'hidden' }}
-                            >
-                                <div className="name-container-agency">
-                                    <Select
-                                        id="agencyName"
-                                        required
-                                        value={agencyName}
-                                        aria-label='Agency Name'
-                                        onChange={(e) => setAgencyName(e.target.value)}
-                                    >
-                                        <option value="">Select an agency</option>
-                                        {agencies.map((a) => (
-                                            <option key={a.id} value={a.nom_agence}>{a.nom_agence}</option>
-                                        ))}
-                                    </Select>
-                                    <Button
-                                        type="button"
-                                        className="agency-announcement-modal-btn"
-                                        onClick={() => setAgencyModalOpen(true)}
-                                        title="Créer une agence"
-                                    >
-                                        +
-                                    </Button>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {agencyModalOpen && (
-                        <Modal onClose={() => setAgencyModalOpen(false)} className="modal-content--agency">
-                            <CreateAgency onClose={() => {
-                                setAgencyModalOpen(false);
-                                api.get('/users/agencies').then(({ data }) => setAgencies(data.agencies || [])).catch(() => {});
-                            }} />
-                        </Modal>
-                    )}
                     <div className="">
                         <TextInput
                             id="phone"
@@ -232,7 +158,7 @@ export default function Register({ onLogin, email, setEmail, password, setPasswo
                     )}
 
                     <Button type="submit" disabled={loading}>
-                        {loading ? 'Inscription…' : "S'inscrire"}
+                        {loading ? 'Inscription…' : role === 'agency' ? "Suivant →" : "S'inscrire"}
                     </Button>
                 </form>
             </div>
