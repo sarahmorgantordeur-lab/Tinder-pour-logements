@@ -9,8 +9,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 
 const swipAnimations = {
-    like: { x: 300, opacity: 0 },
-    dislike: { x: -300, opacity: 0 },
+    like: { x: 500, opacity: 0 },
+    dislike: { x: -500, opacity: 0 },
     initial: { x: 0, opacity: 1 }
 };
 
