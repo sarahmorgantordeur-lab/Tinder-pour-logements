@@ -211,7 +211,7 @@ function hasActiveFilter(f) {
                                 city: currentApartment.address?.city,
                                 postal_code: currentApartment.address?.postal_code,
                                 image: currentApartment.photos?.[0]?.url
-                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${currentApartment.photos[0].url}`
+                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${currentApartment.photos[0].url}`
                                     : null,
                             }}
                             onClick={() => setSelectedApartment({
@@ -219,7 +219,7 @@ function hasActiveFilter(f) {
                                 city: currentApartment.address?.city,
                                 postal_code: currentApartment.address?.postal_code,
                                 image: currentApartment.photos?.[0]?.url
-                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${currentApartment.photos[0].url}`
+                                    ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${currentApartment.photos[0].url}`
                                     : null,
                             })}
                         />

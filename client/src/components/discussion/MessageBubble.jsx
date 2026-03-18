@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { parseContent, formatTime } from "../../utils/discussion";
 
-const SERVER_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000';
+const SERVER_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || '';
 
 export default function MessageBubble({ msg, isOwn, isTenant, onDocUpload }) {
     const parsed = parseContent(msg.content);
