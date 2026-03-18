@@ -10,13 +10,15 @@ const fadeVariants = {
     exit: { opacity: 0 },
 };
 
-export default function AuthLayoutForm({ isLogin, isRegister, setIsLogin, setIsRegister }) {
+export default function AuthLayoutForm({ isLogin, isRegister, setIsLogin, setIsRegister, step, setStep }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     return (
         <div className="auth-layout-form">
-            <SwitchAuth isLogin={isLogin} isRegister={isRegister} setIsLogin={setIsLogin} setIsRegister={setIsRegister} />
+            {step === 'form' && (
+                <SwitchAuth isLogin={isLogin} isRegister={isRegister} setIsLogin={setIsLogin} setIsRegister={setIsRegister} />
+            )}
             <AnimatePresence mode="wait">
                 <motion.div
                     key={isLogin ? "login" : "register"}
@@ -29,7 +31,7 @@ export default function AuthLayoutForm({ isLogin, isRegister, setIsLogin, setIsR
                 >
                     {isLogin
                         ? <Login email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
-                        : <Register email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
+                        : <Register email={email} setEmail={setEmail} password={password} setPassword={setPassword} step={step} setStep={setStep} />
                     }
                 </motion.div>
             </AnimatePresence>

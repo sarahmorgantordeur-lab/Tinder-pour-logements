@@ -10,8 +10,8 @@ import AgendaPage from "../pages/AgendaPage";
 import { useAuth } from "../hooks/useAuth";
 
 function PublicRoute({ children }) {
-  const { token } = useAuth();
-  return token ? <Navigate to="/home" /> : children;
+  const { token, pendingAgencySetup } = useAuth();
+  return token && !pendingAgencySetup ? <Navigate to="/home" /> : children;
 }
 
 function PrivateRoute({ children }) {

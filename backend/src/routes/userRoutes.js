@@ -6,6 +6,7 @@ import { uploadProfilePhotosMiddleware, uploadDocumentMiddleware } from '../midd
 const router = express.Router();
 
 router.get('/agencies', UserController.getAgencies);
+router.get('/agencies/:agencyId', UserController.getAgencyById);
 router.get('/profile', authenticate, UserController.getProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
 
@@ -24,6 +25,7 @@ router.put('/tenant-profile', authenticate, UserController.updateTenantProfile);
 
 // Profil agence
 router.put('/agency', authenticate, UserController.updateAgency);
+router.put('/join-agency', authenticate, UserController.joinAgency);
 
 // Profil public — doit être en dernier pour ne pas intercepter les routes nommées
 router.get('/:id', authenticate, UserController.getPublicProfile);

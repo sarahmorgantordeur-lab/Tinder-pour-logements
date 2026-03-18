@@ -59,18 +59,56 @@ async function main() {
                     min_surface: 50,
                     regions: ['Bruxelles', 'Brabant Wallon', 'Hornu', 'Liège'],
                     property_types: [
-                        'Bungalow', 'Chalet', 'Castel', 'Farm', 'CountryHouse', 
-                        'ApartmentBuilding', 'MixedUseBuilding', 'BelEtageHouse', 
-                        'Mansion', 'Villa', 'ManorHouse', 'Pavilion', 'GroundFloor', 
-                        'Duplex', 'Triplex', 'Studio', 'Penthouse', 'Loft', 
-                        'StudentHousing', 'ServiceApartment', 'Appartement', 'Other'
+                        'Bungalow', 'Chalet', 'Castel', 'BelEtageHouse',
+                        'Mansion', 'Villa', 'Duplex', 'Studio', 'Penthouse',
+                        'Loft', 'StudentHousing', 'Appartement', 'Other'
                     ]
                 }
             }
         }
     });
 
-    console.log('✅ Users created:', thomas.firstname, candice.firstname, justine.firstname);
+    // --- AGENCY ---
+    const agencyOwner = await prisma.user.upsert({
+        where: { email: 'sophie.agence@immobe.be' },
+        update: {},
+        create: {
+            email: 'sophie.agence@immobe.be',
+            password: hashedPassword,
+            firstname: 'Sophie',
+            lastname: 'Martin',
+            role: 'agency',
+            phone: '+32 473 11 22 33',
+            address: { create: { number: '15', street: 'Avenue des Arts', city: 'Bruxelles', postal_code: '1210', country: 'Belgique' } },
+            agency: {
+                create: {
+                    nom_agence: 'ImmoStar Bruxelles',
+                    numero_tva: 'BE0123456789',
+                    site_web: 'https://immostar.be',
+                    address: { create: { number: '15', street: 'Avenue des Arts', city: 'Bruxelles', postal_code: '1210', country: 'Belgique' } }
+                }
+            }
+        }
+    });
+
+    const immoStarAgency = await prisma.agency.findUnique({ where: { user_id: agencyOwner.id } });
+
+    const agencyMember = await prisma.user.upsert({
+        where: { email: 'lucas.agent@immobe.be' },
+        update: {},
+        create: {
+            email: 'lucas.agent@immobe.be',
+            password: hashedPassword,
+            firstname: 'Lucas',
+            lastname: 'Renard',
+            role: 'agency',
+            phone: '+32 474 55 66 77',
+            address: { create: { number: '15', street: 'Avenue des Arts', city: 'Bruxelles', postal_code: '1210', country: 'Belgique' } },
+            agency_member: { connect: { id: immoStarAgency.id } }
+        }
+    });
+
+    console.log('✅ Agency created: ImmoStar Bruxelles (owner:', agencyOwner.firstname, '| member:', agencyMember.firstname + ')');
 
     // --- PROPERTIES ---
     const propertiesData = [

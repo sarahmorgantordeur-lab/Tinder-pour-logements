@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../api";
 import Button from "../ui/Button";
 import TextInput from "../ui/TextInput";
@@ -18,11 +18,48 @@ const initialForm = {
     },
 };
 
-export default function CreateAgency({ onClose } = {}) {
-    const [formData, setFormData] = useState(initialForm);
-    const [saving, setSaving]     = useState(false);
-    const [error, setError]       = useState(null);
-    const [success, setSuccess]   = useState(false);
+export default function CreateAgency({ onClose, onSkip } = {}) {
+    const [formData, setFormData]         = useState(initialForm);
+    const [saving, setSaving]             = useState(false);
+    const [error, setError]               = useState(null);
+    const [success, setSuccess]           = useState(false);
+    const [agencies, setAgencies]         = useState([]);
+    const [selectedAgency, setSelectedAgency] = useState("");
+
+    useEffect(() => {
+        api.get("/users/agencies")
+            .then(res => setAgencies(res.data.agencies || []))
+            .catch(() => {});
+    }, []);
+
+    const handleSelectAgency = async (e) => {
+        const id = e.target.value;
+        setSelectedAgency(id);
+        if (!id) {
+            setFormData(initialForm);
+            return;
+        }
+        try {
+            const res = await api.get(`/users/agencies/${id}`);
+            const a = res.data.agency;
+            setFormData({
+                nom_agence:  a.nom_agence  || "",
+                numero_tva:  a.numero_tva  || "",
+                numero_bce:  a.numero_bce  || "",
+                site_web:    a.site_web    || "",
+                address: {
+                    number:      a.address?.number      || "",
+                    box:         a.address?.box         || "",
+                    street:      a.address?.street      || "",
+                    city:        a.address?.city        || "",
+                    postal_code: a.address?.postal_code || "",
+                    country:     a.address?.country     || "Belgique",
+                },
+            });
+        } catch {
+            setError("Impossible de récupérer les données de l'agence.");
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,6 +69,20 @@ export default function CreateAgency({ onClose } = {}) {
             return;
         }
         setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleJoinExisting = async () => {
+        setSaving(true);
+        setError(null);
+        try {
+            await api.put("/users/join-agency", { agencyId: selectedAgency });
+            setSuccess(true);
+            if (onClose) setTimeout(onClose, 1000);
+        } catch (err) {
+            setError(err.response?.data?.message || "Erreur lors de l'association.");
+        } finally {
+            setSaving(false);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -54,9 +105,31 @@ export default function CreateAgency({ onClose } = {}) {
     return (
         <form className="create-agency-form" onSubmit={handleSubmit}>
             {error   && <p className="create-agency-error">{error}</p>}
-            {success && <p className="create-agency-success">Agence créée avec succès.</p>}
 
-            <div className="create-agency-sections">
+            {agencies.length > 0 && (
+                <div className="create-agency-existing">
+                    <label className="create-agency-field">
+                        Récupérer une agence existante
+                        <select
+                            className="create-agency-select"
+                            value={selectedAgency}
+                            onChange={handleSelectAgency}
+                        >
+                            <option value="">— Créer une nouvelle agence —</option>
+                            {agencies.map(a => (
+                                <option key={a.id} value={a.id}>{a.nom_agence}</option>
+                            ))}
+                        </select>
+                    </label>
+                    {selectedAgency && (
+                        <Button type="button" className="create-agency-submit" onClick={handleJoinExisting} disabled={saving}>
+                            {saving ? "Enregistrement..." : "Rejoindre cette agence"}
+                        </Button>
+                    )}
+                </div>
+            )}
+
+            {!selectedAgency && (<div className="create-agency-sections">
             <fieldset className="create-agency-section">
                 <legend className="create-agency-section-title">Informations agence</legend>
 
@@ -159,18 +232,20 @@ export default function CreateAgency({ onClose } = {}) {
                     />
                 </label>
             </fieldset>
-            </div>
+            </div>)}
 
-            <div className="create-agency-actions">
-                {onClose && (
-                    <Button type="button" className="create-agency-cancel" onClick={onClose}>
-                        Annuler
+            {!selectedAgency && (
+                <div className="create-agency-actions">
+                    {onSkip && (
+                        <Button type="button" className="create-agency-cancel" onClick={onSkip}>
+                            Passer cette étape
+                        </Button>
+                    )}
+                    <Button type="submit" className="create-agency-submit" disabled={saving}>
+                        {saving ? "Enregistrement..." : "Créer l'agence"}
                     </Button>
-                )}
-                <Button type="submit" className="create-agency-submit" disabled={saving}>
-                    {saving ? "Enregistrement..." : "Créer l'agence"}
-                </Button>
-            </div>
+                </div>
+            )}
         </form>
     );
 }

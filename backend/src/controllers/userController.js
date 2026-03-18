@@ -16,6 +16,7 @@ class UserController {
                     is_active: true,
                     address: true,
                     agency: { include: { address: true } },
+                    agency_member: { include: { address: true } },
                     tenant_profile: true,
                     created_at: true,
                     updated_at: true
@@ -242,6 +243,38 @@ class UserController {
         }
     }
 
+    // Détail d'une agence (public)
+    static async getAgencyById(req, res) {
+        try {
+            const { agencyId } = req.params;
+            const agency = await prisma.agency.findUnique({
+                where: { id: agencyId },
+                select: {
+                    id: true,
+                    nom_agence: true,
+                    numero_tva: true,
+                    numero_bce: true,
+                    site_web: true,
+                    address: {
+                        select: {
+                            number: true,
+                            box: true,
+                            street: true,
+                            city: true,
+                            postal_code: true,
+                            country: true,
+                        }
+                    }
+                }
+            });
+            if (!agency) return res.status(404).json({ message: "Agency not found" });
+            res.status(200).json({ agency });
+        } catch (error) {
+            console.error('[getAgencyById]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
     // Profil agence
     static async updateAgency(req, res) {
         try {
@@ -275,7 +308,7 @@ class UserController {
                                 country: address.country || 'Belgique'
                             }
                         },
-                        user_id: req.user.id
+                        user: { connect: { id: req.user.id } }
                     }
                 });
             }
@@ -283,6 +316,27 @@ class UserController {
             res.status(200).json({ message: "Agency updated successfully", agency });
         } catch (error) {
             console.error('[updateAgency]', error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    // Rejoindre une agence existante
+    static async joinAgency(req, res) {
+        try {
+            const { agencyId } = req.body;
+            if (!agencyId) return res.status(400).json({ message: "agencyId is required" });
+
+            const agency = await prisma.agency.findUnique({ where: { id: agencyId } });
+            if (!agency) return res.status(404).json({ message: "Agency not found" });
+
+            await prisma.user.update({
+                where: { id: req.user.id },
+                data: { agency_member_id: agencyId }
+            });
+
+            res.status(200).json({ message: "Joined agency successfully", agency });
+        } catch (error) {
+            console.error('[joinAgency]', error);
             res.status(500).json({ message: "Internal server error" });
         }
     }

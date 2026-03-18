@@ -13,7 +13,8 @@ const emptyAddress = {
 };
 
 const buildFormData = (user) => {
-    const agencyAddress = user?.agency?.address || emptyAddress;
+    const agency = user?.agency || user?.agency_member || null;
+    const agencyAddress = agency?.address || emptyAddress;
 
     return {
         firstname: user?.firstname || "",
@@ -23,9 +24,9 @@ const buildFormData = (user) => {
         bio: user?.bio || "",
         role: user?.role || "user",
         password: "",
-        nom_agence: user?.agency?.nom_agence || "",
-        numero_tva: user?.agency?.numero_tva || "",
-        site_web: user?.agency?.site_web || "",
+        nom_agence: agency?.nom_agence || "",
+        numero_tva: agency?.numero_tva || "",
+        site_web: agency?.site_web || "",
         agency_address: {
             number: agencyAddress?.number || "",
             box: agencyAddress?.box || "",

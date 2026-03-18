@@ -18,14 +18,11 @@
     padding: 2rem;
 
     .create-agency-sections {
+        width: 100%;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: 2rem;
         align-items: flex-start;
-
-        @media (max-width: 768px) {
-            flex-direction: column;
-        }
     }
 
     @media (max-width: 768px) {
@@ -57,6 +54,7 @@
 }
 
 .create-agency-section {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -107,6 +105,39 @@
             box-shadow: 0 0 0 2px rgba($color: $border-color, $alpha: 0.2);
         }
     }
+}
+
+.create-agency-existing {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid $border-color-muted;
+    border-radius: 12px;
+    background-color: $background-color-light;
+}
+
+.create-agency-select {
+    font-size: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid $border-color-muted;
+    outline: none;
+    background-color: $input-bg;
+    color: $main-text-color;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+
+    &:focus {
+        border-color: $border-color;
+        box-shadow: 0 0 0 2px rgba($color: $border-color, $alpha: 0.2);
+    }
+}
+
+.create-agency-hint {
+    font-size: 0.82rem;
+    color: $text-muted;
+    font-style: italic;
 }
 
 .create-agency-actions {
