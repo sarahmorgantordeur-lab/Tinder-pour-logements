@@ -6,6 +6,8 @@ import Button from "../../components/ui/Button";
 import Select from "../../components/ui/Select";
 import TextInput from "../../components/ui/TextInput";
 import { motion, AnimatePresence } from 'framer-motion';
+import { SwipeCard } from "../../components/ui/SwipeCard";
+import { useIsTouchDevice } from "../../hooks/useIsTouchDevice";
 
 
 const swipAnimations = {
@@ -70,11 +72,16 @@ function hasActiveFilter(f) {
     };
 
     const activeFilter = hasActiveFilter(filters);
+    const isTouch = useIsTouchDevice();
 
     const [swipeDirection, setSwipeDirection] = useState(null);
 
     const swipeAction = (direction) => () => {
-        setSwipeDirection(direction);
+        if (isTouch) {
+            swipe(direction);
+        } else {
+            setSwipeDirection(direction);
+        }
     };
 
     const handleAnimationComplete = () => {
@@ -187,6 +194,7 @@ function hasActiveFilter(f) {
                             : "Vous avez tout vu ! Cliquez sur ↺ Rafraîchir pour revoir vos dislikes."}
                 </p>
             )}
+            <SwipeCard onSwipeLeft={swipeAction('dislike')} onSwipeRight={swipeAction('like')}>
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentApartment?.id}
@@ -218,12 +226,15 @@ function hasActiveFilter(f) {
                     )}
                 </motion.div>
             </AnimatePresence>
+            </SwipeCard>
             <div className="swipe-buttons">
-                <Button onClick={swipeAction('dislike')} className="swipe-button">
-                    Dislike
+                <Button onClick={swipeAction('dislike')} className="swipe-button swipe-button--dislike">
+                    <span className="swipe-btn-icon">✕</span>
+                    <span className="swipe-btn-text">Dislike</span>
                 </Button>
-                <Button onClick={swipeAction('like')} className="swipe-button">
-                    Like
+                <Button onClick={swipeAction('like')} className="swipe-button swipe-button--like">
+                    <span className="swipe-btn-icon">♥</span>
+                    <span className="swipe-btn-text">Like</span>
                 </Button>
             </div>
         {selectedApartment && (
