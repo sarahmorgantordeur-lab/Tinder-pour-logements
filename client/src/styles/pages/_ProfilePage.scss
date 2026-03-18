@@ -1,0 +1,188 @@
+@use '../variables' as *;
+
+.profile-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: $text-muted;
+    font-size: 1rem;
+}
+
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: $main-bg;
+}
+
+.profile-content {
+    flex: 1;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+        padding: 2rem 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.profile-kicker {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: $button-bg;
+}
+
+.profile-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $main-text-color;
+
+    @media (max-width: 480px) {
+        font-size: 1.4rem;
+    }
+}
+
+.profile-error {
+    color: #e57373;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background-color: rgba(229, 115, 115, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(229, 115, 115, 0.3);
+}
+
+.profile-success {
+    color: #81c784;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background-color: rgba(129, 199, 132, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(129, 199, 132, 0.3);
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    border: 1px solid $border-color-muted;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background-color: $background-color-light;
+
+    @media (max-width: 480px) {
+        padding: 1rem;
+        gap: 1rem;
+    }
+}
+
+.profile-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $button-bg;
+    margin-bottom: 0.25rem;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: $text-muted;
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+        font-size: 1rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid $border-color-muted;
+        outline: none;
+        background-color: $input-bg;
+        color: $main-text-color;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
+        &::placeholder {
+            color: $text-muted;
+        }
+
+        &:focus {
+            border-color: $border-color;
+            box-shadow: 0 0 0 2px rgba($color: $border-color, $alpha: 0.2);
+        }
+    }
+
+    select {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid $border-color-muted;
+        outline: none;
+        background-color: $input-bg;
+        color: $main-text-color;
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    @media (max-width: 480px) {
+        justify-content: stretch;
+    }
+}
+
+.profile-submit {
+    padding: 0.75rem 2rem;
+    min-height: 44px;
+    background-color: $button-bg;
+    color: $main-text-color;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        background-color: rgba($color: $button-bg, $alpha: 0.9);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}

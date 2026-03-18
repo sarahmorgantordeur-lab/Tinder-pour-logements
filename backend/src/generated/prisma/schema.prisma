@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -13,39 +10,41 @@ datasource db {
   provider = "postgresql"
 }
 
-//--------------------------------
+// ─────────────────────────────────────────────
+// UTILISATEUR
+// ─────────────────────────────────────────────
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  password String
-  username String
-  role     Role    @default(user)
-  phone    String?
-  avatar   String?
-
-  // Préférences de notification
-  email_notifications Boolean @default(true)
-
-  // Propriétaire / agence
-  company_name String?
-  siret        String?
+  id        String  @id @default(uuid())
+  email     String  @unique
+  password  String
+  firstname String
+  lastname  String
+  phone     String?
+  bio       String?
+  role      Role    @default(user)
+  is_active Boolean @default(true)
 
   // Relations
-  profile           Profile?
-  pictures          Picture[]
-  favorites         Favorite[]
-  viewed_apartments ViewedApartment[]
-  swipes            Swipe[]
-  matches           Match[]
-  requests          Request[]
-  messages          Message[]
-  owned_apartments  Apartment[]       @relation("UserApartments")
+  agency                  Agency?        @relation("AgencyOwned")
+  agency_member           Agency?        @relation("AgencyMember", fields: [agency_member_id], references: [id])
+  agency_member_id        String?
+  tenant_profile          TenantProfile?
+  properties              Property[]     @relation("UserProperties")
+  swipes                  Swipe[]
+  conversations_as_tenant Conversation[] @relation("TenantConversations")
+  conversations_as_owner  Conversation[] @relation("OwnerConversations")
+  messages                Message[]
+  profile_photos          ProfilePhoto[]
+  documents               Document[]
+  appointments_as_owner   Appointment[]  @relation("OwnerAppointments")
+  appointments_as_tenant  Appointment[]  @relation("TenantAppointments")
+  address                 Address        @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id              String
 
-  preferences Preferences?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 }
 
 enum Role {
@@ -54,223 +53,253 @@ enum Role {
   agency
 }
 
-model Profile {
+// ─────────────────────────────────────────────
+// AGENCE
+// ─────────────────────────────────────────────
+
+model Agency {
   id         String  @id @default(uuid())
-  bio        String?
-  job        String?
-  income     Float?
-  guarantors Int?
+  nom_agence String
+  numero_tva String?
+  numero_bce String?
+  site_web   String?
 
-  user    User   @relation(fields: [user_id], references: [id])
+  address    Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id String
+
+  user    User   @relation("AgencyOwned", fields: [user_id], references: [id], onDelete: Cascade)
   user_id String @unique
+
+  members User[] @relation("AgencyMember")
+
+  created_at DateTime @default(now())
 }
 
-model Picture {
-  id          String      @id @default(uuid())
-  url         String
-  type        PictureType
-  uploaded_at DateTime    @default(now())
+// ─────────────────────────────────────────────
+// PROFIL LOCATAIRE
+// ─────────────────────────────────────────────
 
-  // Relation avec User (pour les photos de profil)
-  user    User?   @relation(fields: [user_id], references: [id])
-  user_id String?
+model TenantProfile {
+  id             String         @id @default(uuid())
+  household_size Int?
+  budget_max     Float?
+  min_surface    Int?
+  max_surface    Int?
+  regions        String[]
+  property_types PropertyType[]
 
-  // Relation avec Apartment (pour les photos d'appartement)
-  apartment    Apartment? @relation(fields: [apartment_id], references: [id])
-  apartment_id String?
-}
-
-enum PictureType {
-  profile
-  apartment
-}
-
-model Favorite {
-  id           String    @id @default(uuid())
-  user         User      @relation(fields: [user_id], references: [id])
-  user_id      String
-  apartment    Apartment @relation(fields: [apartment_id], references: [id])
-  apartment_id String
-
-  @@unique([user_id, apartment_id])
-}
-
-model ViewedApartment {
-  id        String   @id @default(uuid())
-  viewed_at DateTime @default(now())
-
-  user         User      @relation(fields: [user_id], references: [id])
-  user_id      String
-  apartment    Apartment @relation(fields: [apartment_id], references: [id])
-  apartment_id String
-}
-
-model Preferences {
-  id            String   @id @default(uuid())
-  property_type String[]
-  listing_type  String?
-  min_price     Float?
-  max_price     Float?
-  min_surface   Float?
-  regions       String[]
-  tags          String[]
-
-  user    User   @relation(fields: [user_id], references: [id])
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String @unique
-}
-
-//-----------------------------
-
-model Apartment {
-  id          String  @id @default(uuid())
-  title       String
-  description String?
-  address     String
-  region      String
-  city        String?
-  postal_code String?
-  country     String  @default("France")
-
-  // Géolocalisation
-  latitude  Float?
-  longitude Float?
-
-  property_type PropertyType @default(apartment)
-  listing_type  ListingType  @default(rent)
-  price         Float
-  surface       Float
-  rooms         Int
-  tags          String[]
-  availability  Boolean      @default(true)
-
-  owner    User   @relation(fields: [owner_id], references: [id], name: "UserApartments")
-  owner_id String
-
-  pictures  Picture[]
-  favorites Favorite[]
-  viewedBy  ViewedApartment[]
-  swipes    Swipe[]
-  matches   Match[]
-  requests  Request[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
 
-  @@index([region])
+// ─────────────────────────────────────────────
+// BIEN IMMOBILIER
+// ─────────────────────────────────────────────
+
+model Property {
+  id            String         @id @default(uuid())
+  title         String
+  description   String?
+  property_type PropertyType
+  status        PropertyStatus @default(draft)
+
+  address    Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address_id String
+
+  price   Int
+  surface Int
+  rooms   Int
+  parking Boolean @default(false)
+
+  owner    User   @relation(fields: [owner_id], references: [id], name: "UserProperties", onDelete: Cascade)
+  owner_id String
+
+  photos        AnnouncementPhoto[]
+  swipes        Swipe[]
+  conversations Conversation[]
+  appointments  Appointment[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
   @@index([price])
-  @@index([listing_type])
-  @@index([property_type])
   @@index([surface])
-  @@index([latitude, longitude])
+  @@index([property_type])
+  @@index([status])
 }
 
 enum PropertyType {
-  apartment
-  house
-  studio
-  villa
-  land
-  commercial_space
-  other
+  Appartement
+  BelEtageHouse
+  Castel
+  Duplex
+  StudentHousing
+  Villa
+  Chalet
+  Bungalow
+  Mansion
+  Penthouse
+  Loft
+  Studio
+  Other
 }
 
-enum ListingType {
-  rent
-  sale
+enum PropertyStatus {
+  draft
+  published
+  rented
+  archived
 }
 
-//-----------------------------
-// Request pour candidature informelle après le swipe
+// Photos d'une annonce
+model AnnouncementPhoto {
+  id    String @id @default(uuid())
+  url   String
+  order Int    @default(0)
 
-model Request {
-  id String @id @default(uuid())
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
 
-  apartment    Apartment @relation(fields: [apartment_id], references: [id])
-  apartment_id String
+  uploaded_at DateTime @default(now())
+}
 
-  user    User   @relation(fields: [user_id], references: [id])
+// Photos de profil utilisateur
+model ProfilePhoto {
+  id  String @id @default(uuid())
+  url String
+
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
 
-  status  RequestStatus @default(waiting)
-  message String?
-
-  documents RequestDocument[]
-
-  visit_date DateTime?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  @@unique([apartment_id, user_id])
-  @@index([user_id])
-  @@index([apartment_id])
+  uploaded_at DateTime @default(now())
 }
 
-enum RequestStatus {
-  waiting
-  contacted
-  visit_planned
-  accepted
-  refused
+// Documents locataire (justificatifs, bulletins de salaire…)
+model Document {
+  id    String  @id @default(uuid())
+  url   String
+  label String?
+
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String
+
+  uploaded_at DateTime @default(now())
 }
 
-//----------------------------
+// ─────────────────────────────────────────────
+// SWIPE
+// ─────────────────────────────────────────────
 
 model Swipe {
-  id           String         @id @default(uuid())
-  user         User           @relation(fields: [user_id], references: [id])
-  user_id      String
-  apartment    Apartment      @relation(fields: [apartment_id], references: [id])
-  apartment_id String
-  direction    SwipeDirection
-  created_at   DateTime       @default(now())
+  id        String  @id @default(uuid())
+  direction Boolean
 
-  @@unique([user_id, apartment_id])
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  conversation Conversation?
+
+  created_at DateTime @default(now())
+
+  @@unique([user_id, property_id])
   @@index([user_id])
-  @@index([apartment_id])
+  @@index([property_id])
 }
 
-enum SwipeDirection {
-  like
-  dislike
-}
+// ─────────────────────────────────────────────
+// CONVERSATION
+// ─────────────────────────────────────────────
 
-//-------------------------------
+model Conversation {
+  id String @id @default(uuid())
 
-model Match {
-  id           String    @id @default(uuid())
-  user         User      @relation(fields: [user_id], references: [id])
-  user_id      String
-  apartment    Apartment @relation(fields: [apartment_id], references: [id])
-  apartment_id String
-  messages     Message[]
-  created_at   DateTime  @default(now())
+  swipe    Swipe  @relation(fields: [swipe_id], references: [id], onDelete: Cascade)
+  swipe_id String @unique
 
-  @@unique([user_id, apartment_id])
-  @@index([user_id])
-  @@index([apartment_id])
-}
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
 
-//------------------------------
+  tenant    User   @relation(fields: [tenant_id], references: [id], name: "TenantConversations", onDelete: Cascade)
+  tenant_id String
+  owner     User   @relation(fields: [owner_id], references: [id], name: "OwnerConversations", onDelete: Cascade)
+  owner_id  String
 
-model Message {
-  id         String   @id @default(uuid())
-  content    String
-  match      Match    @relation(fields: [match_id], references: [id])
-  match_id   String
-  sender     User     @relation(fields: [sender_id], references: [id])
-  sender_id  String
+  messages Message[]
+
   created_at DateTime @default(now())
 }
 
-//------------------------------
+// ─────────────────────────────────────────────
+// MESSAGE
+// ─────────────────────────────────────────────
 
-model RequestDocument {
-  id          String   @id @default(uuid())
-  name        String
-  url         String
-  uploaded_at DateTime @default(now())
+model Message {
+  id      String  @id @default(uuid())
+  content String
+  read    Boolean @default(false)
 
-  request    Request @relation(fields: [request_id], references: [id])
-  request_id String
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  conversation_id String
+
+  sender    User   @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  sender_id String
+
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  @@index([conversation_id])
+  @@index([deleted_at])
+}
+
+// ─────────────────────────────────────────────
+// RENDEZ-VOUS
+// ─────────────────────────────────────────────
+
+model Appointment {
+  id    String   @id @default(uuid())
+  title String
+  date  DateTime
+  notes String?
+
+  owner    User   @relation(fields: [owner_id], references: [id], onDelete: Cascade, name: "OwnerAppointments")
+  owner_id String
+
+  tenant    User   @relation(fields: [tenant_id], references: [id], onDelete: Cascade, name: "TenantAppointments")
+  tenant_id String
+
+  property    Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  property_id String
+
+  created_at DateTime @default(now())
+
+  @@index([owner_id])
+  @@index([date])
+}
+
+// ─────────────────────────────────────────────
+// ADDRESS
+// ─────────────────────────────────────────────
+
+model Address {
+  id          String  @id @default(uuid())
+  number      String
+  box         String?
+  street      String
+  city        String
+  postal_code String
+  country     String
+
+  users      User[]
+  agencies   Agency[]
+  properties Property[]
+
+  created_at DateTime @default(now())
+
+  @@index([city])
 }

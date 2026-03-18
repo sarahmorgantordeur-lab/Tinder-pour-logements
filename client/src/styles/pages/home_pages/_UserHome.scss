@@ -5,7 +5,328 @@
     flex-direction: column;
     align-items: center;
     padding: 2rem;
+    flex: 1;
     text-align: center;
-    //temp
-    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+
+    @media (max-width: 900px) {
+        padding: 1.5rem;
+    }
+
+    @media (max-width: 580px) {
+        padding: 1rem;
+    }
+
+    .appartement-card-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @media (max-width: 480px) {
+            width: 100%;
+        }
+    }
+
+    .swipe-buttons {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        width: 45%;
+        justify-content: center;
+
+        @media (min-width: 2200px) {
+            width: 55%;
+        }
+
+        @media (max-width: 768px) {
+            width: 80%;
+        }
+
+        @media (max-width: 480px) {
+            width: 100%;
+            gap: 12px;
+        }
+
+        .swipe-button {
+            width: 100%;
+            min-height: 44px;
+
+                @media (max-width: 1024px) {
+                    width: fit-content;
+                    padding: 0.6rem 1.25rem;
+                }
+
+            .swipe-btn-icon {
+                display: none;
+
+                @media (max-width: 1024px) {
+                    display: inline;
+                }
+            }
+
+            .swipe-btn-text {
+                @media (max-width: 1024px) {
+                    display: none;
+                }
+            }
+        }
+
+        .swipe-button--dislike .swipe-btn-icon {
+            color: #e57373;
+            width: 24px;
+            height: 24px;
+        }
+
+        .swipe-button--like .swipe-btn-icon {
+            color: #81c784;
+            width: 24px;
+            height: 24px;
+        }
+    }
+}
+
+// Barre de filtres
+.user-home-filter {
+    width: 45%;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+
+    @media (min-width: 2200px) {
+        width: 55%;
+    }
+
+    @media (max-width: 768px) {
+        width: 80%;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+// Bouton toggle mobile
+.user-home-filter-toggle {
+    display: none;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 1rem;
+    background-color: $input-bg;
+    color: $main-text-color;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+
+    @media (max-width: 768px) {
+        display: flex;
+    }
+}
+
+.user-home-filter-badge {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: $button-bg;
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.user-home-filter-toggle-icon {
+    transition: transform 0.25s ease;
+    font-size: 1rem;
+
+    &--open {
+        transform: rotate(180deg);
+    }
+}
+
+// Contenu collapsible
+.user-home-filter-collapsible {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+
+    // Toujours visible sur desktop
+    @media (min-width: 769px) {
+        max-height: none;
+        opacity: 1;
+        overflow: visible;
+    }
+
+    &--open {
+        max-height: 600px;
+        opacity: 1;
+    }
+}
+
+.user-home-filter-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        margin-top: 8px;
+    }
+}
+
+.user-home-filter-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+
+    @media (max-width: 480px) {
+        flex-wrap: wrap;
+    }
+}
+
+.user-home-filter-input {
+    flex: 1;
+    min-width: 120px;
+    min-height: 44px;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid $border-color-muted;
+    outline: none;
+    background-color: $input-bg;
+    color: $main-text-color;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+
+    &::placeholder {
+        color: $text-muted;
+    }
+
+    &:focus {
+        border-color: $border-color;
+    }
+
+    &--short {
+        flex: 0.7;
+        min-width: 100px;
+    }
+
+
+    @media (max-width: 768px) {
+        min-width: 0;
+        width: 100%;
+        flex: none;
+    }
+}
+
+.user-home-filter-select {
+    flex: 1;
+    min-width: 150px;
+    min-height: 44px;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid $border-color-muted;
+    outline: none;
+    background-color: $input-bg;
+    color: $main-text-color;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+.user-home-filter-btn {
+    flex: 1;
+    padding: 0.6rem 1.25rem;
+    min-height: 44px;
+    background-color: $button-bg;
+    color: $main-text-color;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: rgba($color: $button-bg, $alpha: 0.9);
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.user-home-filter-clear {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    min-height: 44px;
+    background-color: transparent;
+    color: $text-muted;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+        color: $main-text-color;
+        border-color: $border-color;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.user-home-filter-refresh {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    min-height: 44px;
+    background-color: transparent;
+    color: $text-muted;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+        color: $main-text-color;
+        border-color: $border-color;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.user-home-filter-active {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: $text-muted;
+    text-align: left;
+}
+
+.user-home-loading,
+.user-home-empty {
+    font-size: 1rem;
+    color: $text-muted;
+    margin: 2rem 0;
+}
+
+.user-home-error {
+    font-size: 1rem;
+    color: #e57373;
+    margin: 2rem 0;
 }

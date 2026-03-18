@@ -26,7 +26,6 @@ class AdminService {
                     lastname: true,
                     role: true,
                     phone: true,
-                    avatar: true,
                     is_active: true,
                     created_at: true,
                     updated_at: true
@@ -127,7 +126,7 @@ class AdminService {
                 property: { select: { id: true, title: true } },
                 messages: {
                     include: {
-                        sender: { select: { id: true, firstname: true, lastname: true, avatar: true } }
+                        sender: { select: { id: true, firstname: true, lastname: true } }
                     },
                     orderBy: { created_at: 'asc' }
                 }
@@ -152,7 +151,7 @@ class AdminService {
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
-                    sender: { select: { id: true, firstname: true, lastname: true, avatar: true } },
+                    sender: { select: { id: true, firstname: true, lastname: true } },
                     conversation: { select: { id: true, property_id: true, tenant_id: true } }
                 }
             }),

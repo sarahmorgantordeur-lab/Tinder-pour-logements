@@ -1,0 +1,303 @@
+@use '../variables' as *;
+
+.edit-announcement-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: $text-muted;
+    font-size: 1rem;
+}
+
+.edit-announcement-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: $main-bg;
+}
+
+.edit-announcement-content {
+    flex: 1;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+        padding: 2rem 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+}
+
+.edit-announcement-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.edit-announcement-kicker {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: $button-bg;
+}
+
+.edit-announcement-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $main-text-color;
+
+    @media (max-width: 480px) {
+        font-size: 1.4rem;
+    }
+}
+
+.edit-announcement-error {
+    color: #e57373;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background-color: rgba(229, 115, 115, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(229, 115, 115, 0.3);
+}
+
+.edit-announcement-success {
+    color: #81c784;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background-color: rgba(129, 199, 132, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(129, 199, 132, 0.3);
+}
+
+.edit-announcement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.edit-announcement-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    border: 1px solid $border-color-muted;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background-color: $background-color-light;
+
+    @media (max-width: 480px) {
+        padding: 1rem;
+        gap: 1rem;
+    }
+}
+
+.edit-announcement-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $button-bg;
+    margin-bottom: 0.25rem;
+}
+
+.edit-announcement-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: $text-muted;
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+        font-size: 1rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid $border-color-muted;
+        outline: none;
+        background-color: $input-bg;
+        color: $main-text-color;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
+        &::placeholder {
+            color: $text-muted;
+        }
+
+        &:focus {
+            border-color: $border-color;
+            box-shadow: 0 0 0 2px rgba($color: $border-color, $alpha: 0.2);
+        }
+    }
+
+    select {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid $border-color-muted;
+        outline: none;
+        background-color: $input-bg;
+        color: $main-text-color;
+    }
+
+    &--checkbox {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+            accent-color: $button-bg;
+        }
+    }
+}
+
+// ── Photos ──────────────────────────────────────────────────────
+.edit-announcement-photos {
+    gap: 1.25rem;
+}
+
+.edit-announcement-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.edit-announcement-photo-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background-color: $border-color-muted;
+
+    &:hover .edit-announcement-photo-delete {
+        opacity: 1;
+    }
+}
+
+.edit-announcement-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.edit-announcement-photo-delete {
+    position: absolute;
+    top: 0.3rem;
+    right: 0.3rem;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    user-select: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, background-color 0.2s;
+
+    &:hover {
+        background-color: rgba(229, 115, 115, 0.9);
+    }
+
+    // Toujours visible sur touch/mobile
+    @media (hover: none) {
+        opacity: 1;
+    }
+}
+
+.edit-announcement-photo-add-btn {
+    align-self: flex-start;
+    padding: 0.6rem 1.25rem;
+    background-color: transparent;
+    color: $button-bg;
+    border: 1px dashed $button-bg;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+        background-color: rgba($button-bg, 0.08);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// ── Actions ─────────────────────────────────────────────────────
+.edit-announcement-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+
+    @media (max-width: 480px) {
+        flex-direction: column-reverse;
+    }
+}
+
+.edit-announcement-cancel {
+    padding: 0.75rem 2rem;
+    min-height: 44px;
+    background-color: transparent;
+    color: $text-muted;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        border-color: $border-color;
+        color: $main-text-color;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.edit-announcement-submit {
+    padding: 0.75rem 2rem;
+    min-height: 44px;
+    background-color: $button-bg;
+    color: $main-text-color;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        background-color: rgba($color: $button-bg, $alpha: 0.9);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}

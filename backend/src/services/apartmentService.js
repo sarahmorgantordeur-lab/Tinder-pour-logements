@@ -1,13 +1,27 @@
 import prisma from '../config/db.js';
 
+const ALLOWED_TRANSITIONS = {
+    draft:     ['published', 'archived'],
+    published: ['draft', 'rented', 'archived'],
+    rented:    ['published', 'archived'],
+    archived:  ['draft', 'published']
+};
+
 const ownerSelect = {
     id: true,
     firstname: true,
     lastname: true,
     email: true,
     phone: true,
-    avatar: true,
-    agency: true
+    role: true,
+    agency: {
+        select: {
+            id: true,
+            nom_agence: true,
+            numero_tva: true,
+            site_web: true
+        }
+    }
 };
 
 class PropertyService {
@@ -24,7 +38,7 @@ class PropertyService {
                 title,
                 description,
                 property_type,
-                status: 'published',
+                status: data.status || 'published',
                 price: parseInt(price),
                 surface: parseInt(surface),
                 rooms: parseInt(rooms),
@@ -39,7 +53,7 @@ class PropertyService {
                         country: address.country || 'Belgique'
                     }
                 },
-                owner_id: ownerId
+                owner: { connect: { id: ownerId } }
             },
             include: {
                 address: true,
@@ -49,29 +63,48 @@ class PropertyService {
         });
     }
 
-    static async getAll(filters = {}) {
-        const where = { status: { not: 'archived' } };
+    static async getAll(filters = {}, pagination = { skip: 0, take: 20 }, userId = null, showDislikes = false, resetDislikes = false) {
+    const where = { status: { not: 'archived' } };
 
-        if (filters.propertyType) where.property_type = filters.propertyType;
-        if (filters.city) where.address = { city: { contains: filters.city, mode: 'insensitive' } };
-        if (filters.minPrice || filters.maxPrice) {
-            where.price = {};
-            if (filters.minPrice) where.price.gte = parseInt(filters.minPrice);
-            if (filters.maxPrice) where.price.lte = parseInt(filters.maxPrice);
+    if (userId) {
+        if (showDislikes) {
+            // Deuxième passage automatique : uniquement les propriétés dislikées
+            where.swipes = { some: { user_id: userId, direction: false } };
+        } else if (resetDislikes) {
+            // Rafraîchissement manuel : exclure uniquement les likes, les dislikes reviennent
+            where.swipes = { none: { user_id: userId, direction: true } };
+        } else {
+            // Mode normal : exclure tout ce qui a déjà été swipé (like ou dislike)
+            where.swipes = { none: { user_id: userId } };
         }
-        if (filters.minSurface) where.surface = { gte: parseInt(filters.minSurface) };
-        if (filters.minRooms) where.rooms = { gte: parseInt(filters.minRooms) };
-
-        return prisma.property.findMany({
-            where,
-            include: {
-                address: true,
-                owner: { select: ownerSelect },
-                photos: true
-            },
-            orderBy: { created_at: 'desc' }
-        });
     }
+
+    if (filters.propertyType) where.property_type = filters.propertyType;
+    if (filters.city) where.address = { city: { contains: filters.city, mode: 'insensitive' } };
+    if (filters.minPrice || filters.maxPrice) {
+        where.price = {};
+        if (filters.minPrice) where.price.gte = parseInt(filters.minPrice);
+        if (filters.maxPrice) where.price.lte = parseInt(filters.maxPrice);
+    }
+    if (filters.minSurface) where.surface = { gte: parseInt(filters.minSurface) };
+    if (filters.minRooms) where.rooms = { gte: parseInt(filters.minRooms) };
+
+    const properties = await prisma.property.findMany({
+        where,
+        include: {
+            address: true,
+            owner: { select: ownerSelect },
+            photos: true
+        },
+        orderBy: { created_at: 'desc' },
+        skip: pagination.skip,
+        take: pagination.take
+    });
+
+    const total = await prisma.property.count({ where });
+
+    return { total, properties };
+}
 
     static async getById(id) {
         const property = await prisma.property.findUnique({
@@ -90,7 +123,18 @@ class PropertyService {
     static async getByOwner(ownerId) {
         return prisma.property.findMany({
             where: { owner_id: ownerId },
-            include: { address: true, photos: true },
+            include: {
+                address: true,
+                photos: true,
+                swipes: {
+                    where: { direction: true },
+                    include: {
+                        user: {
+                            select: { id: true, firstname: true, lastname: true, bio: true }
+                        }
+                    }
+                }
+            },
             orderBy: { created_at: 'desc' }
         });
     }
@@ -105,7 +149,6 @@ class PropertyService {
         if (data.title !== undefined) prismaData.title = data.title;
         if (data.description !== undefined) prismaData.description = data.description;
         if (data.property_type !== undefined) prismaData.property_type = data.property_type;
-        if (data.status !== undefined) prismaData.status = data.status;
         if (data.price !== undefined) prismaData.price = parseInt(data.price);
         if (data.surface !== undefined) prismaData.surface = parseInt(data.surface);
         if (data.rooms !== undefined) prismaData.rooms = parseInt(data.rooms);
@@ -130,6 +173,47 @@ class PropertyService {
             data: prismaData,
             include: { address: true, photos: true }
         });
+    }
+
+    static async changeStatus(id, newStatus, ownerId) {
+        const property = await prisma.property.findUnique({ where: { id } });
+
+        if (!property) throw new Error("Property not found");
+        if (property.owner_id !== ownerId) throw new Error("Unauthorized to update this property");
+
+        const allowed = ALLOWED_TRANSITIONS[property.status];
+        if (!allowed?.includes(newStatus)) {
+            throw new Error(`Transition invalide : ${property.status} → ${newStatus}`);
+        }
+
+        const updated = await prisma.property.update({
+            where: { id },
+            data: { status: newStatus },
+            include: { address: true, photos: true }
+        });
+
+        // Effets de bord sur les conversations
+        if (newStatus === 'rented' || newStatus === 'archived') {
+            const conversations = await prisma.conversation.findMany({
+                where: { property_id: id },
+                select: { id: true }
+            });
+            const conversationIds = conversations.map(c => c.id);
+
+            if (conversationIds.length > 0) {
+                await prisma.message.updateMany({
+                    where: { conversation_id: { in: conversationIds }, deleted_at: null },
+                    data: { deleted_at: new Date() }
+                });
+            }
+        }
+
+        // Archivé : supprimer les swipes (le bien ne réapparaîtra plus dans le feed)
+        if (newStatus === 'archived') {
+            await prisma.swipe.deleteMany({ where: { property_id: id } });
+        }
+
+        return updated;
     }
 
     static async delete(id, ownerId) {

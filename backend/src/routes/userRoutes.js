@@ -1,27 +1,33 @@
 import express from 'express';
 import UserController from '../controllers/userController.js';
 import { authenticate } from '../config/jwt.js';
-import { uploadAvatarMiddleware, uploadProfilePhotoMiddleware, uploadDocumentMiddleware } from '../middlewares/uploadMiddleware.js';
-import { uuidParamValidation } from '../utils/validators.js';
+import { uploadProfilePhotosMiddleware, uploadDocumentMiddleware } from '../middlewares/uploadMiddleware.js';
 
 const router = express.Router();
 
+router.get('/agencies', UserController.getAgencies);
+router.get('/agencies/:agencyId', UserController.getAgencyById);
 router.get('/profile', authenticate, UserController.getProfile);
 router.put('/profile', authenticate, UserController.updateProfile);
-router.post('/avatar', authenticate, uploadAvatarMiddleware, UserController.uploadAvatar);
 
-// Photos de profil (galerie)
-router.post('/profile-photos', authenticate, uploadProfilePhotoMiddleware, UserController.uploadProfilePhoto);
-router.delete('/profile-photos/:id', authenticate, uuidParamValidation('id'), UserController.deleteProfilePhoto);
+// Photos de profil
+router.get('/profile-photos', authenticate, UserController.getProfilePhotos);
+router.post('/profile-photos', authenticate, uploadProfilePhotosMiddleware, UserController.uploadProfilePhotos);
+router.delete('/profile-photos/:photoId', authenticate, UserController.removeProfilePhoto);
 
 // Documents
+router.get('/documents', authenticate, UserController.getDocuments);
 router.post('/documents', authenticate, uploadDocumentMiddleware, UserController.uploadDocument);
-router.delete('/documents/:id', authenticate, uuidParamValidation('id'), UserController.deleteDocument);
+router.delete('/documents/:docId', authenticate, UserController.removeDocument);
 
 // Profil locataire
 router.put('/tenant-profile', authenticate, UserController.updateTenantProfile);
 
 // Profil agence
 router.put('/agency', authenticate, UserController.updateAgency);
+router.put('/join-agency', authenticate, UserController.joinAgency);
+
+// Profil public — doit être en dernier pour ne pas intercepter les routes nommées
+router.get('/:id', authenticate, UserController.getPublicProfile);
 
 export default router;

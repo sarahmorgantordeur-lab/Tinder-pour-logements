@@ -21,7 +21,7 @@ class AuthController {
     static async register(req, res) {
         const { email, password, firstname, lastname, phone, role, address } = req.body;
         try {
-            const user = await AuthService.register(
+            const { user, token } = await AuthService.register(
                 email,
                 password,
                 firstname,
@@ -30,7 +30,7 @@ class AuthController {
                 role,
                 address
             );
-            res.status(200).json({ message: "User registered successfully", user });
+            res.status(200).json({ message: "User registered successfully", user, token });
         } catch (error) {
             if (error.message === "This email is already taken") {
                 return res.status(409).json({ message: error.message });

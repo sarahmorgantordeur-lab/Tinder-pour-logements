@@ -1,73 +1,92 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
+import api from '../../api';
 import TenantIcon from '../../assets/icons/Tenant.svg?react';
 import LandlordIcon from '../../assets/icons/Landlord.svg?react';
 import AgencyIcon from '../../assets/icons/Agency.svg?react';
-import { AnimatePresence, motion } from 'framer-motion';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
+import { useAuth } from '../../hooks/useAuth';
+import CreateAgency from '../create/CreateAgency';
 
-const fadeVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-};
 
-export default function Register({ onLogin }) {
+export default function Register({ email, setEmail, password, setPassword, step, setStep }) {
+    const { register, finishAgencySetup, joinAgency } = useAuth();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
-    const fullName = surname ? `${name} ${surname}` : name;
-    const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState('user');
+    const [agencies, setAgencies] = useState([]);
+    const [selectedAgencyId, setSelectedAgencyId] = useState('');
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const user = JSON.parse(localStorage.getItem('user') || 'null');
-            onLogin?.(user, token);
-        }
-    }, [onLogin]);
-
-    useEffect(() => {
-        if (role === 'agency') {
-            setSurname('');
-            setName('');
-        }
+        if (role === 'agency') setSurname('');
     }, [role]);
+
+    useEffect(() => {
+        if (step === 'agency-profile') {
+            api.get('/users/agencies').then(res => setAgencies(res.data.agencies)).catch(() => {});
+        }
+    }, [step]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (password !== confirmPassword) {
+            setError('Les mots de passe ne correspondent pas');
+            return;
+        }
+
         setLoading(true);
-
         try {
-            console.log('Registering with:', { fullName, email, password, phone, role });
-            const res = await fetch('http://localhost:3000/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userName: fullName, email, password, phone, role }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setError(data.message || 'Erreur de connexion');
+            const result = await register(name, surname, '', email, password, phone, role);
+            if (!result.success) {
+                setError(result.error || 'Erreur lors de l\'inscription');
                 return;
             }
-
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            onLogin?.(data.user, data.token);
+            if (role === 'agency') {
+                setStep('agency-profile');
+            }
         } catch {
             setError('Impossible de contacter le serveur');
         } finally {
             setLoading(false);
         }
     };
+
+    const handleJoinAgency = async () => {
+        if (!selectedAgencyId) return;
+        setLoading(true);
+        try {
+            const result = await joinAgency(selectedAgencyId);
+            if (!result.success) {
+                setError(result.error || 'Erreur lors de l\'association à l\'agence');
+                return;
+            }
+            finishAgencySetup();
+        } catch {
+            setError('Impossible de contacter le serveur');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (step === 'agency-profile') {
+        return (
+            <div className="form-main-container">
+                <div className="form-wrapper">
+                    <div className="form-container">
+                        
+                            <CreateAgency onClose={finishAgencySetup} onSkip={finishAgencySetup} />
+                        
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="form-main-container">
@@ -87,72 +106,28 @@ export default function Register({ onLogin }) {
                             <p className={`role-text ${role === 'agency' ? 'text-selected' : ''}`}>Agency</p>
                         </div>
                     </div>
-                    <AnimatePresence mode="wait">
-                        {role === 'agency' ? (
-                            <motion.div
-                                key="agency"
-                                variants={fadeVariants}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                transition={{ duration: 0.2 }}
-                                className="name-container-agency"
-                            >
-                                <input
-                                    id="agencyName"
-                                    type="text"
-                                    required
-                                    value={name}
-                                    aria-label='Agency Name'
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="Agency Name"
-                                />
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                                key="rest"
-                                variants={fadeVariants}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                transition={{ duration: 0.2 }}
-                                className="name-container-rest"
-                            >
-                                <input
-                                    id="name"
-                                    type="text"
-                                    required
-                                    value={name}
-                                    aria-label='First Name'
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="First Name"
-                                />
-                                <input
-                                    id="surname"
-                                    type="text"
-                                    required
-                                    value={surname}
-                                    aria-label='Last Name'
-                                    onChange={(e) => setSurname(e.target.value)}
-                                    placeholder='Last Name'
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                    <div className="">
-                        <input
-                            id="email"
-                            type="email"
+                    <div className="name-container-rest">
+                        <TextInput
+                            id="name"
+                            type="text"
                             required
-                            value={email}
-                            aria-label='email'
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Email"
+                            value={name}
+                            aria-label='First Name'
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="First Name"
+                        />
+                        <TextInput
+                            id="surname"
+                            type="text"
+                            required
+                            value={surname}
+                            aria-label='Last Name'
+                            onChange={(e) => setSurname(e.target.value)}
+                            placeholder='Last Name'
                         />
                     </div>
-
                     <div className="">
-                        <input
+                        <TextInput
                             id="phone"
                             type="tel"
                             required
@@ -164,13 +139,25 @@ export default function Register({ onLogin }) {
                     </div>
 
                     <div className="">
-                        <input
+                        <TextInput
+                            id="email"
+                            type="email"
+                            required
+                            value={email}
+                            aria-label='email'
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                        />
+                    </div>
+
+                    <div className="">
+                        <TextInput
                             id="password"
                             type="password"
                             required
                             value={password}
                             aria-label='password'
-                            onChange={(e) => setPassword(e.target.value)} 
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
                         />
                     </div>
@@ -182,7 +169,7 @@ export default function Register({ onLogin }) {
                             required
                             value={confirmPassword}
                             aria-label='confirm password'
-                            onChange={(e) => setConfirmPassword(e.target.value)} 
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="Confirm Password"
                         />
                     </div>
@@ -191,11 +178,8 @@ export default function Register({ onLogin }) {
                         <p data-cy="error-message">{error}</p>
                     )}
 
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        >
-                        {loading ? 'Inscription…' : 'S\'inscrire'}
+                    <Button type="submit" disabled={loading}>
+                        {loading ? 'Inscription…' : role === 'agency' ? "Suivant →" : "S'inscrire"}
                     </Button>
                 </form>
             </div>

@@ -5,19 +5,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const storage = multer.diskStorage({
+const makeStorage = (folder) => multer.diskStorage({
     destination: (req, file, cb) => {
-        let uploadPath = path.join(__dirname, '../../uploads');
-
-        if (file.fieldname === 'avatar' || file.fieldname === 'profile_photo') {
-            uploadPath = path.join(uploadPath, 'avatars');
-        } else if (file.fieldname === 'pictures') {
-            uploadPath = path.join(uploadPath, 'properties');
-        } else if (file.fieldname === 'document') {
-            uploadPath = path.join(uploadPath, 'documents');
-        }
-
-        cb(null, uploadPath);
+        cb(null, path.join(__dirname, `../../uploads/${folder}`));
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
@@ -35,7 +25,7 @@ const imageFilter = (req, file, cb) => {
     }
 };
 
-const documentFilter = (req, file, cb) => {
+const documentFilter = (_req, file, cb) => {
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
@@ -58,18 +48,14 @@ const handleUpload = (uploadFn) => {
     };
 };
 
-export const uploadAvatarMiddleware = handleUpload(
-    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).single('avatar')
-);
-
-export const uploadProfilePhotoMiddleware = handleUpload(
-    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).single('profile_photo')
-);
-
 export const uploadPicturesMiddleware = handleUpload(
-    multer({ storage, fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }).array('pictures', 10)
+    multer({ storage: makeStorage('properties'), fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }).array('pictures', 10)
+);
+
+export const uploadProfilePhotosMiddleware = handleUpload(
+    multer({ storage: makeStorage('profile_photos'), fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }).array('photos', 5)
 );
 
 export const uploadDocumentMiddleware = handleUpload(
-    multer({ storage, fileFilter: documentFilter, limits: { fileSize: 10 * 1024 * 1024 } }).single('document')
+    multer({ storage: makeStorage('documents'), fileFilter: documentFilter, limits: { fileSize: 10 * 1024 * 1024 } }).single('document')
 );

@@ -1,0 +1,197 @@
+@use '../../variables' as *;
+
+.create-agency-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+    font-size: 1rem;
+    padding: 2rem;
+}
+
+.create-agency-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+
+    .create-agency-sections {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+}
+
+.create-agency-error {
+    color: #e57373;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background-color: rgba(229, 115, 115, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(229, 115, 115, 0.3);
+}
+
+.create-agency-success {
+    color: #81c784;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background-color: rgba(129, 199, 132, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(129, 199, 132, 0.3);
+}
+
+.create-agency-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1;
+    border: 1px solid $border-color-muted;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background-color: $background-color-light;
+
+    @media (max-width: 480px) {
+        padding: 1rem;
+        gap: 1rem;
+    }
+}
+
+.create-agency-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $button-bg;
+    margin-bottom: 0.25rem;
+}
+
+.create-agency-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: $text-muted;
+
+    input {
+        font-size: 1rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid $border-color-muted;
+        outline: none;
+        background-color: $input-bg;
+        color: $main-text-color;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
+        &::placeholder {
+            color: $text-muted;
+        }
+
+        &:focus {
+            border-color: $border-color;
+            box-shadow: 0 0 0 2px rgba($color: $border-color, $alpha: 0.2);
+        }
+    }
+}
+
+.create-agency-existing {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid $border-color-muted;
+    border-radius: 12px;
+    background-color: $background-color-light;
+}
+
+.create-agency-select {
+    font-size: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid $border-color-muted;
+    outline: none;
+    background-color: $input-bg;
+    color: $main-text-color;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+
+    &:focus {
+        border-color: $border-color;
+        box-shadow: 0 0 0 2px rgba($color: $border-color, $alpha: 0.2);
+    }
+}
+
+.create-agency-hint {
+    font-size: 0.82rem;
+    color: $text-muted;
+    font-style: italic;
+}
+
+.create-agency-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+    }
+}
+
+.create-agency-cancel {
+    padding: 0.75rem 2rem;
+    min-height: 44px;
+    background-color: transparent;
+    color: $text-muted;
+    border: 1px solid $border-color-muted;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        border-color: $border-color;
+        color: $main-text-color;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.create-agency-submit {
+    padding: 0.75rem 2rem;
+    min-height: 44px;
+    background-color: $button-bg;
+    color: $main-text-color;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        background-color: rgba($color: $button-bg, $alpha: 0.9);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}

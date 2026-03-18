@@ -1,0 +1,25 @@
+@use '../../variables' as *;
+
+.nav-link {
+    color: $main-text-color;
+    text-decoration: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &.active {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.875rem;
+    }
+}

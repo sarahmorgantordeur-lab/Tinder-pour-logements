@@ -1,9 +1,10 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     return {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
 };
@@ -11,11 +12,6 @@ const getAuthHeaders = () => {
 const handleResponse = async (res) => {
     const data = await res.json();
     if (!res.ok) {
-        if (res.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/';
-        }
         const err = new Error(data.message || 'Request failed');
         err.response = { data };
         throw err;

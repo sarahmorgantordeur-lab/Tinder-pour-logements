@@ -19,19 +19,20 @@ export const registerValidation = [
     body('email')
         .trim()
         .isEmail()
-        .withMessage('Please provide a valid email address')
-        .normalizeEmail(),
+        .withMessage('Please provide a valid email address'),
     body('password')
         .isLength({ min: 8 })
         .withMessage('Password must be at least 8 characters long')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
         .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
-    body('userName')
+    body('firstname')
         .trim()
-        .isLength({ min: 2, max: 50 })
-        .withMessage('Username must be between 2 and 50 characters')
-        .matches(/^[a-zA-Z0-9_\- ]+$/)
-        .withMessage('Username can only contain letters, numbers, spaces, underscores, and hyphens'),
+        .isLength({ min: 1, max: 50 })
+        .withMessage('First name is required'),
+    body('lastname')
+        .trim()
+        .isLength({ min: 1, max: 50 })
+        .withMessage('Last name is required'),
     body('role')
         .optional()
         .isIn(['user', 'owner', 'agency'])
@@ -43,8 +44,7 @@ export const loginValidation = [
     body('email')
         .trim()
         .isEmail()
-        .withMessage('Please provide a valid email address')
-        .normalizeEmail(),
+        .withMessage('Please provide a valid email address'),
     body('password')
         .notEmpty()
         .withMessage('Password is required'),
@@ -70,7 +70,7 @@ export const createApartmentValidation = [
         .notEmpty()
         .withMessage('Region is required'),
     body('property_type')
-        .isIn(['apartment', 'house', 'studio', 'villa', 'land', 'commercial_space', 'other'])
+        .isIn(['Appartement','BelEtageHouse','Castel','Duplex','StudentHousing','Villa','Chalet','Bungalow','Mansion','Penthouse','Loft','Studio','Other'])
         .withMessage('Invalid property type'),
     body('listing_type')
         .isIn(['rent', 'sale'])
@@ -137,7 +137,7 @@ export const searchApartmentValidation = [
         .withMessage('minSurface must be a positive number'),
     query('propertyType')
         .optional()
-        .isIn(['apartment', 'house', 'studio', 'villa', 'land', 'commercial_space', 'other'])
+        .isIn(['Appartement','BelEtageHouse','Castel','Duplex','StudentHousing','Villa','Chalet','Bungalow','Mansion','Penthouse','Loft','Studio','Other'])
         .withMessage('Invalid property type'),
     query('listingType')
         .optional()

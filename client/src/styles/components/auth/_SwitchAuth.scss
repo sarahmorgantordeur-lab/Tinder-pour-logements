@@ -14,6 +14,11 @@
         padding: 8px;
         border-radius: 16px;
 
+        @media (max-width: 480px) {
+            gap: 8px;
+            padding: 6px;
+        }
+
         button {
             font-size: 18px;
             cursor: pointer;
@@ -21,8 +26,14 @@
             color: $main-text-color;
             border: none;
             padding: 0.5rem 1rem;
+            min-height: 44px;
             border-radius: 8px;
             width: 100%;
+
+            @media (max-width: 480px) {
+                font-size: 14px;
+                padding: 0.5rem 0.75rem;
+            }
         }
 
         .Inactive-button {
