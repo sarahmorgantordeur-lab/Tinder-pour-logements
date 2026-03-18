@@ -6,6 +6,7 @@ import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { useAuth } from '../../hooks/useAuth';
 import CreateAgency from '../create/CreateAgency';
+import api from '../../api';
 
 
 export default function Register({ email, setEmail, password, setPassword, step, setStep }) {
