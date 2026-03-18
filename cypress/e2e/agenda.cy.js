@@ -59,7 +59,6 @@ describe('Agenda', () => {
 
     it('supprime un rendez-vous (mock)', () => {
       cy.intercept('DELETE', '**/appointments/**', { statusCode: 200, body: { message: 'Deleted' } }).as('deleteAppt')
-      cy.on('window:confirm', () => true)
       cy.wait('@getAppointments')
       cy.get('button').contains(/supprimer/i).first().click()
       cy.wait('@deleteAppt')
@@ -154,9 +153,9 @@ describe('Agenda', () => {
 
     it('retire le rdv au clic sur Pas disponible (mock)', () => {
       cy.intercept('DELETE', '**/appointments/**', { statusCode: 200, body: { message: 'Deleted' } }).as('deleteAppt')
-      cy.on('window:confirm', () => true)
       cy.wait('@getTenantAppointments')
       cy.get('button').contains(/pas disponible/i).first().click()
+      cy.get('.agenda-confirm-yes').click()
       cy.wait('@deleteAppt')
       cy.get('body').contains('Visite appartement Ixelles').should('not.exist')
     })

@@ -45,7 +45,7 @@ describe('Home — Owner', () => {
     cy.get('body').should('exist')
   })
 
-  it('un clic sur un bien redirige vers la page d\'édition', () => {
+  it('un clic sur un bien ouvre la modale et permet d\'accéder à la page d\'édition', () => {
     cy.intercept('GET', '**/properties/owner/my-properties**', {
       statusCode: 200,
       body: {
@@ -57,6 +57,7 @@ describe('Home — Owner', () => {
 
     cy.visit('/home')
     cy.wait('@getMyProps')
+    cy.get('.agency-home-card-wrapper').first().click()
     cy.get('a[href*="/properties/prop-1/edit"]').first().click({ force: true })
     cy.url().should('include', '/properties/prop-1/edit')
   })
