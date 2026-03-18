@@ -53,6 +53,33 @@
         .swipe-button {
             width: 100%;
             min-height: 44px;
+
+                @media (max-width: 1024px) {
+                    width: fit-content;
+                    padding: 0.6rem 1.25rem;
+                }
+
+            .swipe-btn-icon {
+                display: none;
+
+                @media (max-width: 1024px) {
+                    display: inline;
+                }
+            }
+
+            .swipe-btn-text {
+                @media (max-width: 1024px) {
+                    display: none;
+                }
+            }
+        }
+
+        .swipe-button--dislike .swipe-btn-icon {
+            color: #e57373;
+        }
+
+        .swipe-button--like .swipe-btn-icon {
+            color: #81c784;
         }
     }
 }
