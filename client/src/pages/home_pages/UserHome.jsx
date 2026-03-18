@@ -8,6 +8,8 @@ import TextInput from "../../components/ui/TextInput";
 import { motion, AnimatePresence } from 'framer-motion';
 import { SwipeCard } from "../../components/ui/SwipeCard";
 import { useIsTouchDevice } from "../../hooks/useIsTouchDevice";
+import LikeIcon from "../../assets/icons/Like.svg?react";
+import DislikeIcon from "../../assets/icons/Dislike.svg?react";
 
 
 const swipAnimations = {
@@ -229,11 +231,11 @@ function hasActiveFilter(f) {
             </SwipeCard>
             <div className="swipe-buttons">
                 <Button onClick={swipeAction('dislike')} className="swipe-button swipe-button--dislike">
-                    <span className="swipe-btn-icon">✕</span>
+                    <DislikeIcon className="swipe-btn-icon" />
                     <span className="swipe-btn-text">Dislike</span>
                 </Button>
                 <Button onClick={swipeAction('like')} className="swipe-button swipe-button--like">
-                    <span className="swipe-btn-icon">♥</span>
+                    <LikeIcon className="swipe-btn-icon" />
                     <span className="swipe-btn-text">Like</span>
                 </Button>
             </div>
